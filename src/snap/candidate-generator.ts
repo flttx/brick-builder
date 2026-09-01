@@ -1,5 +1,5 @@
 import { angleBetweenVectors } from "../math/quat.js";
-import { cloneTransform, transformPoint, transformDirection } from "../math/transform.js";
+import { cloneTransform, GROUND_LEVEL, transformPoint, transformDirection } from "../math/transform.js";
 import { distance } from "../math/vec3.js";
 import { connectorKey, type ConnectorPair, type WorldConnector } from "../connectors/connector.js";
 import { isQuarterYRotation, transformKey } from "../math/quantize.js";
@@ -7,9 +7,10 @@ import type { BrickInstance } from "../parts/brick-instance.js";
 import type { ConnectorDefinition } from "../connectors/connector.js";
 import type { Transform } from "../math/transform.js";
 import type { Vec3 } from "../math/vec3.js";
-import type { ExplicitSnapRequest, ExplicitSnapResult, SnapCandidate, SnapContext } from "./snap-types.js";
+import type { ExplicitSnapRequest, ExplicitSnapResult, PrecisionSnapRequest, PrecisionSnapResult, SnapCandidate, SnapContext } from "./snap-types.js";
 import type { SnapConfig } from "./snap-config.js";
 import { solveSnapTransform } from "./transform-solver.js";
+import { solvePrecisionTransform } from "./precision-transform-solver.js";
 
 export const generateSnapCandidates = (
   context: SnapContext,
@@ -142,6 +143,95 @@ export const generateExplicitSnap = (
   };
 };
 
+export const generatePrecisionSnap = (
+  context: SnapContext,
+  request: PrecisionSnapRequest,
+  config: SnapConfig
+): PrecisionSnapResult => {
+  const movingBrick = context.bricks.get(request.movingBrickId);
+  const movingPart = context.parts.get(movingBrick.partId);
+  const targetBrick = context.bricks.get(request.targetBrickId);
+  const targetPart = context.parts.get(targetBrick.partId);
+  const collisionAtFreeTransform = context.collision.checkBrick(movingBrick, request.freeTransform);
+  if (movingBrick.id === targetBrick.id || request.movingConnectorA1Id === request.movingConnectorA2Id || request.targetConnectorB1Id === request.targetConnectorB2Id) {
+    return { valid: false, matchedPairs: [], collision: collisionAtFreeTransform, reason: "duplicate_connector" };
+  }
+  const movingA1 = movingPart.connectors.find((connector) => connector.id === request.movingConnectorA1Id);
+  const movingA2 = movingPart.connectors.find((connector) => connector.id === request.movingConnectorA2Id);
+  const targetB1 = context.connectors.getWorldConnector(targetBrick, targetPart, request.targetConnectorB1Id);
+  const targetB2 = context.connectors.getWorldConnector(targetBrick, targetPart, request.targetConnectorB2Id);
+  if (movingA1 === undefined || movingA2 === undefined) {
+    return { valid: false, matchedPairs: [], collision: collisionAtFreeTransform, reason: "connector_incompatible" };
+  }
+  const sourceDistance = distance(movingA1.position, movingA2.position);
+  const targetDistance = distance(targetB1.worldPosition, targetB2.worldPosition);
+  if (Math.abs(sourceDistance - targetDistance) > config.positionEpsilon) {
+    return { valid: false, matchedPairs: [], collision: collisionAtFreeTransform, reason: "distance_mismatch" };
+  }
+  const movingWorldA1 = toWorldConnector(movingBrick, movingA1, request.freeTransform);
+  const movingWorldA2 = toWorldConnector(movingBrick, movingA2, request.freeTransform);
+  if (!context.occupancy.canOccupy(movingWorldA1, "pending") || !context.occupancy.canOccupy(movingWorldA2, "pending")) {
+    return { valid: false, matchedPairs: [], collision: collisionAtFreeTransform, reason: "connector_occupied" };
+  }
+  const rules = [
+    context.connectors.compatibility.getRule(movingA1.type, targetB1.type),
+    context.connectors.compatibility.getRule(movingA2.type, targetB2.type)
+  ];
+  if (
+    movingA1.type === targetB1.type ||
+    movingA2.type === targetB2.type ||
+    rules.some((rule) => rule === undefined || !rule.allow) ||
+    !sameCompatibilityGroup(movingA1, targetB1) ||
+    !sameCompatibilityGroup(movingA2, targetB2)
+  ) {
+    return { valid: false, matchedPairs: [], collision: collisionAtFreeTransform, reason: "connector_incompatible" };
+  }
+  if (!context.occupancy.canOccupy(targetB1, "pending") || !context.occupancy.canOccupy(targetB2, "pending")) {
+    return { valid: false, matchedPairs: [], collision: collisionAtFreeTransform, reason: "connector_occupied" };
+  }
+  const transform = solvePrecisionTransform({ movingA1, movingA2, targetB1, targetB2 });
+  if (transform === null) {
+    return { valid: false, matchedPairs: [], collision: collisionAtFreeTransform, reason: "invalid_rotation" };
+  }
+  if (transform.position.y < GROUND_LEVEL - config.positionEpsilon) {
+    return { valid: false, matchedPairs: [], collision: collisionAtFreeTransform, reason: "below_ground" };
+  }
+  const transformedMoving = movingPart.connectors.map((connector) => toWorldConnector(movingBrick, connector, transform));
+  const matchedPairs = findMatchedPairs(
+    context,
+    transformedMoving,
+    targetBrick.id,
+    config,
+    { movingConnectorId: request.movingConnectorA1Id, targetConnector: targetB1 }
+  );
+  const secondMoving = transformedMoving.find((connector) => connector.id === request.movingConnectorA2Id);
+  if (secondMoving === undefined || !context.connectors.compatibility.areCompatible(secondMoving, targetB2, config.positionEpsilon)) {
+    return { valid: false, matchedPairs: [], collision: collisionAtFreeTransform, reason: "connector_incompatible" };
+  }
+  if (!matchedPairs.some((pair) => pair.moving.id === secondMoving.id && pair.target.id === targetB2.id)) {
+    matchedPairs.push({ moving: secondMoving, target: targetB2 });
+  }
+  const candidate = buildCandidate(
+    context,
+    movingBrick,
+    movingPart.connectors,
+    transform,
+    request.movingConnectorA1Id,
+    targetB1,
+    request,
+    config,
+    matchedPairs
+  );
+  return {
+    valid: candidate.collision.valid,
+    transform: cloneTransform(transform),
+    matchedPairs,
+    collision: candidate.collision,
+    ...(candidate.collision.valid ? { candidate } : {}),
+    ...(candidate.collision.valid ? {} : { reason: "collision" as const })
+  };
+};
+
 const buildCandidate = (
   context: SnapContext,
   movingBrick: BrickInstance,
@@ -243,7 +333,7 @@ const findMatchedPairs = (
 const canOccupyMoving = (context: SnapContext, connector: WorldConnector): boolean =>
   context.occupancy.getGroupIds(connector.brickId, connector.id).length === 0;
 
-const sameCompatibilityGroup = (a: WorldConnector, b: WorldConnector): boolean =>
+const sameCompatibilityGroup = (a: ConnectorDefinition, b: ConnectorDefinition): boolean =>
   a.compatibilityGroup === b.compatibilityGroup || a.compatibilityGroup === "*" || b.compatibilityGroup === "*";
 
 const toWorldConnector = (brick: BrickInstance, connector: ConnectorDefinition, transform: Transform): WorldConnector => ({

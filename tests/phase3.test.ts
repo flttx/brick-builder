@@ -6,7 +6,9 @@ import {
   BrickColorRegistry,
   BrickEngine,
   createRectPart,
+  createSpecialPartDefinitions,
   createStandardPartDefinitions,
+  LDRAW_PART_CATALOG,
   identity
 } from "../src/index.js";
 import { createPartIndex, searchParts } from "../apps/web/src/editor/parts/part-index.js";
@@ -14,6 +16,7 @@ import { recordRecentPart, readRecentParts } from "../apps/web/src/editor/parts/
 import { PartAssetRegistry } from "../apps/web/src/editor/assets/part-asset-registry.js";
 import { createPlacementSession } from "../apps/web/src/editor/placement/placement-session.js";
 import { InteractionController } from "../apps/web/src/editor/interaction/interaction-controller.js";
+import { createBrickMaterial } from "../apps/web/src/editor/renderer/brick-material.js";
 import { ThreeBrickRenderer } from "../apps/web/src/editor/renderer/brick-renderer.js";
 
 const transform = (x = 0, y = 0, z = 0) => ({ position: { x, y, z }, rotation: identity() });
@@ -35,7 +38,30 @@ describe("MVP registries and part discovery", () => {
     expect(tile.category).toBe("tile");
     expect(tile.connectors.some((connector) => connector.type === "stud")).toBe(false);
     expect(tile.connectors.filter((connector) => connector.type === "anti_stud")).toHaveLength(8);
-    expect(createStandardPartDefinitions()).toHaveLength(16);
+    expect(createStandardPartDefinitions()).toHaveLength(40);
+  });
+
+  it("registers legacy procedural parts and all downloaded LDraw parts", () => {
+    const parts = createSpecialPartDefinitions();
+    expect(parts.slice(0, 3).map((part) => part.id)).toEqual(["wheel-1x1", "flagpole-1x1", "leaf-1x1"]);
+    expect(parts).toHaveLength(3 + LDRAW_PART_CATALOG.length);
+    for (const part of parts.slice(0, 3)) {
+      expect(part.category).toBe("special");
+      expect(part.visual?.kind).toBe(part.id.split("-")[0]);
+      expect(part.connectors.map((connector) => connector.type)).toEqual(["anti_stud", "stud"]);
+      expect(part.colliders).toHaveLength(1);
+    }
+    for (const part of parts.slice(3)) {
+      expect(part.category).toBe("special");
+      expect(part.metadata?.ldrawPartId).toBeTypeOf("string");
+      expect(part.connectors.map((connector) => connector.type)).toEqual(["anti_stud", "stud"]);
+      expect(part.colliders).toHaveLength(1);
+      const collider = part.colliders[0];
+      if (collider?.type !== "box") throw new Error(`Expected a box collider for ${part.id}`);
+      expect(collider.size.x).toBeGreaterThanOrEqual(part.dimensions.width);
+      expect(collider.size.y).toBeGreaterThanOrEqual(part.dimensions.height);
+      expect(collider.size.z).toBeGreaterThanOrEqual(part.dimensions.depth);
+    }
   });
 
   it("ranks size aliases and Chinese category aliases", () => {
@@ -43,6 +69,7 @@ describe("MVP registries and part discovery", () => {
     expect(searchParts("2×4", index)[0]?.id).toBe("brick-2x4");
     expect(searchParts("砖", index).every((item) => item.category === "brick")).toBe(true);
     expect(searchParts("plate", index).every((item) => item.category === "plate")).toBe(true);
+    expect(searchParts("车轮", index)[0]?.id).toBe("ldraw-wheel-3482");
   });
 
   it("keeps recent parts deduplicated at the front", () => {
@@ -63,6 +90,42 @@ describe("MVP bucket and commands", () => {
     expect(await assets.loadPart("brick-2x4")).toBe(first);
     expect(await assets.preloadPart("plate-2x4")).not.toBe(first);
     assets.dispose();
+  });
+
+  it("renders each special part through the procedural fallback", () => {
+    const engine = new BrickEngine();
+    const assets = new PartAssetRegistry(engine.parts);
+    for (const partId of ["wheel-1x1", "flagpole-1x1", "leaf-1x1"]) {
+      const asset = assets.getPart(partId);
+      expect(asset.source).toBe("procedural-fallback");
+      expect(asset.geometry.attributes.position?.count).toBeGreaterThan(0);
+    }
+    assets.dispose();
+  });
+
+  it("uses double-sided materials for imported geometry", () => {
+    const engine = new BrickEngine();
+    engine.createBrick({ id: "material-check", partId: "brick-2x4" });
+    const renderer = new ThreeBrickRenderer(new THREE.Group(), engine, 2);
+    renderer.syncFromEngine();
+    const batch = renderer.batches.get("brick-2x4");
+    expect(batch).toBeDefined();
+    const batchMaterial = batch?.mesh.material as THREE.MeshPhysicalMaterial;
+    expect(batchMaterial).toBeInstanceOf(THREE.MeshPhysicalMaterial);
+    expect(batchMaterial.side).toBe(THREE.DoubleSide);
+    expect(batchMaterial.metalness).toBe(0);
+    expect(batchMaterial.clearcoat).toBeCloseTo(0.12);
+    expect(batchMaterial.flatShading).toBe(true);
+    expect(batchMaterial.onBeforeCompile).toEqual(expect.any(Function));
+    const shader = {
+      fragmentShader: "\tvec3 normal = normalize( cross( fdx, fdy ) );"
+    } as Parameters<THREE.MeshPhysicalMaterial["onBeforeCompile"]>[0];
+    const shaderMaterial = createBrickMaterial();
+    shaderMaterial.onBeforeCompile(shader, {} as THREE.WebGLRenderer);
+    expect(shader.fragmentShader).toContain("vec3 faceNormal = normalize( cross( fdx, fdy ) );");
+    shaderMaterial.dispose();
+    expect((renderer.dragProxy.mesh.material as THREE.MeshPhysicalMaterial).side).toBe(THREE.DoubleSide);
+    renderer.dispose();
   });
 
   it("draws the same seeded sequence and keeps the current color", () => {

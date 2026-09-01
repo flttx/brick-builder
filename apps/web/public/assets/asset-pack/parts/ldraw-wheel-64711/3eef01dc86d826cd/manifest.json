@@ -1,0 +1,144 @@
+{
+  "id": "ldraw-wheel-64711",
+  "version": 1,
+  "name": "带刺轮（64711）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "64711.dat",
+    "sourceFile": "assets-source/ldraw/64711.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=6471.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-wheel-64711/3eef01dc86d826cd/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-wheel-64711/3eef01dc86d826cd/lod1.glb"
+  },
+  "dimensions": {
+    "width": 7.65,
+    "height": 7.7,
+    "depth": 2.5
+  },
+  "origin": [
+    0,
+    3.2500000000000004,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.6,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-0-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0,
+        "y": 7.1000000000000005,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 3.2500000000000004,
+        "z": 0
+      },
+      "size": {
+        "x": 7.61,
+        "y": 7.66,
+        "z": 2.46
+      }
+    }
+  ],
+  "metadataHash": "0c1c1d5e752a29f4",
+  "geometryHash": "81fb582ea12253f3",
+  "sourceHash": "a4007a08c70a6181",
+  "assetHash": "3eef01dc86d826cd",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-64711/3eef01dc86d826cd/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "wheel",
+    "车轮",
+    "带刺",
+    "64711"
+  ],
+  "aliases": [
+    "ldraw-wheel-64711",
+    "64711",
+    "带刺轮",
+    "车轮"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 5792,
+    "lod1Vertices": 5792,
+    "lod0Bounds": {
+      "min": [
+        -3.8234654150000007,
+        -0.6000000000000001,
+        -1.25
+      ],
+      "max": [
+        3.8234654150000007,
+        7.1,
+        1.25
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -3.8234654150000007,
+        -0.6000000000000001,
+        -1.25
+      ],
+      "max": [
+        3.8234654150000007,
+        7.1,
+        1.25
+      ]
+    }
+  }
+}

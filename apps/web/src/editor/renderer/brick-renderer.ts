@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { GROUND_LEVEL } from "../../../../../src/math/transform.js";
 import type { BrickColorRegistry, BrickEngine, BrickInstance, DragResult, PartDefinition, Transform } from "../../../../../src/index.js";
 import { PartAssetRegistry } from "../assets/part-asset-registry.js";
 import { DragProxy } from "./drag-proxy.js";
@@ -150,12 +151,16 @@ export class ThreeBrickRenderer implements BrickRenderer {
   }
 
   public updateDrag(freeTransform: Transform, result: DragResult): void {
-    let displayTransform = freeTransform;
+    let displayTransform = result.mode === "free"
+      ? { ...result.transform, position: { ...result.transform.position, y: Math.max(GROUND_LEVEL, result.transform.position.y) } }
+      : freeTransform;
     if (result.candidate !== undefined && result.valid) {
       const strength = magnetStrength(result.candidate.distance, this.engine.snap.config.detectRadius, this.engine.snap.config.strongLockRadius);
       const freePosition = toThreeVector(freeTransform.position);
+      freePosition.y = Math.max(GROUND_LEVEL, freePosition.y);
       const snapPosition = toThreeVector(result.candidate.transform.position);
       const displayPosition = freePosition.lerp(snapPosition, strength);
+      displayPosition.y = Math.max(GROUND_LEVEL, displayPosition.y);
       const displayRotation = toThreeQuaternion(freeTransform.rotation).slerp(toThreeQuaternion(result.candidate.transform.rotation), strength);
       displayTransform = {
         position: { x: displayPosition.x, y: displayPosition.y, z: displayPosition.z },

@@ -153,6 +153,21 @@ describe("camera and interaction state", () => {
     expect(controls.update).toHaveBeenCalled();
   });
 
+  it("moves the camera on the ground plane relative to its view", () => {
+    const engine = new BrickEngine();
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+    const controls = { enabled: true, target: new THREE.Vector3(), update: vi.fn() };
+    const controller = new ThreeCameraController(engine);
+    controller.attach(camera, controls);
+    const initialPosition = camera.position.clone();
+    controller.move(1, 0);
+    expect(camera.position.z).toBeLessThan(initialPosition.z);
+    expect(controls.target.z).toBeLessThan(0);
+    controller.move(0, 1);
+    expect(camera.position.x).toBeGreaterThan(initialPosition.x);
+    expect(controls.target.x).toBeGreaterThan(0);
+  });
+
   it("distinguishes click from drag and disables camera ownership for a brick gesture", () => {
     const engine = new BrickEngine();
     engine.createBrick({ id: "drag-me", partId: "brick-2x4", transform: transform() });
@@ -167,6 +182,7 @@ describe("camera and interaction state", () => {
     const element = { getBoundingClientRect: () => ({ left: 0, top: 0, width: 800, height: 600 }), addEventListener: vi.fn(), removeEventListener: vi.fn(), releasePointerCapture: vi.fn() } as unknown as HTMLCanvasElement;
     const cameraController = { enabled: true, orbit: vi.fn(), zoom: vi.fn(), focus: vi.fn(), fitProject: vi.fn(), setEnabled: vi.fn((enabled: boolean) => { cameraController.enabled = enabled; }) };
     const selected = vi.fn();
+    const dragResultXs: number[] = [];
     const interaction = new InteractionController({
       engine,
       renderer,
@@ -176,7 +192,7 @@ describe("camera and interaction state", () => {
       onSelectionChange: selected,
       onHoverChange: vi.fn(),
       onStateChange: vi.fn(),
-      onDragResult: vi.fn(),
+      onDragResult: (_freeTransform, result) => dragResultXs.push(result.transform.position.x),
       onDragPlaneChange: vi.fn(),
       onMetricsChange: vi.fn(),
       onHistoryChange: vi.fn()
@@ -199,6 +215,19 @@ describe("camera and interaction state", () => {
     expect(interaction.getState()).toBe("idle");
     expect(engine.bricks.get("drag-me").transform.position).toEqual({ x: 0, y: 0, z: 0 });
     expect(renderer.dragProxy.mesh.visible).toBe(false);
+
+    interaction.pointerDown({ pointerId: 3, clientX: 400, clientY: 300, button: 0 });
+    interaction.pointerMove({ pointerId: 3, clientX: 450, clientY: 300, button: 0 });
+    const beforeReleaseX = dragResultXs.at(-1);
+    interaction.pointerUp({ pointerId: 3, clientX: 500, clientY: 300, button: 0 });
+    const finalDragX = dragResultXs.at(-1);
+    expect(finalDragX).toBeDefined();
+    expect(finalDragX).not.toBe(beforeReleaseX);
+    expect(engine.bricks.get("drag-me").transform.position.x).toBeCloseTo(finalDragX ?? 0);
+
+    interaction.pointerDown({ pointerId: 4, clientX: 0, clientY: 0, button: 0 });
+    expect(selected).toHaveBeenLastCalledWith(undefined);
+    interaction.pointerUp({ pointerId: 4, clientX: 0, clientY: 0, button: 0 });
 
     interaction.dispose();
     renderer.dispose();

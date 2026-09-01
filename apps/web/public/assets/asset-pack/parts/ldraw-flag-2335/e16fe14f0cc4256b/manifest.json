@@ -1,0 +1,143 @@
+{
+  "id": "ldraw-flag-2335",
+  "version": 1,
+  "name": "标准旗面 2×2（2335）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "2335.dat",
+    "sourceFile": "assets-source/ldraw/2335.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=2335.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-flag-2335/e16fe14f0cc4256b/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-flag-2335/e16fe14f0cc4256b/lod1.glb"
+  },
+  "dimensions": {
+    "width": 0.66,
+    "height": 2,
+    "depth": 2.7
+  },
+  "origin": [
+    0,
+    0.39999999999999997,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.6,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-0-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0,
+        "y": 1.4,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0.39999999999999997,
+        "z": 0
+      },
+      "size": {
+        "x": 0.66,
+        "y": 2,
+        "z": 2.7
+      }
+    }
+  ],
+  "metadataHash": "22298a4ddcdbbcf0",
+  "geometryHash": "85dd67f087aeb3b1",
+  "sourceHash": "03b16e0a0b8a8cf5",
+  "assetHash": "e16fe14f0cc4256b",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-flag-2335/e16fe14f0cc4256b/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "flag",
+    "旗面",
+    "2335"
+  ],
+  "aliases": [
+    "ldraw-flag-2335",
+    "2335",
+    "旗面",
+    "旗"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 136,
+    "lod1Vertices": 136,
+    "lod0Bounds": {
+      "min": [
+        -0.32805,
+        -0.6,
+        -1.3512499999999998
+      ],
+      "max": [
+        0.32805,
+        1.4,
+        1.35125
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -0.32805,
+        -0.6,
+        -1.3512499999999998
+      ],
+      "max": [
+        0.32805,
+        1.4,
+        1.35125
+      ]
+    }
+  }
+}

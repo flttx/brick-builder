@@ -7,6 +7,7 @@ import {
   solveSnapTransform,
   PartRegistry,
   SpatialHash,
+  axisRotationQuarter,
   vec3,
   yRotationQuarter
 } from "../src/index.js";
@@ -149,14 +150,29 @@ describe("snap, collision and placement", () => {
     if (first === undefined) {
       throw new Error("Expected an initial snap candidate");
     }
-    expect(engine.snap.solve({ movingBrickId: movingId, freeTransform: transformAt(0, 0.8, 0), mode: "auto" })).toBeUndefined();
-    const held = engine.snap.solve({ movingBrickId: movingId, freeTransform: transformAt(0, 0.8, 0), previousCandidate: first, mode: "auto" });
+    expect(engine.snap.solve({ movingBrickId: movingId, freeTransform: transformAt(0, 0.74, 0), mode: "auto" })).toBeUndefined();
+    const held = engine.snap.solve({ movingBrickId: movingId, freeTransform: transformAt(0, 0.74, 0), previousCandidate: first, mode: "auto" });
     expect(held?.stable).toBe(true);
-    expect(engine.snap.solve({ movingBrickId: movingId, freeTransform: transformAt(0, 0.74, 0), previousCandidate: first, mode: "auto" })).toBeUndefined();
+    expect(engine.snap.solve({ movingBrickId: movingId, freeTransform: transformAt(0, 0.67, 0), previousCandidate: first, mode: "auto" })).toBeUndefined();
   });
 });
 
 describe("connections, drag, commands and snapshot", () => {
+  it("supports vertical quarter-turns and commits them as valid grid rotations", () => {
+    const engine = new BrickEngine();
+    const brickId = engine.createBrick({ id: "vertical", partId: "brick-1x1", transform: transformAt(0, 0, 0) });
+    engine.rotateBrick(brickId, 1, "x");
+    expect(engine.bricks.get(brickId).transform.rotation.x).toBeCloseTo(axisRotationQuarter("x", 1).x);
+    expect(engine.bricks.get(brickId).transform.rotation.w).toBeCloseTo(axisRotationQuarter("x", 1).w);
+
+    engine.beginDrag(brickId, "free");
+    const result = engine.updateDrag({ position: vec3(0, 0, 0), rotation: axisRotationQuarter("x", 1) });
+    expect(result.valid).toBe(true);
+    engine.commitDrag();
+    expect(engine.bricks.get(brickId).transform.rotation.x).toBeCloseTo(axisRotationQuarter("x", 1).x);
+    expect(engine.bricks.get(brickId).transform.rotation.w).toBeCloseTo(axisRotationQuarter("x", 1).w);
+  });
+
   it("computes connected components with BFS", () => {
     const graph = new ConnectionGraph();
     graph.add({ id: "ab", brickA: "a", brickB: "b", type: "rigid", pairs: [{ connectorA: "x", connectorB: "y" }] });

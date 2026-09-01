@@ -7,6 +7,7 @@ export interface BrickCameraController {
   focus(brickId: string): void;
   fitProject(): void;
   setEnabled(enabled: boolean): void;
+  move?(forward: number, right: number): void;
   pan?(deltaX: number, deltaY: number): void;
 }
 
@@ -43,6 +44,23 @@ export class ThreeCameraController implements BrickCameraController {
     const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0).multiplyScalar(-deltaX * scale);
     const up = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1).multiplyScalar(deltaY * scale);
     const movement = right.add(up);
+    camera.position.add(movement);
+    controls.target.add(movement);
+    controls.update();
+  }
+
+  public move(forwardDistance: number, rightDistance: number): void {
+    const camera = this.requireCamera();
+    const controls = this.requireControls();
+    const forward = controls.target.clone().sub(camera.position);
+    forward.y = 0;
+    if (forward.lengthSq() < 1e-8) {
+      forward.set(0, 0, -1);
+    } else {
+      forward.normalize();
+    }
+    const right = new THREE.Vector3().crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
+    const movement = forward.multiplyScalar(forwardDistance).add(right.multiplyScalar(rightDistance));
     camera.position.add(movement);
     controls.target.add(movement);
     controls.update();

@@ -28,6 +28,10 @@ describe("Vercel deployment adaptation", () => {
     const developmentOrigins = getAllowedOrigins({ NODE_ENV: "development", PORT: "8787" });
     expect(isAllowedOrigin("http://localhost:8787", developmentOrigins)).toBe(true);
     expect(isAllowedOrigin("http://127.0.0.1:8787", developmentOrigins)).toBe(true);
+    const viteOrigins = getAllowedOrigins({ NODE_ENV: "development", PORT: "8787", APP_ORIGIN: "http://127.0.0.1:5173" });
+    expect(isAllowedOrigin("http://localhost:5173", viteOrigins)).toBe(true);
+    expect(isAllowedOrigin("http://127.0.0.1:5173", viteOrigins)).toBe(true);
+    expect(isAllowedOrigin("http://localhost:8787", viteOrigins)).toBe(false);
   });
 
   it("keeps production database SSL enabled and reuses the module pool", async () => {
@@ -93,9 +97,10 @@ describe("Vercel deployment adaptation", () => {
   });
 
   it("keeps API, media, SPA and static asset routes explicit in Vercel config", async () => {
-    const config = JSON.parse(await readFile(resolve(process.cwd(), "vercel.json"), "utf8")) as { rewrites: Array<{ source: string; destination: string }>; outputDirectory: string; functions: Record<string, { runtime: string }> };
+    const config = JSON.parse(await readFile(resolve(process.cwd(), "vercel.json"), "utf8")) as { rewrites: Array<{ source: string; destination: string }>; outputDirectory: string };
+    const packageJson = JSON.parse(await readFile(resolve(process.cwd(), "package.json"), "utf8")) as { engines?: { node?: string } };
     expect(config.outputDirectory).toBe("dist-web");
-    expect(config.functions["api/**/*.ts"]?.runtime).toBe("nodejs22.x");
+    expect(packageJson.engines?.node).toBe("22.x");
     expect(config.rewrites).toContainEqual({ source: "/media/:path*", destination: "/api/media/:path*" });
     expect(config.rewrites).toContainEqual({ source: "/projects/:path*", destination: "/index.html" });
     expect(config.rewrites).not.toContainEqual({ source: "/api/:path*", destination: "/index.html" });

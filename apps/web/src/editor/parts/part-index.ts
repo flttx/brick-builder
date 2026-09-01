@@ -12,18 +12,24 @@ export interface PartIndexItem {
   manifestUrl?: string;
 }
 
-export const createPartIndex = (parts: PartDefinition[]): PartIndexItem[] => parts.map((part) => {
+export const createPartIndex = (parts: PartDefinition[]): PartIndexItem[] => parts.filter((part) => part.metadata?.deprecated !== true).map((part) => {
   const size = `${part.dimensions.width}x${part.dimensions.depth}`;
-  const categoryName = part.category === "plate" ? "plate" : part.category === "tile" ? "tile" : "brick";
+  const categoryName = part.category === "brick" || part.category === "plate" || part.category === "tile" ? part.category : "special";
+  const categoryAlias = categoryName === "brick" ? "砖" : categoryName === "plate" ? "板" : categoryName === "tile" ? "平板" : "特殊件";
   return {
     id: part.id,
     name: part.name,
     category: part.category,
     tags: [categoryName, size, `${part.dimensions.width}×${part.dimensions.depth}`],
-    aliases: [part.id, size, `${part.dimensions.width}×${part.dimensions.depth}`, categoryName, categoryName === "brick" ? "砖" : categoryName === "plate" ? "板" : "平板"],
+    aliases: [part.id, size, `${part.dimensions.width}×${part.dimensions.depth}`, categoryName, categoryAlias],
     dimensions: { ...part.dimensions }
   };
 });
+
+export const mergePartIndexes = (runtime: PartIndexItem[], local: PartIndexItem[]): PartIndexItem[] => {
+  const ids = new Set(runtime.map((item) => item.id));
+  return [...runtime, ...local.filter((item) => !ids.has(item.id))];
+};
 
 export const createRuntimePartIndex = (items: RuntimePartsIndexItem[]): PartIndexItem[] => items.map((item) => ({
   id: item.id,

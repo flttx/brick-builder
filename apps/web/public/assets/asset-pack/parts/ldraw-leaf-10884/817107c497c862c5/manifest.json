@@ -1,0 +1,144 @@
+{
+  "id": "ldraw-leaf-10884",
+  "version": 1,
+  "name": "剑叶（10884）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "10884.dat",
+    "sourceFile": "assets-source/ldraw/10884.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableFilters%5Bcategory%5D%5Bvalues%5D%5B0%5D=Plant"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-leaf-10884/817107c497c862c5/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-leaf-10884/817107c497c862c5/lod1.glb"
+  },
+  "dimensions": {
+    "width": 5.67,
+    "height": 1.68,
+    "depth": 5.98
+  },
+  "origin": [
+    0,
+    0.24000000000000005,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.6,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-0-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0,
+        "y": 1.08,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0.24000000000000005,
+        "z": 0
+      },
+      "size": {
+        "x": 5.6899999999999995,
+        "y": 1.7,
+        "z": 6
+      }
+    }
+  ],
+  "metadataHash": "5b939d7514910deb",
+  "geometryHash": "21d69494683fc9fd",
+  "sourceHash": "f20d8525b863bd4f",
+  "assetHash": "817107c497c862c5",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-leaf-10884/817107c497c862c5/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "plant",
+    "leaf",
+    "树叶",
+    "10884"
+  ],
+  "aliases": [
+    "ldraw-leaf-10884",
+    "10884",
+    "剑叶",
+    "树叶"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 2134,
+    "lod1Vertices": 2134,
+    "lod0Bounds": {
+      "min": [
+        -2.8360000000000003,
+        -0.6,
+        -2.990995
+      ],
+      "max": [
+        2.8360000000000003,
+        1.0790000000000002,
+        2.990995
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -2.8360000000000003,
+        -0.6,
+        -2.990995
+      ],
+      "max": [
+        2.8360000000000003,
+        1.0790000000000002,
+        2.990995
+      ]
+    }
+  }
+}

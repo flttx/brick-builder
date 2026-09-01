@@ -47,6 +47,20 @@ describe("project persistence", () => {
     manager.dispose();
     vi.useRealTimers();
   });
+
+  it("reports the document as saved without waiting for the thumbnail upload", async () => {
+    let resolveThumbnail: (() => void) | undefined;
+    const thumbnailUpload = new Promise<void>((resolve) => { resolveThumbnail = resolve; });
+    const repository = fakeRepository(async (_id, request) => ({ clientRevision: request.clientRevision, serverRevision: request.baseServerRevision + 1, savedAt: new Date().toISOString() }));
+    const manager = new SaveManager({ userId: "u", projectId: "p", baseServerRevision: 1, repository, draftStore: new MemoryLocalDraftStore(), cachedStore: new MemoryCachedProjectStore(), onCloudSaved: async () => thumbnailUpload });
+
+    manager.markDirty(emptySnapshot);
+    await manager.flushCloud();
+
+    expect(manager.getState()).toMatchObject({ saving: false, dirty: false, cloudSavedRevision: 1 });
+    resolveThumbnail?.();
+    manager.dispose();
+  });
 });
 
 const fakeRepository = (saveDocument: ProjectRepository["saveDocument"]): ProjectRepository => ({ getSession: async () => null, register: async () => ({ userId: "u", email: "u@example.com" }), login: async () => ({ userId: "u", email: "u@example.com" }), logout: async () => undefined, listProjects: async () => [], getProject: async () => { throw new Error("not implemented"); }, createProject: async () => { throw new Error("not implemented"); }, renameProject: async () => { throw new Error("not implemented"); }, deleteProject: async () => undefined, duplicateProject: async () => { throw new Error("not implemented"); }, uploadThumbnail: async () => "", saveDocument });

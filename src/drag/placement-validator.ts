@@ -1,4 +1,5 @@
-import { isQuarterYRotation } from "../math/quantize.js";
+import { isQuarterAxisRotation } from "../math/quantize.js";
+import { GROUND_LEVEL } from "../math/transform.js";
 import type { Transform } from "../math/transform.js";
 import { distance } from "../math/vec3.js";
 import type { ConnectorOccupancyIndex } from "../connectors/occupancy-index.js";
@@ -14,7 +15,8 @@ export type PlacementInvalidReason =
   | "connector_occupied"
   | "connector_incompatible"
   | "invalid_rotation"
-  | "out_of_bounds";
+  | "out_of_bounds"
+  | "below_ground";
 
 export interface PlacementValidationRequest {
   brickId: string;
@@ -46,8 +48,11 @@ export class PlacementValidator {
   public validate(request: PlacementValidationRequest): PlacementValidationResult {
     const reasons: PlacementInvalidReason[] = [];
     const brick = this.context.bricks.get(request.brickId);
-    if (!isQuarterYRotation(request.transform.rotation)) {
+    if (!isQuarterAxisRotation(request.transform.rotation)) {
       reasons.push("invalid_rotation");
+    }
+    if (request.transform.position.y < GROUND_LEVEL - 1e-4) {
+      reasons.push("below_ground");
     }
     const collision = this.context.collision.checkBrick(brick, request.transform);
     if (!collision.valid) {

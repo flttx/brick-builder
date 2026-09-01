@@ -8,6 +8,8 @@ export interface Transform {
   rotation: Quat;
 }
 
+export const GROUND_LEVEL = 0;
+
 export const identityTransform = (): Transform => ({
   position: { x: 0, y: 0, z: 0 },
   rotation: identity()

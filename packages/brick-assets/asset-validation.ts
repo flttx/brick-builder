@@ -39,9 +39,13 @@ export const validateRuntimePartManifest = (manifest: RuntimePartManifest): Asse
   const studs = manifest.connectors.filter((connector) => connector.type === "stud").length;
   const antiStuds = manifest.connectors.filter((connector) => connector.type === "anti_stud").length;
   const expected = manifest.dimensions.width * manifest.dimensions.depth;
-  if (manifest.category === "tile" && studs !== 0) issue("semantics", "Tile must have zero top studs");
-  if (manifest.category !== "tile" && studs !== expected) issue("semantics", `Expected ${expected} studs, found ${studs}`);
-  if (antiStuds !== expected) issue("semantics", `Expected ${expected} anti-studs, found ${antiStuds}`);
+  if (manifest.category !== "special") {
+    if (manifest.category === "tile" && studs !== 0) issue("semantics", "Tile must have zero top studs");
+    if (manifest.category !== "tile" && studs !== expected) issue("semantics", `Expected ${expected} studs, found ${studs}`);
+    if (antiStuds !== expected) issue("semantics", `Expected ${expected} anti-studs, found ${antiStuds}`);
+  } else if (studs + antiStuds === 0) {
+    issue("semantics", "Special parts must expose at least one connector");
+  }
   if (!boundsMatchDimensions(manifest.geometryStats.lod0Bounds, manifest.dimensions)) issue("bounds", "LOD0 visual bounds do not match metadata dimensions");
   if (!boundsMatchDimensions(manifest.geometryStats.lod1Bounds, manifest.dimensions)) issue("bounds", "LOD1 visual bounds do not match metadata dimensions");
   return issues;

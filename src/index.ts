@@ -24,15 +24,17 @@ export {
   conjugate,
   inverse as inverseQuat,
   fromAxisAngle,
+  axisRotationQuarter,
   yRotationQuarter,
   rotateVector,
   angleBetween,
   angleBetweenVectors,
   alignVectorRotation
 } from "./math/quat.js";
-export type { Quat } from "./math/quat.js";
+export type { Quat, RotationAxis } from "./math/quat.js";
 export {
   identityTransform,
+  GROUND_LEVEL,
   cloneTransform,
   compose,
   inverse as inverseTransform,
@@ -62,6 +64,7 @@ export * from "./parts/part-definition.js";
 export * from "./parts/part-registry.js";
 export * from "./parts/standard-part-generator.js";
 export * from "./parts/standard-part-catalog.js";
+export * from "./parts/special-part-generator.js";
 export * from "./colors/brick-color.js";
 export * from "./bucket/brick-bucket.js";
 
@@ -71,6 +74,7 @@ export * from "./spatial/brick-spatial-index.js";
 export * from "./snap/snap-config.js";
 export * from "./snap/snap-types.js";
 export * from "./snap/transform-solver.js";
+export * from "./snap/precision-transform-solver.js";
 export * from "./snap/candidate-generator.js";
 export * from "./snap/candidate-scorer.js";
 export * from "./snap/snap-solver.js";

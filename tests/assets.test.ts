@@ -5,6 +5,7 @@ import { generateColliders, generateConnectors } from "../packages/brick-assets/
 import { createStandardGeometry, normalizeLDrawGeometry } from "../packages/brick-assets/geometry.js";
 import { createGlb, readGlbJson } from "../packages/brick-assets/glb.js";
 import { createMapLDrawLibrary, parseLDrawPart } from "../packages/brick-assets/ldraw-parser.js";
+import { loadLDrawSource } from "../packages/brick-assets/ldraw-source.js";
 import { canonical } from "../packages/brick-assets/pipeline.js";
 import { validateRuntimePartManifest } from "../packages/brick-assets/asset-validation.js";
 import type { RuntimePartManifest } from "../packages/brick-assets/asset-types.js";
@@ -21,6 +22,35 @@ describe("asset industrialization", () => {
     const normalized = normalizeLDrawGeometry(mesh);
     expect(normalized.positions).toEqual([1, 0, 0, 2, 0, 0, 2, 1, 0, 1, 1, 0]);
     expect(normalized.indices).toEqual([0, 1, 2, 0, 2, 3]);
+  });
+
+  it("applies LDraw BFC winding and invert-next directives", () => {
+    const library = createMapLDrawLibrary({
+      "main.dat": "0 BFC CERTIFY CCW\n0 BFC INVERTNEXT\n1 16 0 0 0 1 0 0 0 1 0 0 0 1 sub.dat",
+      "sub.dat": "0 BFC CERTIFY CCW\n3 16 0 0 0 20 0 0 0 20 0"
+    });
+    const mesh = parseLDrawPart("main.dat", library);
+    expect(mesh.indices).toEqual([0, 2, 1]);
+  });
+
+  it("normalizes Windows separators in LDraw subpart references", () => {
+    const mesh = parseLDrawPart("main.dat", createMapLDrawLibrary({
+      "main.dat": "1 16 0 0 0 1 0 0 0 1 0 0 0 1 s\\sub.dat",
+      "s/sub.dat": "3 16 0 0 0 20 0 0 0 20 0"
+    }));
+    expect(mesh.positions).toHaveLength(9);
+    expect(mesh.indices).toEqual([0, 1, 2]);
+  });
+
+  it("loads the vendored LDraw dependency closure for downloaded parts", async () => {
+    const source = await loadLDrawSource(process.cwd(), "assets-source/ldraw");
+    const wheel = normalizeLDrawGeometry(parseLDrawPart("3482c01.dat", source.library), 1 / 20, { alignToGround: true });
+    const leaf = normalizeLDrawGeometry(parseLDrawPart("7096.dat", source.library), 1 / 20, { alignToGround: true });
+    expect(source.fingerprint).toMatch(/^[a-f0-9]{16}$/u);
+    expect(wheel.positions.length).toBeGreaterThan(900);
+    expect(leaf.positions.length).toBeGreaterThan(400);
+    expect(wheel.bounds.min[1]).toBeCloseTo(-0.6, 4);
+    expect(leaf.bounds.min[1]).toBeCloseTo(-0.6, 4);
   });
 
   it("keeps Game Part ID separate from generated connector metadata", () => {

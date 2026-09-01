@@ -41,11 +41,23 @@ export interface ExplicitSnapRequest {
   freeTransform: Transform;
 }
 
+export interface PrecisionSnapRequest {
+  movingBrickId: string;
+  movingConnectorA1Id: string;
+  movingConnectorA2Id: string;
+  targetBrickId: string;
+  targetConnectorB1Id: string;
+  targetConnectorB2Id: string;
+  freeTransform: Transform;
+}
+
 export type ExplicitSnapInvalidReason =
   | "connector_occupied"
   | "connector_incompatible"
   | "collision"
   | "invalid_rotation";
+
+export type PrecisionSnapInvalidReason = ExplicitSnapInvalidReason | "duplicate_connector" | "distance_mismatch" | "below_ground";
 
 export interface ExplicitSnapResult {
   valid: boolean;
@@ -53,6 +65,15 @@ export interface ExplicitSnapResult {
   matchedPairs: ConnectorPair[];
   collision: CollisionResult;
   reason?: ExplicitSnapInvalidReason;
+  candidate?: SnapCandidate;
+}
+
+export interface PrecisionSnapResult {
+  valid: boolean;
+  transform?: Transform;
+  matchedPairs: ConnectorPair[];
+  collision: CollisionResult;
+  reason?: PrecisionSnapInvalidReason;
   candidate?: SnapCandidate;
 }
 

@@ -1,0 +1,144 @@
+{
+  "id": "ldraw-flower-15515",
+  "version": 1,
+  "name": "花朵（15515）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "15515.dat",
+    "sourceFile": "assets-source/ldraw/15515.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableFilters%5Bcategory%5D%5Bvalues%5D%5B0%5D=Plant"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-flower-15515/ede140585cf2ac33/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-flower-15515/ede140585cf2ac33/lod1.glb"
+  },
+  "dimensions": {
+    "width": 7.65,
+    "height": 2.95,
+    "depth": 7.87
+  },
+  "origin": [
+    0,
+    0.875,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.6,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-0-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0,
+        "y": 2.35,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0.875,
+        "z": 0
+      },
+      "size": {
+        "x": 7.61,
+        "y": 2.91,
+        "z": 7.83
+      }
+    }
+  ],
+  "metadataHash": "ea1c7ebd071b110b",
+  "geometryHash": "3616e1f8df91faa1",
+  "sourceHash": "a36512e3e9ac190b",
+  "assetHash": "ede140585cf2ac33",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-flower-15515/ede140585cf2ac33/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "plant",
+    "flower",
+    "花",
+    "15515"
+  ],
+  "aliases": [
+    "ldraw-flower-15515",
+    "15515",
+    "花朵",
+    "花"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 706,
+    "lod1Vertices": 706,
+    "lod0Bounds": {
+      "min": [
+        -3.8271300286,
+        -0.6,
+        -3.9348833036000004
+      ],
+      "max": [
+        3.8271300286,
+        2.3500000000000005,
+        3.9348833036000004
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -3.8271300286,
+        -0.6,
+        -3.9348833036000004
+      ],
+      "max": [
+        3.8271300286,
+        2.3500000000000005,
+        3.9348833036000004
+      ]
+    }
+  }
+}

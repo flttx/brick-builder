@@ -2,6 +2,7 @@ import type { AABB, AABBRelation } from "./aabb.js";
 import { aabbFromCenterSize, aabbRelation, transformAABB } from "./aabb.js";
 import type { ColliderDefinition } from "./collider-definition.js";
 import type { Transform } from "../math/transform.js";
+import type { Vec3 } from "../math/vec3.js";
 
 export interface CollisionConfig {
   contactEpsilon: number;
@@ -26,6 +27,8 @@ export interface CollisionResult {
   valid: boolean;
   status: AABBRelation;
   pairs: CollisionPairResult[];
+  penetrationDepth?: number;
+  separationVector?: Vec3;
 }
 
 export const colliderLocalAABB = (collider: ColliderDefinition): AABB =>

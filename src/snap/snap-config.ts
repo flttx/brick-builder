@@ -15,9 +15,9 @@ export interface SnapConfig {
 
 export const DEFAULT_SNAP_CONFIG: SnapConfig = {
   detectRadius: 0.55,
-  enterRadius: 0.3,
-  exitRadius: 0.42,
-  strongLockRadius: 0.18,
+  enterRadius: 0.45,
+  exitRadius: 0.52,
+  strongLockRadius: 0.3,
   positionEpsilon: 0.03,
   angleEpsilon: (2 * Math.PI) / 180,
   previousCandidateBonus: 1.5,

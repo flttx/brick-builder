@@ -1,0 +1,143 @@
+{
+  "id": "ldraw-antenna-6899",
+  "version": 1,
+  "name": "人仔天线（6899）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "6899.dat",
+    "sourceFile": "assets-source/ldraw/6899.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=6899.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-antenna-6899/0a76ee32f922f626/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-antenna-6899/0a76ee32f922f626/lod1.glb"
+  },
+  "dimensions": {
+    "width": 1.85,
+    "height": 1.05,
+    "depth": 0.72
+  },
+  "origin": [
+    0,
+    -0.07499999999999996,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.6,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-0-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0,
+        "y": 0.45000000000000007,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": -0.07499999999999996,
+        "z": 0
+      },
+      "size": {
+        "x": 1.81,
+        "y": 1.01,
+        "z": 0.6799999999999999
+      }
+    }
+  ],
+  "metadataHash": "d080fc02762e1c2e",
+  "geometryHash": "b1e6544445b5b3e6",
+  "sourceHash": "6a3580edfec519c6",
+  "assetHash": "0a76ee32f922f626",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-antenna-6899/0a76ee32f922f626/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "antenna",
+    "天线",
+    "6899"
+  ],
+  "aliases": [
+    "ldraw-antenna-6899",
+    "6899",
+    "人仔天线",
+    "天线"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 537,
+    "lod1Vertices": 537,
+    "lod0Bounds": {
+      "min": [
+        -0.925,
+        -0.6,
+        -0.35750000000000004
+      ],
+      "max": [
+        0.925,
+        0.45000000000000007,
+        0.35750000000000004
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -0.925,
+        -0.6,
+        -0.35750000000000004
+      ],
+      "max": [
+        0.925,
+        0.45000000000000007,
+        0.35750000000000004
+      ]
+    }
+  }
+}

@@ -1,9 +1,11 @@
 import * as THREE from "three";
-import { BrickEngine, type BrickInstance, type DragResult, type Transform, type SnapCandidate } from "../../../../../src/index.js";
+import { BrickEngine, GROUND_LEVEL } from "../../../../../src/index.js";
+import type { BrickInstance, DragResult, Transform, SnapCandidate } from "../../../../../src/index.js";
 import { identity } from "../../../../../src/math/quat.js";
 import type { BrickCameraController } from "../camera/camera-controller.js";
 import type { ThreeBrickRenderer } from "../renderer/brick-renderer.js";
 import { fromThreeVector } from "../renderer/three-adapter.js";
+import { BrickPicker } from "../interaction/picker.js";
 import type { NewBrickPlacementSession } from "./placement-session.js";
 import type { PlacementMode } from "../../../../../src/drag/placement-mode.js";
 
@@ -40,6 +42,7 @@ interface PlacementPointer {
 
 export class PlacementController {
   private readonly previewEngine: BrickEngine;
+  private readonly picker: BrickPicker;
   private readonly previewId: string;
   private readonly dragPlane = new THREE.Plane();
   private readonly pointerOffset = new THREE.Vector3();
@@ -59,6 +62,7 @@ export class PlacementController {
       colorId: options.session.colorId,
       transform: { position: { x: 0, y: 0, z: 0 }, rotation: identity() }
     });
+    this.picker = new BrickPicker(options.renderer, options.element);
     this.previewEngine.beginDrag(this.previewId, this.effectivePlacementMode());
     options.renderer.beginPlacement(options.session.partId, options.session.colorId, this.previewEngine.bricks.get(this.previewId).transform);
     options.element.addEventListener("pointerdown", this.handlePointerDown, { capture: true });
@@ -136,9 +140,10 @@ export class PlacementController {
     event.preventDefault();
     event.stopImmediatePropagation();
     this.pointer = { id: event.pointerId, startX: event.clientX, startY: event.clientY, lastX: event.clientX, lastY: event.clientY, pointerType: event.pointerType };
-    const preview = this.previewEngine.bricks.get(this.previewId);
-    const cameraForward = this.options.camera.getWorldDirection(new THREE.Vector3());
-    this.dragPlane.setFromNormalAndCoplanarPoint(cameraForward, new THREE.Vector3(preview.transform.position.x, preview.transform.position.y, preview.transform.position.z));
+    this.dragPlane.setFromNormalAndCoplanarPoint(
+      new THREE.Vector3(0, 1, 0),
+      new THREE.Vector3(0, GROUND_LEVEL, 0)
+    );
     this.options.cameraController.setEnabled(false);
     try {
       this.options.element.setPointerCapture(event.pointerId);
@@ -185,32 +190,68 @@ export class PlacementController {
     if (pointer === undefined) {
       return;
     }
-    const rect = this.options.element.getBoundingClientRect();
-    const ndc = new THREE.Vector2(
-      ((clientX - rect.left) / rect.width) * 2 - 1,
-      -((clientY - rect.top) / rect.height) * 2 + 1
-    );
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(ndc, this.options.camera);
-    const hit = raycaster.ray.intersectPlane(this.dragPlane, new THREE.Vector3());
-    if (hit === null) {
+    const hit = this.intersectDragPlane(clientX, clientY);
+    if (hit === undefined) {
       return;
     }
     const position = hit.sub(this.pointerOffset);
+    position.y = GROUND_LEVEL;
     const freeTransform: Transform = {
       position: {
         x: snapGround(position.x),
-        y: 0,
+        y: GROUND_LEVEL,
         z: snapGround(position.z)
       },
       rotation: identity()
     };
+    const snapAssist = this.getSnapAssist(clientX, clientY, freeTransform);
+    const dragTransform = snapAssist?.transform ?? freeTransform;
+    const pointerWorld = snapAssist?.pointerWorld ?? fromThreeVector(position);
     const started = performance.now();
-    const result = this.previewEngine.updateDrag(freeTransform, fromThreeVector(position), this.effectivePlacementMode());
+    const result = this.previewEngine.updateDrag(dragTransform, pointerWorld, this.effectivePlacementMode());
     const elapsed = performance.now() - started;
     this.options.onMetricsChange({ snapTime: elapsed, collisionTime: elapsed });
     this.options.renderer.updatePlacement(freeTransform, result);
     this.options.onDragResult(freeTransform, result);
+  }
+
+  private intersectDragPlane(clientX: number, clientY: number): THREE.Vector3 | undefined {
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(this.getPointerNdc(clientX, clientY), this.options.camera);
+    return raycaster.ray.intersectPlane(this.dragPlane, new THREE.Vector3()) ?? undefined;
+  }
+
+  private getPointerNdc(clientX: number, clientY: number): THREE.Vector2 {
+    const rect = this.options.element.getBoundingClientRect();
+    return new THREE.Vector2(
+      ((clientX - rect.left) / rect.width) * 2 - 1,
+      -((clientY - rect.top) / rect.height) * 2 + 1
+    );
+  }
+
+  private getSnapAssist(clientX: number, clientY: number, freeTransform: Transform): { transform: Transform; pointerWorld: { x: number; y: number; z: number } } | undefined {
+    if (this.effectivePlacementMode() !== "auto") {
+      return undefined;
+    }
+    const target = this.picker.pick(clientX, clientY, this.options.camera);
+    if (target === undefined) {
+      return undefined;
+    }
+    const movingBrick = this.previewEngine.bricks.get(this.previewId);
+    const targetBrick = this.previewEngine.bricks.get(target.brickId);
+    const movingPart = this.previewEngine.parts.get(movingBrick.partId);
+    const targetPart = this.previewEngine.parts.get(targetBrick.partId);
+    return {
+      transform: {
+        position: {
+          x: target.point.x,
+          y: targetBrick.transform.position.y + (targetPart.dimensions.height + movingPart.dimensions.height) / 2,
+          z: target.point.z
+        },
+        rotation: { ...freeTransform.rotation }
+      },
+      pointerWorld: fromThreeVector(target.point)
+    };
   }
 
   private finish(commit: boolean): void {

@@ -1,0 +1,144 @@
+{
+  "id": "ldraw-wheel-56908",
+  "version": 1,
+  "name": "越野车轮 26×43（56908）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "56908c01.dat",
+    "sourceFile": "assets-source/ldraw/56908c01.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=56908.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-wheel-56908/08ccdffe33e2c8d2/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-wheel-56908/08ccdffe33e2c8d2/lod1.glb"
+  },
+  "dimensions": {
+    "width": 10.23,
+    "height": 10.23,
+    "depth": 4.8
+  },
+  "origin": [
+    0,
+    4.515000000000001,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.6,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-0-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0,
+        "y": 9.63,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 4.515000000000001,
+        "z": 0
+      },
+      "size": {
+        "x": 10.23,
+        "y": 10.23,
+        "z": 4.8
+      }
+    }
+  ],
+  "metadataHash": "ba494c587a404435",
+  "geometryHash": "55372e3d6412a997",
+  "sourceHash": "baab527ed3f80249",
+  "assetHash": "08ccdffe33e2c8d2",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-56908/08ccdffe33e2c8d2/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "wheel",
+    "车轮",
+    "越野",
+    "56908"
+  ],
+  "aliases": [
+    "ldraw-wheel-56908",
+    "56908",
+    "越野车轮",
+    "车轮"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 7426,
+    "lod1Vertices": 7426,
+    "lod0Bounds": {
+      "min": [
+        -5.115799428,
+        -0.5999999999999996,
+        -2.4000000000000004
+      ],
+      "max": [
+        5.115799428,
+        9.631598856,
+        2.4000000000000004
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -5.115799428,
+        -0.5999999999999996,
+        -2.4000000000000004
+      ],
+      "max": [
+        5.115799428,
+        9.631598856,
+        2.4000000000000004
+      ]
+    }
+  }
+}

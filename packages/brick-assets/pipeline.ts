@@ -8,6 +8,7 @@ import { generateColliders, generateConnectors } from "./connector-generator.js"
 import { createStandardGeometry, normalizeLDrawGeometry } from "./geometry.js";
 import { createGlb } from "./glb.js";
 import { createMapLDrawLibrary, parseLDrawPart } from "./ldraw-parser.js";
+import { loadLDrawSource, type LoadedLDrawSource } from "./ldraw-source.js";
 import type { PartSourceRecord, RuntimeAssetPackManifest, RuntimePartManifest } from "./asset-types.js";
 import { convertPpmToWebp, createPartThumbnailPpm, createPartThumbnailSvg } from "./thumbnail.js";
 
@@ -42,6 +43,7 @@ export const buildAssetPack = async (options: AssetBuildOptions): Promise<AssetB
   const catalog = new Map(createStandardPartDefinitions().map((part) => [part.id, part]));
   const selected = sourceManifest.parts.filter((record) => filter === undefined || filter.has(record.id));
   if (selected.length === 0) throw new Error("No registered parts selected for asset build");
+  const ldrawSources = new Map<string, Promise<LoadedLDrawSource>>();
   await mkdir(join(outputRoot, "parts"), { recursive: true });
   const existingManifests = await readExistingManifests(outputRoot);
   const built: string[] = [];
@@ -51,14 +53,16 @@ export const buildAssetPack = async (options: AssetBuildOptions): Promise<AssetB
     const part = catalog.get(record.id) ?? createRectPart({ id: record.id, name: record.name, width: record.template.width, depth: record.template.depth, height: record.template.type === "brick" ? "brick" : "plate", category: record.category, topStuds: record.template.topStuds, bottomSockets: record.template.bottomSockets });
     const sourcePath = resolve(options.projectRoot, record.source.sourceFile);
     const sourceText = await readFile(sourcePath, "utf8");
-    const sourceHash = sha256(`${canonical(record.source)}:${sourceText}`);
+    const ldrawSource = record.source.sourceType === "ldraw" ? await getLDrawSource(options.projectRoot, record.source.sourceRoot, sourceText, sourcePath, ldrawSources) : undefined;
+    const sourceHash = sha256(`${canonical(record.source)}:${ldrawSource?.fingerprint ?? sourceText}`);
+    const rectangularPart = record.category === "brick" || record.category === "plate" || record.category === "tile";
     const gameplayPart: PartDefinition = {
       ...part,
-      connectors: generateConnectors(record.id, record.template),
-      colliders: generateColliders(part)
+      connectors: rectangularPart ? generateConnectors(record.id, record.template) : part.connectors,
+      colliders: rectangularPart ? generateColliders(part) : part.colliders
     };
-    const lod0 = await geometryForRecord(record, gameplayPart, sourceText);
-    const lod1 = await geometryForRecord(record, gameplayPart, sourceText, 1);
+    const lod0 = await geometryForRecord(record, gameplayPart, sourceText, ldrawSource?.library);
+    const lod1 = await geometryForRecord(record, gameplayPart, sourceText, ldrawSource?.library, 1);
     const metadataHash = sha256(canonical({ dimensions: gameplayPart.dimensions, origin: gameplayPart.origin, connectors: gameplayPart.connectors, colliders: gameplayPart.colliders }));
     const glb0 = createGlb(lod0);
     const glb1 = createGlb(lod1);
@@ -145,10 +149,28 @@ export const canonical = (value: unknown): string => {
   return JSON.stringify(value);
 };
 
-const geometryForRecord = async (record: PartSourceRecord, part: PartDefinition, sourceText: string, lod: 0 | 1 = 0) => {
+const geometryForRecord = async (record: PartSourceRecord, part: PartDefinition, sourceText: string, ldrawLibrary?: LoadedLDrawSource["library"], lod: 0 | 1 = 0) => {
   if (record.source.sourceType === "procedural") return createStandardGeometry(part, lod);
   const fileName = record.source.sourceFile.split(/[\\/]/u).pop() ?? record.source.sourceFile;
-  return normalizeLDrawGeometry(parseLDrawPart(record.source.sourcePartId || fileName, createMapLDrawLibrary({ [fileName]: sourceText })), 1 / 20);
+  return normalizeLDrawGeometry(parseLDrawPart(record.source.sourcePartId || fileName, ldrawLibrary ?? createMapLDrawLibrary({ [fileName]: sourceText })), 1 / 20, { alignToGround: true });
+};
+
+const getLDrawSource = async (
+  projectRoot: string,
+  sourceRoot: string | undefined,
+  sourceText: string,
+  sourcePath: string,
+  cache: Map<string, Promise<LoadedLDrawSource>>
+): Promise<LoadedLDrawSource> => {
+  if (sourceRoot !== undefined) {
+    const existing = cache.get(sourceRoot);
+    if (existing !== undefined) return existing;
+    const pending = loadLDrawSource(projectRoot, sourceRoot);
+    cache.set(sourceRoot, pending);
+    return pending;
+  }
+  const fileName = sourcePath.split(/[\\/]/u).pop() ?? sourcePath;
+  return { library: createMapLDrawLibrary({ [fileName]: sourceText }), fingerprint: sha256(sourceText) };
 };
 
 const hasAssetFiles = async (assetDir: string, thumbnailName: string): Promise<boolean> => {

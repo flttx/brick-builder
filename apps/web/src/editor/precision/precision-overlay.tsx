@@ -1,23 +1,29 @@
 import { Html, Line } from "@react-three/drei";
 import type { ReactElement } from "react";
-import type { BrickEngine, ExplicitSnapRequest, ExplicitSnapResult, WorldConnector } from "../../../../../src/index.js";
+import { GROUND_LEVEL, solveSnapTransform } from "../../../../../src/index.js";
+import type { BrickEngine, PrecisionSnapRequest, PrecisionSnapResult, WorldConnector } from "../../../../../src/index.js";
 import type { PrecisionInteractionState } from "../interaction/interaction-controller.js";
 import { localizeConnectorType, messages } from "../../i18n/index.js";
 
 export interface PrecisionPreviewState {
-  request: ExplicitSnapRequest;
-  result: ExplicitSnapResult;
+  request: PrecisionSnapRequest;
+  result: PrecisionSnapResult;
 }
 
 export interface PrecisionOverlayProps {
   engine: BrickEngine;
   movingBrickId: string;
   state: PrecisionInteractionState;
-  sourceConnectorId?: string;
-  targetConnectorId?: string;
+  sourceConnectorA1Id?: string;
+  sourceConnectorA2Id?: string;
+  targetConnectorB1Id?: string;
+  targetConnectorB2Id?: string;
+  targetBrickId?: string;
   preview?: PrecisionPreviewState;
-  onSourceConnector: (connectorId: string) => void;
-  onTargetConnector: (connectorId: string, brickId: string) => void;
+  onSourceConnectorA1: (connectorId: string) => void;
+  onSourceConnectorA2: (connectorId: string) => void;
+  onTargetConnectorB1: (connectorId: string, brickId: string) => void;
+  onTargetConnectorB2: (connectorId: string, brickId: string) => void;
 }
 
 export const PrecisionOverlay = (props: PrecisionOverlayProps): ReactElement | null => {
@@ -28,18 +34,28 @@ export const PrecisionOverlay = (props: PrecisionOverlayProps): ReactElement | n
   const movingPart = props.engine.parts.get(movingBrick.partId);
   const movingTransform = props.preview?.result.transform ?? movingBrick.transform;
   const movingConnectors = props.engine.connectors.getWorldConnectors(movingBrick, movingPart, movingTransform);
-  const selectedSource = props.sourceConnectorId === undefined
+  const selectedSourceA1 = props.sourceConnectorA1Id === undefined
     ? undefined
-    : movingConnectors.find((connector) => connector.id === props.sourceConnectorId);
-  const selectedTarget = props.targetConnectorId === undefined || props.preview?.request.targetBrickId === undefined
+    : movingConnectors.find((connector) => connector.id === props.sourceConnectorA1Id);
+  const selectedSourceA2 = props.sourceConnectorA2Id === undefined
     ? undefined
-    : getWorldConnector(props.engine, props.preview.request.targetBrickId, props.targetConnectorId);
-  const sourceConnectors = props.state === "precision_pick_source"
+    : movingConnectors.find((connector) => connector.id === props.sourceConnectorA2Id);
+  const selectedTargetB1 = props.targetConnectorB1Id === undefined || props.targetBrickId === undefined
+    ? undefined
+    : getWorldConnector(props.engine, props.targetBrickId, props.targetConnectorB1Id);
+  const selectedTargetB2 = props.targetConnectorB2Id === undefined || props.targetBrickId === undefined
+    ? undefined
+    : getWorldConnector(props.engine, props.targetBrickId, props.targetConnectorB2Id);
+  const sourceConnectors = props.state === "precision_pick_source_a1"
     ? movingConnectors.filter((connector) => !props.engine.occupancy.isOccupied(connector.brickId, connector.id))
-    : selectedSource === undefined ? [] : [selectedSource];
-  const targetConnectors = props.state === "precision_pick_target" && selectedSource !== undefined
-    ? targetConnectorsFor(props.engine, selectedSource, movingBrick.id)
-    : selectedTarget === undefined ? [] : [selectedTarget];
+    : props.state === "precision_pick_source_a2"
+      ? movingConnectors.filter((connector) => connector.id !== props.sourceConnectorA1Id && !props.engine.occupancy.isOccupied(connector.brickId, connector.id))
+      : selectedSourceA1 === undefined ? [] : [selectedSourceA1];
+  const targetConnectors = props.state === "precision_pick_target_b1" && selectedSourceA1 !== undefined
+    ? targetConnectorsFor(props.engine, selectedSourceA1, movingBrick.id)
+    : props.state === "precision_pick_target_b2" && selectedSourceA2 !== undefined
+      ? targetConnectorsFor(props.engine, selectedSourceA2, movingBrick.id, props.targetBrickId).filter((connector) => connector.id !== props.targetConnectorB1Id)
+      : selectedTargetB1 === undefined && selectedTargetB2 === undefined ? [] : [selectedTargetB1, selectedTargetB2].filter((connector): connector is WorldConnector => connector !== undefined);
 
   return (
     <>
@@ -48,7 +64,7 @@ export const PrecisionOverlay = (props: PrecisionOverlayProps): ReactElement | n
           key={`source-${connector.id}`}
           connector={connector}
           kind="source"
-          onClick={props.onSourceConnector}
+          onClick={props.state === "precision_pick_source_a1" ? props.onSourceConnectorA1 : props.onSourceConnectorA2}
         />
       ))}
       {targetConnectors.map((connector) => (
@@ -56,16 +72,11 @@ export const PrecisionOverlay = (props: PrecisionOverlayProps): ReactElement | n
           key={`target-${connector.brickId}-${connector.id}`}
           connector={connector}
           kind="target"
-          onClick={(connectorId) => props.onTargetConnector(connectorId, connector.brickId)}
+          onClick={(connectorId) => (props.state === "precision_pick_target_b1" ? props.onTargetConnectorB1 : props.onTargetConnectorB2)(connectorId, connector.brickId)}
         />
       ))}
-      {selectedSource !== undefined && selectedTarget !== undefined && props.state === "precision_preview" && (
-        <Line
-          points={[toPoint(selectedSource.worldPosition), toPoint(selectedTarget.worldPosition)]}
-          color="#f6c453"
-          lineWidth={2}
-        />
-      )}
+      {props.state === "precision_preview" && selectedSourceA1 !== undefined && selectedTargetB1 !== undefined && <Line points={[toPoint(selectedSourceA1.worldPosition), toPoint(selectedTargetB1.worldPosition)]} color="#f6c453" lineWidth={2} />}
+      {props.state === "precision_preview" && selectedSourceA2 !== undefined && selectedTargetB2 !== undefined && <Line points={[toPoint(selectedSourceA2.worldPosition), toPoint(selectedTargetB2.worldPosition)]} color="#f6c453" lineWidth={2} />}
     </>
   );
 };
@@ -99,20 +110,36 @@ const ConnectorMarker = (props: ConnectorMarkerProps): ReactElement => (
   </Html>
 );
 
-const targetConnectorsFor = (engine: BrickEngine, source: WorldConnector, movingBrickId: string): WorldConnector[] => {
+const targetConnectorsFor = (engine: BrickEngine, source: WorldConnector, movingBrickId: string, targetBrickId?: string): WorldConnector[] => {
+  const movingBrick = engine.bricks.tryGet(movingBrickId);
+  if (movingBrick === undefined) {
+    return [];
+  }
+  const movingPart = engine.parts.get(movingBrick.partId);
+  const movingConnector = movingPart.connectors.find((connector) => connector.id === source.id);
+  if (movingConnector === undefined) {
+    return [];
+  }
   return engine.spatial
-    .query(source.worldPosition, engine.snap.config.detectRadius * 1.5, movingBrickId)
+    .values()
+    .filter((target) => target.brickId !== movingBrickId && (targetBrickId === undefined || target.brickId === targetBrickId))
     .filter((target) => {
       const rule = engine.connectors.compatibility.getRule(source.type, target.type);
       const sameGroup = source.compatibilityGroup === target.compatibilityGroup || source.compatibilityGroup === "*" || target.compatibilityGroup === "*";
-      return rule !== undefined && rule.allow && sameGroup;
+      if (source.type === target.type || rule === undefined || !rule.allow || !sameGroup) {
+        return false;
+      }
+      const transform = solveSnapTransform({
+        movingConnector,
+        targetConnector: target,
+        currentRotation: movingBrick.transform.rotation,
+        compatibility: rule,
+        rotationEpsilon: engine.snap.config.angleEpsilon
+      });
+      return transform !== null && transform.position.y >= GROUND_LEVEL - engine.snap.config.positionEpsilon;
     })
     .filter((target) => {
       return !engine.occupancy.isOccupied(target.brickId, target.id);
-    })
-    .filter((target) => {
-      const rule = engine.connectors.compatibility.getRule(source.type, target.type);
-      return rule !== undefined && distanceBetween(source, target) <= rule.maxDistance;
     })
     .sort((a, b) => distanceBetween(source, a) - distanceBetween(source, b));
 };

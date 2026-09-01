@@ -1,6 +1,8 @@
 import type { ApiError, ProjectDetail, ProjectMetadata, ProjectRepository, SaveDocumentRequest, SaveDocumentResponse } from "./project-types.js";
 import type { BrickProjectSnapshot } from "../../src/serialization/project-snapshot.js";
 
+const API_REQUEST_TIMEOUT_MS = 10000;
+
 export class ProjectConflictError extends Error {
   public override readonly name = "ProjectConflictError";
   public constructor(public readonly apiError: ApiError) { super(apiError.message); }
@@ -28,24 +30,31 @@ export class HttpProjectRepository implements ProjectRepository {
   public async uploadThumbnail(projectId: string, dataUrl: string): Promise<string> { const result = await this.request<{ thumbnailUrl: string }>(`/projects/${encodeURIComponent(projectId)}/thumbnail`, { method: "PUT", body: { dataUrl } }); return result.thumbnailUrl; }
 
   private async request<T>(path: string, init: { method?: string; body?: unknown } = {}): Promise<T> {
-    let response: Response;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), API_REQUEST_TIMEOUT_MS);
     try {
-      const requestInit: RequestInit = { method: init.method ?? "GET", credentials: "include" };
-      if (init.body !== undefined) { requestInit.headers = { "content-type": "application/json" }; requestInit.body = JSON.stringify(init.body); }
-      response = await fetch(`${this.baseUrl}${path}`, requestInit);
-    } catch {
-      throw new Error("Network unavailable");
+      let response: Response;
+      try {
+        const requestInit: RequestInit = { method: init.method ?? "GET", credentials: "include", signal: controller.signal };
+        if (init.body !== undefined) { requestInit.headers = { "content-type": "application/json" }; requestInit.body = JSON.stringify(init.body); }
+        response = await fetch(`${this.baseUrl}${path}`, requestInit);
+      } catch {
+        throw new Error("Network unavailable");
+      }
+      let text: string;
+      try { text = await response.text(); } catch { throw new Error("Network unavailable"); }
+      let payload: unknown;
+      try { payload = text.length === 0 ? undefined : JSON.parse(text) as unknown; } catch { payload = undefined; }
+      if (!response.ok) {
+        const apiError = isApiError(payload) ? payload : { code: "REQUEST_FAILED", message: "请求未完成。" };
+        if (apiError.code === "PROJECT_CONFLICT") throw new ProjectConflictError(apiError);
+        if (apiError.code === "AUTH_REQUIRED") throw new AuthRequiredError(apiError);
+        throw new Error(apiError.message);
+      }
+      return payload as T;
+    } finally {
+      clearTimeout(timeoutId);
     }
-    const text = await response.text();
-    let payload: unknown;
-    try { payload = text.length === 0 ? undefined : JSON.parse(text) as unknown; } catch { payload = undefined; }
-    if (!response.ok) {
-      const apiError = isApiError(payload) ? payload : { code: "REQUEST_FAILED", message: "请求未完成。" };
-      if (apiError.code === "PROJECT_CONFLICT") throw new ProjectConflictError(apiError);
-      if (apiError.code === "AUTH_REQUIRED") throw new AuthRequiredError(apiError);
-      throw new Error(apiError.message);
-    }
-    return payload as T;
   }
 }
 

@@ -6,6 +6,7 @@ export interface PartSourceManifest {
   sourceType: AssetSourceType;
   sourcePartId: string;
   sourceFile: string;
+  sourceRoot?: string;
   sourceVersion?: string;
   author?: string;
   license?: string;

@@ -1,0 +1,144 @@
+{
+  "id": "ldraw-train-wheel-243c01",
+  "version": 1,
+  "name": "火车轮（243c01）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "243c01.dat",
+    "sourceFile": "assets-source/ldraw/243c01.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableFilters%5Bcategory%5D%5Bvalues%5D%5B0%5D=Train"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-train-wheel-243c01/e7df143566b5bff9/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-train-wheel-243c01/e7df143566b5bff9/lod1.glb"
+  },
+  "dimensions": {
+    "width": 2.8,
+    "height": 2.8,
+    "depth": 2.3
+  },
+  "origin": [
+    0,
+    0.7999999999999998,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.6,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-0-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0,
+        "y": 2.1999999999999997,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0.7999999999999998,
+        "z": 0
+      },
+      "size": {
+        "x": 2.76,
+        "y": 2.76,
+        "z": 2.26
+      }
+    }
+  ],
+  "metadataHash": "cde8e9e151f4261c",
+  "geometryHash": "57e27e5a00fe2e9e",
+  "sourceHash": "ba0dc858a24de9f8",
+  "assetHash": "e7df143566b5bff9",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-train-wheel-243c01/e7df143566b5bff9/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "train",
+    "wheel",
+    "火车轮",
+    "243c01"
+  ],
+  "aliases": [
+    "ldraw-train-wheel-243c01",
+    "243c01",
+    "火车轮",
+    "车轮"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 537,
+    "lod1Vertices": 537,
+    "lod0Bounds": {
+      "min": [
+        -1.4000000000000001,
+        -0.6,
+        -1.15
+      ],
+      "max": [
+        1.4000000000000001,
+        2.2,
+        1.15
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -1.4000000000000001,
+        -0.6,
+        -1.15
+      ],
+      "max": [
+        1.4000000000000001,
+        2.2,
+        1.15
+      ]
+    }
+  }
+}

@@ -1,5 +1,5 @@
 export type UiPlacementMode = "auto" | "free" | "precision";
-export type UiPartCategory = "recent" | "brick" | "plate" | "tile";
+export type UiPartCategory = "recent" | "brick" | "plate" | "tile" | "special";
 
 export interface UiMessages {
   brand: string;
@@ -20,6 +20,8 @@ export interface UiMessages {
     close: string;
     back: string;
     download: string;
+    on: string;
+    off: string;
     loading: string;
   };
   auth: {
@@ -93,6 +95,7 @@ export interface UiMessages {
       modeLabel: string;
       parts: string;
       bucket: string;
+      move: string;
       fit: string;
       rotate: string;
       undo: string;
@@ -101,7 +104,16 @@ export interface UiMessages {
       drawFromBucket: string;
       fitProject: string;
       rotateSelected: string;
+      rotateSelectedVertical: string;
+      clearSelection: string;
       placementMode: string;
+      tools: string;
+      color: string;
+      precisionConnect: string;
+      settings: string;
+      more: string;
+      snap: string;
+      altHint: string;
     };
     status: {
       project: string;
@@ -111,6 +123,9 @@ export interface UiMessages {
       draftSaved: string;
       saved: string;
       syncError: string;
+      offlineDescription: string;
+      localDescription: string;
+      savedDescription: string;
     };
     placement: {
       modes: Record<UiPlacementMode, string>;
@@ -123,6 +138,10 @@ export interface UiMessages {
       connected: (count: number) => string;
       connectorUnavailable: string;
       precision: {
+        pickSourceA1: string;
+        pickSourceA2: string;
+        pickTargetB1: string;
+        pickTargetB2: string;
         pickSource: string;
         pickTarget: string;
         preview: string;
@@ -131,6 +150,7 @@ export interface UiMessages {
         occupied: string;
         collision: string;
         invalidRotation: string;
+        belowGround: string;
         incompatible: string;
         confirm: string;
         cancel: string;
@@ -177,6 +197,7 @@ export interface UiMessages {
       shortcuts: string;
       dragHint: string;
       rotateHint: string;
+      cameraMoveHint: string;
       temporaryFreeHint: string;
       cancelHint: string;
       engineState: string;
@@ -184,6 +205,21 @@ export interface UiMessages {
       checkRequired: string;
     };
     colorPalette: string;
+    panels: {
+      bucketTitle: string;
+      bucketDescription: string;
+      colorTitle: string;
+      colorDescription: string;
+      settingsTitle: string;
+      snapDescription: string;
+      openDebug: string;
+    };
+    empty: {
+      title: string;
+      description: string;
+      openParts: string;
+      openBucket: string;
+    };
     useColor: (color: string) => string;
     sceneAria: string;
     dismissNotice: string;
@@ -279,10 +315,12 @@ export interface UiMessages {
   };
   devtools: {
     label: string;
-    tabs: { scene: string; performance: string; faults: string };
+    heading: string;
+    tabs: { scene: string; performance: string; engine: string; snap: string; collision: string; assets: string; persistence: string; network: string; faults: string };
     validate: string;
     exportDiagnostics: string;
     unavailable: string;
+    readOnlyTab: string;
     faults: Record<string, string>;
   };
   colors: Record<string, string>;

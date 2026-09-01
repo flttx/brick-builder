@@ -4,7 +4,9 @@ export const getAllowedOrigins = (environment: NodeJS.ProcessEnv = process.env, 
   if (configuredOrigin !== undefined) origins.add(configuredOrigin);
 
   if (!isProductionEnvironment(environment)) {
-    const port = environment.PORT ?? "8787";
+    const configuredUrl = configuredOrigin === undefined ? undefined : new URL(configuredOrigin);
+    const port = configuredUrl?.port || environment.PORT || "8787";
+    if (configuredUrl !== undefined && !isLocalHostname(configuredUrl.hostname)) return [...origins];
     origins.add(`http://localhost:${port}`);
     origins.add(`http://127.0.0.1:${port}`);
     origins.add(`http://[::1]:${port}`);
@@ -17,6 +19,8 @@ export const getAllowedOrigins = (environment: NodeJS.ProcessEnv = process.env, 
 
   return [...origins];
 };
+
+const isLocalHostname = (hostname: string): boolean => hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]" || hostname === "::1";
 
 export const isAllowedOrigin = (origin: string | undefined, allowedOrigins: readonly string[]): boolean => {
   if (origin === undefined) return true;

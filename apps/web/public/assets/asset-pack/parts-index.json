@@ -176,6 +176,56 @@
     "manifestUrl": "/assets/asset-pack/parts/brick-2x6/1020f796b2b9b670/manifest.json"
   },
   {
+    "id": "ldraw-antenna-104",
+    "name": "6 高度天线（104）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "antenna",
+      "天线",
+      "104"
+    ],
+    "aliases": [
+      "ldraw-antenna-104",
+      "104",
+      "6 高度天线",
+      "天线"
+    ],
+    "dimensions": {
+      "width": 0.5,
+      "height": 7.25,
+      "depth": 0.5
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-antenna-104/a2299408cd729252/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-antenna-104/a2299408cd729252/manifest.json"
+  },
+  {
+    "id": "ldraw-antenna-6899",
+    "name": "人仔天线（6899）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "antenna",
+      "天线",
+      "6899"
+    ],
+    "aliases": [
+      "ldraw-antenna-6899",
+      "6899",
+      "人仔天线",
+      "天线"
+    ],
+    "dimensions": {
+      "width": 1.85,
+      "height": 1.05,
+      "depth": 0.72
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-antenna-6899/f71555a4bbc6192f/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-antenna-6899/f71555a4bbc6192f/manifest.json"
+  },
+  {
     "id": "ldraw-brick-1x1",
     "name": "LDraw Brick 1x1",
     "category": "brick",
@@ -193,8 +243,496 @@
       "height": 1.2,
       "depth": 1
     },
-    "thumbnail": "/assets/asset-pack/parts/ldraw-brick-1x1/6626468db3b403ac/thumb-256.webp",
-    "manifestUrl": "/assets/asset-pack/parts/ldraw-brick-1x1/6626468db3b403ac/manifest.json"
+    "thumbnail": "/assets/asset-pack/parts/ldraw-brick-1x1/778873f3327d04d4/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-brick-1x1/778873f3327d04d4/manifest.json"
+  },
+  {
+    "id": "ldraw-claw-15362",
+    "name": "机械爪钩（15362）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "technic",
+      "claw",
+      "机械爪",
+      "15362"
+    ],
+    "aliases": [
+      "ldraw-claw-15362",
+      "15362",
+      "机械爪钩",
+      "机械爪"
+    ],
+    "dimensions": {
+      "width": 1.93,
+      "height": 1.91,
+      "depth": 6.42
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-claw-15362/d86d74967cd6b225/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-claw-15362/d86d74967cd6b225/manifest.json"
+  },
+  {
+    "id": "ldraw-fishing-rod-2614",
+    "name": "钓鱼竿（2614）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "rod",
+      "fishing",
+      "钓鱼竿",
+      "2614"
+    ],
+    "aliases": [
+      "ldraw-fishing-rod-2614",
+      "2614",
+      "钓鱼竿"
+    ],
+    "dimensions": {
+      "width": 0.8,
+      "height": 12.16,
+      "depth": 1.4
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-fishing-rod-2614/5fb34a9a19750621/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-fishing-rod-2614/5fb34a9a19750621/manifest.json"
+  },
+  {
+    "id": "ldraw-flag-2335",
+    "name": "标准旗面 2×2（2335）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "flag",
+      "旗面",
+      "2335"
+    ],
+    "aliases": [
+      "ldraw-flag-2335",
+      "2335",
+      "旗面",
+      "旗"
+    ],
+    "dimensions": {
+      "width": 0.66,
+      "height": 2,
+      "depth": 2.7
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-flag-2335/e6ec8d973392e034/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-flag-2335/e6ec8d973392e034/manifest.json"
+  },
+  {
+    "id": "ldraw-flower-15515",
+    "name": "花朵（15515）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "plant",
+      "flower",
+      "花",
+      "15515"
+    ],
+    "aliases": [
+      "ldraw-flower-15515",
+      "15515",
+      "花朵",
+      "花"
+    ],
+    "dimensions": {
+      "width": 7.65,
+      "height": 2.95,
+      "depth": 7.87
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-flower-15515/39b5f7c77bf72829/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-flower-15515/39b5f7c77bf72829/manifest.json"
+  },
+  {
+    "id": "ldraw-grass-15279",
+    "name": "草茎（15279）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "plant",
+      "grass",
+      "草",
+      "15279"
+    ],
+    "aliases": [
+      "ldraw-grass-15279",
+      "15279",
+      "草茎",
+      "草"
+    ],
+    "dimensions": {
+      "width": 0.8,
+      "height": 3.2,
+      "depth": 1.71
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-grass-15279/086d4c4936592726/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-grass-15279/086d4c4936592726/manifest.json"
+  },
+  {
+    "id": "ldraw-leaf-10884",
+    "name": "剑叶（10884）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "plant",
+      "leaf",
+      "树叶",
+      "10884"
+    ],
+    "aliases": [
+      "ldraw-leaf-10884",
+      "10884",
+      "剑叶",
+      "树叶"
+    ],
+    "dimensions": {
+      "width": 5.67,
+      "height": 1.68,
+      "depth": 5.98
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-leaf-10884/7e5c1bb90e7e9dcb/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-leaf-10884/7e5c1bb90e7e9dcb/manifest.json"
+  },
+  {
+    "id": "ldraw-leaf-7096",
+    "name": "叶片 5×6（7096，未审核）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "plant",
+      "leaf",
+      "树叶",
+      "7096",
+      "unofficial"
+    ],
+    "aliases": [
+      "ldraw-leaf-7096",
+      "7096",
+      "叶片",
+      "树叶"
+    ],
+    "dimensions": {
+      "width": 3.91,
+      "height": 1.67,
+      "depth": 5.98
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-leaf-7096/289c114cc3ac48d1/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-leaf-7096/289c114cc3ac48d1/manifest.json"
+  },
+  {
+    "id": "ldraw-pole-23421",
+    "name": "长杆 32L（23421）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "pole",
+      "flagpole",
+      "旗杆",
+      "23421"
+    ],
+    "aliases": [
+      "ldraw-pole-23421",
+      "23421",
+      "长杆",
+      "旗杆"
+    ],
+    "dimensions": {
+      "width": 32,
+      "height": 0.6,
+      "depth": 0.6
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-pole-23421/65c2417152f152ec/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-pole-23421/65c2417152f152ec/manifest.json"
+  },
+  {
+    "id": "ldraw-steering-wheel-16091",
+    "name": "汽车方向盘（16091）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "steering",
+      "方向盘",
+      "16091"
+    ],
+    "aliases": [
+      "ldraw-steering-wheel-16091",
+      "16091",
+      "汽车方向盘",
+      "方向盘"
+    ],
+    "dimensions": {
+      "width": 2,
+      "height": 0.8,
+      "depth": 2
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-steering-wheel-16091/cf3e143109bcd116/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-steering-wheel-16091/cf3e143109bcd116/manifest.json"
+  },
+  {
+    "id": "ldraw-steering-wheel-30663",
+    "name": "Technic 方向盘（30663）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "technic",
+      "steering",
+      "方向盘",
+      "30663"
+    ],
+    "aliases": [
+      "ldraw-steering-wheel-30663",
+      "30663",
+      "Technic 方向盘",
+      "方向盘"
+    ],
+    "dimensions": {
+      "width": 2,
+      "height": 0.8,
+      "depth": 2
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-steering-wheel-30663/350699a412022370/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-steering-wheel-30663/350699a412022370/manifest.json"
+  },
+  {
+    "id": "ldraw-train-wheel-243c01",
+    "name": "火车轮（243c01）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "train",
+      "wheel",
+      "火车轮",
+      "243c01"
+    ],
+    "aliases": [
+      "ldraw-train-wheel-243c01",
+      "243c01",
+      "火车轮",
+      "车轮"
+    ],
+    "dimensions": {
+      "width": 2.8,
+      "height": 2.8,
+      "depth": 2.3
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-train-wheel-243c01/598e164a5106c4e4/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-train-wheel-243c01/598e164a5106c4e4/manifest.json"
+  },
+  {
+    "id": "ldraw-vine-16981",
+    "name": "藤蔓 16L（16981）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "plant",
+      "vine",
+      "藤蔓",
+      "16981"
+    ],
+    "aliases": [
+      "ldraw-vine-16981",
+      "16981",
+      "藤蔓"
+    ],
+    "dimensions": {
+      "width": 16,
+      "height": 0.75,
+      "depth": 3.04
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-vine-16981/1cda45d46e5ac3fd/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-vine-16981/1cda45d46e5ac3fd/manifest.json"
+  },
+  {
+    "id": "ldraw-wheel-110100",
+    "name": "光滑赛车轮 14.9×24（110100）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "wheel",
+      "车轮",
+      "赛车",
+      "110100"
+    ],
+    "aliases": [
+      "ldraw-wheel-110100",
+      "110100",
+      "赛车轮",
+      "车轮"
+    ],
+    "dimensions": {
+      "width": 3,
+      "height": 3,
+      "depth": 1.99
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-110100/b273f8a61e0d07fd/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-wheel-110100/b273f8a61e0d07fd/manifest.json"
+  },
+  {
+    "id": "ldraw-wheel-3482",
+    "name": "小车轮 8×17.5（3482）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "wheel",
+      "车轮",
+      "3482"
+    ],
+    "aliases": [
+      "ldraw-wheel-3482",
+      "3482",
+      "小车轮",
+      "车轮"
+    ],
+    "dimensions": {
+      "width": 3.1,
+      "height": 3.1,
+      "depth": 1
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-3482/191cc8d36a717731/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-wheel-3482/191cc8d36a717731/manifest.json"
+  },
+  {
+    "id": "ldraw-wheel-56145",
+    "name": "中型车轮 20×30（56145）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "wheel",
+      "车轮",
+      "56145"
+    ],
+    "aliases": [
+      "ldraw-wheel-56145",
+      "56145",
+      "中型车轮",
+      "车轮"
+    ],
+    "dimensions": {
+      "width": 5.4,
+      "height": 5.4,
+      "depth": 3.3
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-56145/ee6620ed73bf0e64/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-wheel-56145/ee6620ed73bf0e64/manifest.json"
+  },
+  {
+    "id": "ldraw-wheel-56908",
+    "name": "越野车轮 26×43（56908）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "wheel",
+      "车轮",
+      "越野",
+      "56908"
+    ],
+    "aliases": [
+      "ldraw-wheel-56908",
+      "56908",
+      "越野车轮",
+      "车轮"
+    ],
+    "dimensions": {
+      "width": 10.23,
+      "height": 10.23,
+      "depth": 4.8
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-56908/19b25d2eb19ed860/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-wheel-56908/19b25d2eb19ed860/manifest.json"
+  },
+  {
+    "id": "ldraw-wheel-64711",
+    "name": "带刺轮（64711）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "wheel",
+      "车轮",
+      "带刺",
+      "64711"
+    ],
+    "aliases": [
+      "ldraw-wheel-64711",
+      "64711",
+      "带刺轮",
+      "车轮"
+    ],
+    "dimensions": {
+      "width": 7.65,
+      "height": 7.7,
+      "depth": 2.5
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-64711/5413725a0c829519/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-wheel-64711/5413725a0c829519/manifest.json"
+  },
+  {
+    "id": "ldraw-wheel-64712",
+    "name": "锥形带刺轮（64712）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "wheel",
+      "车轮",
+      "锥形",
+      "64712"
+    ],
+    "aliases": [
+      "ldraw-wheel-64712",
+      "64712",
+      "锥形带刺轮",
+      "车轮"
+    ],
+    "dimensions": {
+      "width": 7.79,
+      "height": 7.72,
+      "depth": 3.95
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-64712/0787f5f5f8bd833b/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-wheel-64712/0787f5f5f8bd833b/manifest.json"
+  },
+  {
+    "id": "ldraw-wheel-7877",
+    "name": "大轮毂 12 辐（7877）",
+    "category": "special",
+    "tags": [
+      "special",
+      "ldraw",
+      "wheel",
+      "轮毂",
+      "7877"
+    ],
+    "aliases": [
+      "ldraw-wheel-7877",
+      "7877",
+      "大轮毂",
+      "轮毂"
+    ],
+    "dimensions": {
+      "width": 7,
+      "height": 7,
+      "depth": 1.63
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-7877/f089001d37eee15f/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-wheel-7877/f089001d37eee15f/manifest.json"
   },
   {
     "id": "plate-1x1",

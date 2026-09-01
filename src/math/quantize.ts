@@ -1,7 +1,8 @@
 import type { Quat } from "./quat.js";
-import { angleBetween, normalize, yRotationQuarter } from "./quat.js";
+import { angleBetween, angleBetweenVectors, normalize, rotateVector, yRotationQuarter } from "./quat.js";
 import type { Transform } from "./transform.js";
 import { cloneTransform } from "./transform.js";
+import { vec3 } from "./vec3.js";
 
 export const QUARTER_TURN_EPSILON = 1e-5;
 
@@ -21,6 +22,23 @@ export const quantizeYRotation = (rotation: Quat): Quat => yRotationQuarter(near
 
 export const isQuarterYRotation = (rotation: Quat, epsilon = QUARTER_TURN_EPSILON): boolean =>
   angleBetween(rotation, quantizeYRotation(rotation)) <= epsilon;
+
+const CARDINAL_DIRECTIONS = [
+  vec3(1, 0, 0),
+  vec3(-1, 0, 0),
+  vec3(0, 1, 0),
+  vec3(0, -1, 0),
+  vec3(0, 0, 1),
+  vec3(0, 0, -1)
+];
+
+export const isQuarterAxisRotation = (rotation: Quat, epsilon = QUARTER_TURN_EPSILON): boolean => {
+  const normalized = normalize(rotation);
+  return [vec3(1, 0, 0), vec3(0, 1, 0), vec3(0, 0, 1)].every((axis) => {
+    const rotated = rotateVector(normalized, axis);
+    return CARDINAL_DIRECTIONS.some((direction) => angleBetweenVectors(rotated, direction) <= epsilon);
+  });
+};
 
 export const quantizeTransform = (transform: Transform, positionQuantum = 0.001): Transform => {
   const result = cloneTransform(transform);

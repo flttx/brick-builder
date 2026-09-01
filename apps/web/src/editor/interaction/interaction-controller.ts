@@ -4,10 +4,13 @@ import type { BrickCameraController } from "../camera/camera-controller.js";
 import type { ThreeBrickRenderer } from "../renderer/brick-renderer.js";
 import { fromThreeVector } from "../renderer/three-adapter.js";
 import { BrickPicker } from "./picker.js";
+import { GROUND_LEVEL } from "../../../../../src/math/transform.js";
 import type { PlacementMode } from "../../../../../src/drag/placement-mode.js";
 
-export type PrecisionInteractionState = "precision_pick_source" | "precision_pick_target" | "precision_preview";
+export type PrecisionInteractionState = "precision_pick_source_a1" | "precision_pick_source_a2" | "precision_pick_target_b1" | "precision_pick_target_b2" | "precision_preview";
 export type InteractionState = "idle" | "pressed" | "dragging_brick" | "orbiting_camera" | PrecisionInteractionState;
+
+const CAMERA_MOVE_STEP = 0.45;
 
 export interface InteractionMetrics {
   snapTime: number;
@@ -164,6 +167,12 @@ export class InteractionController {
         this.refreshDragFromPointer();
         return;
       }
+      const cameraMove = cameraMoveForKey(event.key);
+      if (cameraMove !== undefined && this.state === "idle" && !isTextInputTarget(event.target)) {
+        event.preventDefault();
+        this.options.cameraController.move?.(cameraMove.forward * CAMERA_MOVE_STEP, cameraMove.right * CAMERA_MOVE_STEP);
+        return;
+      }
       const commandKey = event.metaKey || event.ctrlKey;
       if (commandKey && event.key.toLowerCase() === "z") {
         event.preventDefault();
@@ -178,7 +187,7 @@ export class InteractionController {
       }
       if (event.key.toLowerCase() === "r" && this.selectedBrickId !== undefined && this.state === "idle") {
         event.preventDefault();
-        this.options.engine.rotateBrick(this.selectedBrickId);
+        this.options.engine.rotateBrick(this.selectedBrickId, 1, event.shiftKey ? "x" : "y");
         this.options.renderer.syncFromEngine();
         this.options.onHistoryChange();
       }
@@ -203,6 +212,10 @@ export class InteractionController {
           this.options.cameraController.setEnabled(true);
           this.transition("idle");
         }
+      } else if (event.key === "Escape" && this.state === "idle" && this.selectedBrickId !== undefined) {
+        event.preventDefault();
+        this.selectedBrickId = undefined;
+        this.options.onSelectionChange(undefined);
       }
     };
     const handleKeyUp = (event: KeyboardEvent): void => {
@@ -272,6 +285,8 @@ export class InteractionController {
     this.latestPointer = { x: input.clientX, y: input.clientY, ...(input.pointerType === undefined ? {} : { pointerType: input.pointerType }) };
     const picked = this.picker.pick(input.clientX, input.clientY, this.options.camera);
     if (picked === undefined) {
+      this.selectedBrickId = undefined;
+      this.options.onSelectionChange(undefined);
       this.transition("orbiting_camera");
       return;
     }
@@ -375,6 +390,9 @@ export class InteractionController {
       return;
     }
     if (this.state === "dragging_brick") {
+      pointer.lastX = input.clientX;
+      pointer.lastY = input.clientY;
+      this.updateDrag(input.clientX, input.clientY);
       this.finishDrag();
     }
     this.releasePointer(input.pointerId);
@@ -421,12 +439,12 @@ export class InteractionController {
     this.options.engine.beginDrag(brickId, this.effectivePlacementMode());
     this.options.renderer.beginDrag(brickId);
     this.dragRotation = { ...brick.transform.rotation };
-    this.grabOffset.copy(pointer.grabPoint).sub(new THREE.Vector3(brick.transform.position.x, brick.transform.position.y, brick.transform.position.z));
-    const cameraForward = this.options.camera.getWorldDirection(new THREE.Vector3());
     this.dragPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(
-      cameraForward,
-      pointer.grabPoint
+      new THREE.Vector3(0, 1, 0),
+      new THREE.Vector3(0, GROUND_LEVEL, 0)
     );
+    const groundPoint = this.intersectDragPlane(pointer.startX, pointer.startY) ?? new THREE.Vector3(brick.transform.position.x, GROUND_LEVEL, brick.transform.position.z);
+    this.grabOffset.copy(groundPoint).sub(new THREE.Vector3(brick.transform.position.x, GROUND_LEVEL, brick.transform.position.z));
     this.options.onDragPlaneChange(this.dragPlane);
     this.transition("dragging_brick");
   }
@@ -435,24 +453,59 @@ export class InteractionController {
     if (this.dragPlane === undefined || this.dragRotation === undefined || this.pointer === undefined) {
       return;
     }
-    const ndc = this.picker.getPointerNdc(clientX, clientY);
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(ndc, this.options.camera);
-    const hit = raycaster.ray.intersectPlane(this.dragPlane, new THREE.Vector3());
-    if (hit === null) {
+    const hit = this.intersectDragPlane(clientX, clientY);
+    if (hit === undefined) {
       return;
     }
     const position = hit.sub(this.grabOffset);
+    position.y = GROUND_LEVEL;
     const freeTransform: Transform = {
       position: fromThreeVector(position),
       rotation: { ...this.dragRotation }
     };
+    const snapAssist = this.getSnapAssist(clientX, clientY, freeTransform);
+    const dragTransform = snapAssist?.transform ?? freeTransform;
+    const pointerWorld = snapAssist?.pointerWorld ?? fromThreeVector(position);
     const started = performance.now();
-    const result = this.options.engine.updateDrag(freeTransform, fromThreeVector(position), this.effectivePlacementMode());
+    const result = this.options.engine.updateDrag(dragTransform, pointerWorld, this.effectivePlacementMode());
     const elapsed = performance.now() - started;
     this.options.onMetricsChange({ snapTime: elapsed, collisionTime: elapsed });
     this.options.renderer.updateDrag(freeTransform, result);
     this.options.onDragResult(freeTransform, result);
+  }
+
+  private intersectDragPlane(clientX: number, clientY: number): THREE.Vector3 | undefined {
+    if (this.dragPlane === undefined) {
+      return undefined;
+    }
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(this.picker.getPointerNdc(clientX, clientY), this.options.camera);
+    return raycaster.ray.intersectPlane(this.dragPlane, new THREE.Vector3()) ?? undefined;
+  }
+
+  private getSnapAssist(clientX: number, clientY: number, freeTransform: Transform): { transform: Transform; pointerWorld: Vec3 } | undefined {
+    if (this.effectivePlacementMode() !== "auto" || this.pointer?.pickedBrickId === undefined) {
+      return undefined;
+    }
+    const target = this.picker.pick(clientX, clientY, this.options.camera, this.pointer.pickedBrickId);
+    if (target === undefined) {
+      return undefined;
+    }
+    const movingBrick = this.options.engine.bricks.get(this.pointer.pickedBrickId);
+    const targetBrick = this.options.engine.bricks.get(target.brickId);
+    const movingPart = this.options.engine.parts.get(movingBrick.partId);
+    const targetPart = this.options.engine.parts.get(targetBrick.partId);
+    return {
+      transform: {
+        position: {
+          x: target.point.x,
+          y: targetBrick.transform.position.y + (targetPart.dimensions.height + movingPart.dimensions.height) / 2,
+          z: target.point.z
+        },
+        rotation: { ...freeTransform.rotation }
+      },
+      pointerWorld: fromThreeVector(target.point)
+    };
   }
 
   private finishDrag(): void {
@@ -460,7 +513,7 @@ export class InteractionController {
     let committed = false;
     try {
       const canCommitSnap = session.placementMode === "auto" && session.snapCandidate !== undefined && session.mode === "snap";
-      const canCommitGround = session.placementMode === "free" && session.mode === "free" && Math.abs(session.currentTransform.position.y) <= 1e-4;
+      const canCommitGround = session.mode === "free" && Math.abs(session.currentTransform.position.y - GROUND_LEVEL) <= 1e-4;
       if (canCommitSnap || canCommitGround) {
         this.options.engine.commitDrag();
         committed = true;
@@ -523,5 +576,22 @@ export class InteractionController {
 }
 
 const isPrecisionState = (state: InteractionState): state is PrecisionInteractionState => state.startsWith("precision_");
+
+const cameraMoveForKey = (key: string): { forward: number; right: number } | undefined => {
+  switch (key.toLowerCase()) {
+    case "w": return { forward: 1, right: 0 };
+    case "s": return { forward: -1, right: 0 };
+    case "a": return { forward: 0, right: -1 };
+    case "d": return { forward: 0, right: 1 };
+    default: return undefined;
+  }
+};
+
+const isTextInputTarget = (target: EventTarget | null): boolean => {
+  if (typeof HTMLElement === "undefined" || !(target instanceof HTMLElement)) {
+    return false;
+  }
+  return target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
+};
 
 export const vec3FromPointer = (value: THREE.Vector3): Vec3 => fromThreeVector(value);

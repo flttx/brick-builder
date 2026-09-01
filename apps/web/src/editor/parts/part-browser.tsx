@@ -40,7 +40,7 @@ export const PartBrowser = ({ open, items, recentPartIds, onClose, onSelect }: P
         <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={messages.parts.searchPlaceholder} />
       </label>
       <div className="parts-tabs" role="tablist" aria-label={messages.parts.categories.recent}>
-        {(["recent", "brick", "plate", "tile"] as const).map((tab) => (
+        {(["recent", "brick", "plate", "tile", "special"] as const).map((tab) => (
           <button key={tab} type="button" role="tab" aria-selected={category === tab} className={category === tab ? "is-active" : ""} onClick={() => setCategory(tab)}>
             {messages.parts.categories[tab]}
           </button>
@@ -50,7 +50,7 @@ export const PartBrowser = ({ open, items, recentPartIds, onClose, onSelect }: P
         {visibleItems.length === 0 ? <p className="parts-empty">{messages.parts.noMatches}</p> : visibleItems.map((item) => {
           const displayName = localizePartName(item.id, item.name);
           return <button className="part-card" key={item.id} type="button" onClick={() => onSelect(item.id)} aria-label={messages.parts.place(displayName)}>
-            {item.thumbnail === undefined ? <span className={`part-thumb part-thumb-${item.category}`} aria-hidden="true"><span /></span> : <img className="part-thumb-image" src={item.thumbnail} alt="" aria-hidden="true" />}
+            {item.thumbnail === undefined ? <span className={`part-thumb part-thumb-${item.category} part-thumb-${item.id}`} aria-hidden="true"><span /></span> : <img className="part-thumb-image" src={item.thumbnail} alt="" aria-hidden="true" />}
             <strong>{displayName}</strong>
             <small>{item.dimensions.width}×{item.dimensions.depth}</small>
           </button>

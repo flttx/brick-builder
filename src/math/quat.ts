@@ -8,6 +8,8 @@ export interface Quat {
   w: number;
 }
 
+export type RotationAxis = "x" | "y" | "z";
+
 export const quat = (x = 0, y = 0, z = 0, w = 1): Quat => ({ x, y, z, w });
 
 export const identity = (): Quat => quat();
@@ -54,8 +56,13 @@ export const fromAxisAngle = (axis: Vec3, angle: number): Quat => {
   return normalize(quat(unitAxis.x * sine, unitAxis.y * sine, unitAxis.z * sine, Math.cos(halfAngle)));
 };
 
-export const yRotationQuarter = (quarterTurns: number): Quat =>
-  fromAxisAngle(vec3(0, 1, 0), (Math.trunc(quarterTurns) * Math.PI) / 2);
+export const axisRotationQuarter = (axis: RotationAxis, quarterTurns: number): Quat =>
+  fromAxisAngle(
+    axis === "x" ? vec3(1, 0, 0) : axis === "y" ? vec3(0, 1, 0) : vec3(0, 0, 1),
+    (Math.trunc(quarterTurns) * Math.PI) / 2
+  );
+
+export const yRotationQuarter = (quarterTurns: number): Quat => axisRotationQuarter("y", quarterTurns);
 
 export const rotateVector = (rotation: Quat, value: Vec3): Vec3 => {
   const unitRotation = normalize(rotation);

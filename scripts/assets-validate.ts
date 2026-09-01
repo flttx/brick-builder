@@ -56,7 +56,8 @@ function runSnapSmoke(items: RuntimePartManifest[]): AssetValidationIssue[] {
     engine.createBrick({ id: "base", partId: manifest.id, transform: { position: { x: 0, y: 0, z: 0 }, rotation: identity() } });
     const movingId = engine.createBrick({ id: "moving", partId: manifest.id, transform: { position: { x: 3, y: 4, z: 0 }, rotation: identity() } });
     const result = engine.solveExplicitSnap({ movingBrickId: movingId, movingConnectorId: "anti-stud-0-0", targetBrickId: "base", targetConnectorId: "stud-0-0", freeTransform: engine.bricks.get(movingId).transform });
-    if (!result.valid || result.matchedPairs.length !== manifest.dimensions.width * manifest.dimensions.depth) {
+    const expectedPairs = manifest.category === "special" ? 1 : manifest.dimensions.width * manifest.dimensions.depth;
+    if (!result.valid || result.matchedPairs.length !== expectedPairs) {
       smokeIssues.push({ partId: manifest.id, code: "snap_smoke", message: "Standard connector snap smoke test failed" });
     }
   }

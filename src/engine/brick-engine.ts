@@ -20,8 +20,9 @@ import { createDetachSnapshot } from "../drag/detach-controller.js";
 import type { DetachSnapshot, DragSession } from "../drag/drag-session.js";
 import { PlacementValidator } from "../drag/placement-validator.js";
 import type { PlacementMode } from "../drag/placement-mode.js";
-import { identity, multiply, normalize, yRotationQuarter } from "../math/quat.js";
-import { cloneTransform, type Transform } from "../math/transform.js";
+import { axisRotationQuarter, identity, multiply, normalize, type RotationAxis } from "../math/quat.js";
+import { cloneTransform, GROUND_LEVEL } from "../math/transform.js";
+import type { Transform } from "../math/transform.js";
 import { distance } from "../math/vec3.js";
 import type { BrickInstance } from "../parts/brick-instance.js";
 import { createMissingPartDefinition } from "../parts/part-definition.js";
@@ -33,7 +34,7 @@ import { ProjectLoader } from "../serialization/project-loader.js";
 import { serializeProject, type BrickProjectSnapshot } from "../serialization/project-snapshot.js";
 import { DEFAULT_SNAP_CONFIG, type SnapConfig } from "../snap/snap-config.js";
 import { SnapSolver } from "../snap/snap-solver.js";
-import type { DragResult, ExplicitSnapRequest, ExplicitSnapResult, SnapContext } from "../snap/snap-types.js";
+import type { DragResult, ExplicitSnapRequest, ExplicitSnapResult, PrecisionSnapRequest, PrecisionSnapResult, SnapContext } from "../snap/snap-types.js";
 import { BrickSpatialIndex } from "../spatial/brick-spatial-index.js";
 
 export interface CreateBrickRequest {
@@ -257,10 +258,9 @@ export class BrickEngine {
     }
     const cannotSnapUntilDetach = this.dragStartConnections.length > 0 && this.detachSnapshot === undefined;
     const requestedTransform = cloneTransform(transform);
-    const freeTransform = session.placementMode === "free"
-      ? { ...requestedTransform, position: { ...requestedTransform.position, y: 0 } }
-      : requestedTransform;
-    const result = cannotSnapUntilDetach
+    const groundTransform = { ...requestedTransform, position: { ...requestedTransform.position, y: GROUND_LEVEL } };
+    const freeTransform = session.placementMode === "free" ? groundTransform : requestedTransform;
+    let result = cannotSnapUntilDetach
       ? this.freeDragResult(brick, freeTransform)
       : this.snap.update({
           movingBrickId: session.brickId,
@@ -269,17 +269,23 @@ export class BrickEngine {
           ...(session.snapCandidate === undefined ? {} : { previousCandidate: session.snapCandidate }),
           mode: session.placementMode === "auto" ? "auto" : "disabled"
         });
-    const effectiveTransform = result.valid ? result.transform : freeTransform;
-    this.dragPlacementValid = result.valid;
+    if (result.mode === "free" && session.placementMode === "auto" && !cannotSnapUntilDetach) {
+      result = this.freeDragResult(brick, groundTransform);
+    }
+    const corrected = result.valid ? undefined : this.resolveCollisionPushOut(brick, result.transform, result.collision);
+    const effectiveResult = corrected === undefined ? result : { ...result, transform: corrected.transform, collision: corrected.collision, valid: corrected.collision.valid };
+    const fallbackTransform = result.mode === "free" && session.placementMode === "auto" && !cannotSnapUntilDetach ? groundTransform : freeTransform;
+    const effectiveTransform = effectiveResult.valid ? effectiveResult.transform : fallbackTransform;
+    this.dragPlacementValid = effectiveResult.valid;
     session.currentTransform = cloneTransform(effectiveTransform);
-    session.mode = result.valid ? result.mode : "free";
-    if (result.candidate !== undefined && result.valid) {
-      session.snapCandidate = result.candidate;
-    } else if (result.mode === "free") {
+    session.mode = effectiveResult.valid ? effectiveResult.mode : "free";
+    if (effectiveResult.candidate !== undefined && effectiveResult.valid) {
+      session.snapCandidate = effectiveResult.candidate;
+    } else if (effectiveResult.mode === "free") {
       delete session.snapCandidate;
     }
     return {
-      ...result,
+      ...effectiveResult,
       transform: cloneTransform(effectiveTransform),
       mode: session.mode,
       ...(session.snapCandidate === undefined ? {} : { candidate: session.snapCandidate })
@@ -297,13 +303,13 @@ export class BrickEngine {
       this.restoreDragState();
       throw new Error("Cannot commit an invalid brick placement");
     }
-    if (session.placementMode === "auto" && session.snapCandidate === undefined) {
+    if (session.placementMode === "auto" && session.mode !== "free" && session.snapCandidate === undefined) {
       this.restoreDragState();
       return;
     }
     const beforeTransform = cloneTransform(session.startTransform);
     const afterTransform = cloneTransform(session.currentTransform);
-    if (session.placementMode === "free" && Math.abs(afterTransform.position.y) > 1e-4) {
+    if (session.mode === "free" && Math.abs(afterTransform.position.y - GROUND_LEVEL) > 1e-4) {
       this.restoreDragState();
       throw new Error("Free placement must be committed on the ground");
     }
@@ -359,6 +365,10 @@ export class BrickEngine {
     return this.snap.solveExplicit(request);
   }
 
+  public solvePrecisionSnap(request: PrecisionSnapRequest): PrecisionSnapResult {
+    return this.snap.solvePrecision(request);
+  }
+
   public commitExplicitSnap(request: ExplicitSnapRequest): ExplicitSnapResult {
     if (this.dragSession !== undefined) {
       throw new Error("Cannot commit an explicit snap during a drag session");
@@ -411,7 +421,46 @@ export class BrickEngine {
     }
   }
 
-  public rotateBrick(brickId: string, quarterTurns = 1): void {
+  public commitPrecisionSnap(request: PrecisionSnapRequest): PrecisionSnapResult {
+    if (this.dragSession !== undefined) {
+      throw new Error("Cannot commit a precision snap during a drag session");
+    }
+    const brick = this.bricks.get(request.movingBrickId);
+    const beforeTransform = cloneTransform(brick.transform);
+    const beforeConnections = this.connections.disconnectForBrick(brick.id);
+    this.spatial.removeBrick(brick.id);
+    this.brickSpatial.removeBrick(brick.id);
+    let committed = false;
+    try {
+      const result = this.snap.solvePrecision({ ...request, freeTransform: beforeTransform });
+      if (!result.valid || result.transform === undefined || result.candidate === undefined) {
+        throw new Error(`Precision snap rejected: ${result.reason ?? "collision"}`);
+      }
+      const afterConnections: ConnectionGroup[] = [{
+        id: this.allocateConnectionId(),
+        brickA: brick.id,
+        brickB: request.targetBrickId,
+        type: "rigid",
+        pairs: result.matchedPairs.map((pair) => ({ connectorA: pair.moving.id, connectorB: pair.target.id }))
+      }];
+      const validation = this.placement.validate({ brickId: brick.id, transform: result.transform, matchedPairs: result.matchedPairs });
+      if (!validation.valid) throw new Error(`Precision snap rejected: ${validation.reasons.join(",")}`);
+      const command = new PlaceBrickCommand(this.commandContext, brick.id, beforeTransform, result.transform, beforeConnections, afterConnections);
+      command.execute();
+      this.history.recordExecuted(command);
+      committed = true;
+      return result;
+    } finally {
+      if (!committed) {
+        this.connections.disconnectForBrick(brick.id);
+        this.bricks.setTransform(brick.id, beforeTransform);
+        this.connections.restore(beforeConnections);
+        this.syncBrickIndexes(brick.id);
+      }
+    }
+  }
+
+  public rotateBrick(brickId: string, quarterTurns = 1, axis: RotationAxis = "y"): void {
     if (this.dragSession?.brickId === brickId) {
       throw new Error("Cannot rotate a brick during its drag session");
     }
@@ -419,7 +468,7 @@ export class BrickEngine {
     const before = cloneTransform(brick.transform);
     const after: Transform = {
       position: { ...before.position },
-      rotation: normalize(multiply(yRotationQuarter(quarterTurns), before.rotation))
+      rotation: normalize(multiply(axisRotationQuarter(axis, quarterTurns), before.rotation))
     };
     this.executeCommand(new RotateBrickCommand(this.commandContext, brickId, before, after, this.connections.getForBrick(brickId)));
   }
@@ -551,6 +600,18 @@ export class BrickEngine {
       collision,
       valid: collision.valid
     };
+  }
+
+  private resolveCollisionPushOut(brick: BrickInstance, transform: Transform, collision: DragResult["collision"]): { transform: Transform; collision: DragResult["collision"] } | undefined {
+    if (collision.separationVector === undefined) return undefined;
+    let next = cloneTransform(transform);
+    let nextCollision = collision;
+    for (let attempt = 0; attempt < 4 && nextCollision.separationVector !== undefined; attempt += 1) {
+      next = { ...next, position: { x: next.position.x + nextCollision.separationVector.x, y: next.position.y + nextCollision.separationVector.y, z: next.position.z + nextCollision.separationVector.z } };
+      nextCollision = this.collision.checkBrick(brick, next);
+      if (nextCollision.valid) return { transform: next, collision: nextCollision };
+    }
+    return undefined;
   }
 
   private requireDragSession(): DragSession {

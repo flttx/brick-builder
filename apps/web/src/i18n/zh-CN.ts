@@ -19,6 +19,8 @@ export const zhCN: UiMessages = {
     close: "关闭",
     back: "返回",
     download: "下载",
+    on: "开",
+    off: "关",
     loading: "加载中…"
   },
   auth: {
@@ -92,6 +94,7 @@ export const zhCN: UiMessages = {
       modeLabel: "移动模式",
       parts: "零件",
       bucket: "零件桶",
+      move: "移动",
       fit: "适应视图",
       rotate: "旋转",
       undo: "撤销",
@@ -100,7 +103,16 @@ export const zhCN: UiMessages = {
       drawFromBucket: "从零件桶随机拿一块",
       fitProject: "适应作品视图",
       rotateSelected: "旋转选中的积木",
-      placementMode: "移动模式"
+      rotateSelectedVertical: "竖直旋转选中的积木",
+      clearSelection: "取消选中",
+      placementMode: "移动模式",
+      tools: "编辑工具",
+      color: "颜色",
+      precisionConnect: "精准连接",
+      settings: "设置",
+      more: "更多",
+      snap: "磁吸",
+      altHint: "按住 Alt 临时关闭"
     },
     status: {
       project: "作品状态",
@@ -109,7 +121,10 @@ export const zhCN: UiMessages = {
       conflict: "存在冲突",
       draftSaved: "本地草稿",
       saved: "已保存",
-      syncError: "同步失败"
+      syncError: "同步失败",
+      offlineDescription: "离线编辑会先保存在本机，联网后继续同步。",
+      localDescription: "修改已保存在本机，云端同步即将开始。",
+      savedDescription: "所有修改都已保存。"
     },
     placement: {
       modes: { auto: "自动吸附", free: "自由移动", precision: "精准连接" },
@@ -122,14 +137,19 @@ export const zhCN: UiMessages = {
       connected: (count) => `已连接 ${count} 对连接点。`,
       connectorUnavailable: "这对连接点已不可用。",
       precision: {
+        pickSourceA1: "第 1 步：选择当前积木的第一个连接点",
+        pickSourceA2: "第 2 步：选择当前积木的第二个连接点",
+        pickTargetB1: "第 3 步：选择目标积木的第一个连接点",
+        pickTargetB2: "第 4 步：选择目标积木的第二个连接点",
         pickSource: "选择当前积木的连接点",
         pickTarget: "选择目标连接点",
         preview: "连接预览",
-        hint: "仅显示附近且兼容的连接点",
+        hint: "仅显示兼容、未占用且不会穿透地面的连接点",
         pairCount: (count) => `${count} 对连接点 · 按 Enter 确认`,
         occupied: "该连接点已被占用。",
         collision: "该位置会发生碰撞。",
         invalidRotation: "当前旋转无法完成连接。",
+        belowGround: "这个连接方向会让积木穿过地面，请选择上方凸起与下方凹陷。",
         incompatible: "这两个连接点无法连接。",
         confirm: "确认连接",
         cancel: "取消",
@@ -176,6 +196,7 @@ export const zhCN: UiMessages = {
       shortcuts: "编辑器快捷操作",
       dragHint: "放置 / 移动",
       rotateHint: "旋转",
+      cameraMoveHint: "移动视角",
       temporaryFreeHint: "临时自由移动",
       cancelHint: "取消",
       engineState: "引擎状态",
@@ -183,6 +204,21 @@ export const zhCN: UiMessages = {
       checkRequired: "需要检查"
     },
     colorPalette: "积木颜色",
+    panels: {
+      bucketTitle: "零件桶",
+      bucketDescription: "摇一摇，随机拿一块积木开始搭建。",
+      colorTitle: "颜色",
+      colorDescription: "选择新积木的默认颜色，也可以修改当前选中的积木。",
+      settingsTitle: "工作台设置",
+      snapDescription: "开启后，靠近兼容连接点会自动吸附。关闭后仍可自由移动并保持碰撞保护。",
+      openDebug: "打开开发者工具"
+    },
+    empty: {
+      title: "开始搭建",
+      description: "从零件库选一块，或让零件桶替你随机挑选。",
+      openParts: "打开零件库",
+      openBucket: "摇一摇"
+    },
     useColor: (color) => `使用${color}`,
     sceneAria: "积木搭建工作台",
     dismissNotice: "关闭提示",
@@ -196,11 +232,11 @@ export const zhCN: UiMessages = {
     choosePart: "选择一个零件",
     close: "关闭零件库",
     searchLabel: "搜索零件",
-    searchPlaceholder: "搜索 2×4、砖块、薄板…",
-    categories: { recent: "最近使用", brick: "砖块", plate: "薄板", tile: "光面板" },
-    noMatches: "没有找到匹配零件。试试 2×4、brick 或 plate。",
+    searchPlaceholder: "搜索 2×4、车轮、旗杆…",
+    categories: { recent: "最近使用", brick: "砖块", plate: "薄板", tile: "光面板", special: "特殊件" },
+    noMatches: "没有找到匹配零件。试试 2×4、车轮或旗杆。",
     place: (partName) => `放置 ${partName}`,
-    categoryName: (category) => category === "brick" ? "砖块" : category === "plate" ? "薄板" : category === "tile" ? "光面板" : category,
+    categoryName: (category) => category === "brick" ? "砖块" : category === "plate" ? "薄板" : category === "tile" ? "光面板" : category === "special" ? "特殊件" : category,
     partName: (category, size) => `${category} ${size.replaceAll("x", "×")}`
   },
   assets: {
@@ -273,10 +309,12 @@ export const zhCN: UiMessages = {
   },
   devtools: {
     label: "开发者工具",
-    tabs: { scene: "场景", performance: "性能", faults: "故障注入" },
+    heading: "诊断抽屉",
+    tabs: { scene: "场景", performance: "性能", engine: "引擎", snap: "吸附", collision: "碰撞", assets: "资源", persistence: "持久化", network: "网络", faults: "故障注入" },
     validate: "立即验证",
     exportDiagnostics: "导出诊断 JSON",
     unavailable: "仅开发环境可用",
+    readOnlyTab: "该诊断页只读显示当前运行上下文。",
     faults: { failNextAssetLoad: "下次资产加载失败", failNextCloudSave: "下次云端保存失败", force409: "模拟 409 冲突", loseWebGLContext: "模拟 WebGL 丢失", simulateOffline: "模拟离线", corruptTestDraft: "模拟损坏草稿" }
   },
   errors: {

@@ -1,0 +1,144 @@
+{
+  "id": "ldraw-pole-23421",
+  "version": 1,
+  "name": "长杆 32L（23421）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "23421.dat",
+    "sourceFile": "assets-source/ldraw/23421.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=2310.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-pole-23421/84e0ad089bb56576/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-pole-23421/84e0ad089bb56576/lod1.glb"
+  },
+  "dimensions": {
+    "width": 32,
+    "height": 0.6,
+    "depth": 0.6
+  },
+  "origin": [
+    0,
+    -0.3,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.6,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-0-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": -0.3,
+        "z": 0
+      },
+      "size": {
+        "x": 32.02,
+        "y": 0.62,
+        "z": 0.62
+      }
+    }
+  ],
+  "metadataHash": "2e375a2704796f9e",
+  "geometryHash": "851b3ce0bd7d6705",
+  "sourceHash": "2915b09f490fe35a",
+  "assetHash": "84e0ad089bb56576",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-pole-23421/84e0ad089bb56576/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "pole",
+    "flagpole",
+    "旗杆",
+    "23421"
+  ],
+  "aliases": [
+    "ldraw-pole-23421",
+    "23421",
+    "长杆",
+    "旗杆"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 7654,
+    "lod1Vertices": 7654,
+    "lod0Bounds": {
+      "min": [
+        -16,
+        -0.6,
+        -0.30000243617
+      ],
+      "max": [
+        16,
+        0.0000022389075000628367,
+        0.30000243617
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -16,
+        -0.6,
+        -0.30000243617
+      ],
+      "max": [
+        16,
+        0.0000022389075000628367,
+        0.30000243617
+      ]
+    }
+  }
+}

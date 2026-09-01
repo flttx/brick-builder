@@ -1,19 +1,16 @@
 import * as THREE from "three";
 import type { Transform } from "../../../../../src/index.js";
+import { createBrickMaterial } from "./brick-material.js";
 import { toThreeQuaternion, toThreeVector } from "./three-adapter.js";
 
 export class PlacementProxy {
   public readonly mesh: THREE.Mesh;
 
   public constructor(public readonly partId: string, parent: THREE.Object3D, geometry: THREE.BufferGeometry) {
-    this.mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({
-      color: "#ffffff",
-      roughness: 0.35,
-      metalness: 0.04,
+    this.mesh = new THREE.Mesh(geometry, createBrickMaterial({
       transparent: true,
       opacity: 0.72,
-      emissive: "#161b1e",
-      emissiveIntensity: 0.25
+      depthWrite: false
     }));
     this.mesh.castShadow = true;
     this.mesh.visible = false;
@@ -35,9 +32,9 @@ export class PlacementProxy {
   }
 
   public setInvalid(invalid: boolean): void {
-    const material = this.mesh.material as THREE.MeshStandardMaterial;
-    material.emissive.set(invalid ? "#a93535" : "#161b1e");
-    material.emissiveIntensity = invalid ? 0.8 : 0.25;
+    const material = this.mesh.material as THREE.MeshPhysicalMaterial;
+    material.emissive.set(invalid ? "#a93535" : "#000000");
+    material.emissiveIntensity = invalid ? 0.65 : 0;
   }
 
   public setVisible(visible: boolean): void {

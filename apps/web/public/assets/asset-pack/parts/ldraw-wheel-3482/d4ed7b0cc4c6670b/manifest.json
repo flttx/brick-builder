@@ -1,0 +1,143 @@
+{
+  "id": "ldraw-wheel-3482",
+  "version": 1,
+  "name": "小车轮 8×17.5（3482）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "3482c01.dat",
+    "sourceFile": "assets-source/ldraw/3482c01.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=3482.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-wheel-3482/d4ed7b0cc4c6670b/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-wheel-3482/d4ed7b0cc4c6670b/lod1.glb"
+  },
+  "dimensions": {
+    "width": 3.1,
+    "height": 3.1,
+    "depth": 1
+  },
+  "origin": [
+    0,
+    0.95,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.6,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-0-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0,
+        "y": 2.5,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0.95,
+        "z": 0
+      },
+      "size": {
+        "x": 3.1,
+        "y": 3.1,
+        "z": 1
+      }
+    }
+  ],
+  "metadataHash": "6f69eaa002d937cb",
+  "geometryHash": "f9367a789893dfc1",
+  "sourceHash": "948fbb2a753f64db",
+  "assetHash": "d4ed7b0cc4c6670b",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-3482/d4ed7b0cc4c6670b/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "wheel",
+    "车轮",
+    "3482"
+  ],
+  "aliases": [
+    "ldraw-wheel-3482",
+    "3482",
+    "小车轮",
+    "车轮"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 946,
+    "lod1Vertices": 946,
+    "lod0Bounds": {
+      "min": [
+        -1.55,
+        -0.6,
+        -0.5
+      ],
+      "max": [
+        1.55,
+        2.5,
+        0.5
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -1.55,
+        -0.6,
+        -0.5
+      ],
+      "max": [
+        1.55,
+        2.5,
+        0.5
+      ]
+    }
+  }
+}

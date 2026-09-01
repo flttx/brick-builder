@@ -22,10 +22,28 @@ export const createGeometryFromTemplate = (part: PartDefinition, template: RectP
   return createStandardGeometry(part, lod);
 };
 
-export const normalizeLDrawGeometry = (mesh: LDrawMesh, scale = 1 / 20): NormalizedGeometry => cleanGeometry({
-  positions: mesh.positions.map((value) => value * scale),
-  indices: [...mesh.indices]
-});
+export interface LDrawGeometryOptions {
+  alignToGround?: boolean;
+  groundBottom?: number;
+}
+
+export const normalizeLDrawGeometry = (mesh: LDrawMesh, scale = 1 / 20, options: LDrawGeometryOptions = {}): NormalizedGeometry => {
+  const positions = mesh.positions.map((value) => value * scale);
+  if (options.alignToGround === true && positions.length > 0) {
+    const bounds = calculateBounds(positions);
+    const offset = {
+      x: -(bounds.min[0] + bounds.max[0]) / 2,
+      y: (options.groundBottom ?? -0.6) - bounds.min[1],
+      z: -(bounds.min[2] + bounds.max[2]) / 2
+    };
+    for (let index = 0; index < positions.length; index += 3) {
+      positions[index] = (positions[index] ?? 0) + offset.x;
+      positions[index + 1] = (positions[index + 1] ?? 0) + offset.y;
+      positions[index + 2] = (positions[index + 2] ?? 0) + offset.z;
+    }
+  }
+  return cleanGeometry({ positions, indices: [...mesh.indices] });
+};
 
 export const cleanGeometry = (input: { positions: number[]; indices: number[] }): NormalizedGeometry => {
   const vertexMap = new Map<string, number>();

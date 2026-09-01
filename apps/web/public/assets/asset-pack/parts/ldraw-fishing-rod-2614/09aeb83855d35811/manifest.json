@@ -1,0 +1,143 @@
+{
+  "id": "ldraw-fishing-rod-2614",
+  "version": 1,
+  "name": "钓鱼竿（2614）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "2614.dat",
+    "sourceFile": "assets-source/ldraw/2614.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=2614.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-fishing-rod-2614/09aeb83855d35811/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-fishing-rod-2614/09aeb83855d35811/lod1.glb"
+  },
+  "dimensions": {
+    "width": 0.8,
+    "height": 12.16,
+    "depth": 1.4
+  },
+  "origin": [
+    0,
+    5.48,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.6,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-0-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0,
+        "y": 11.56,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 5.48,
+        "z": 0
+      },
+      "size": {
+        "x": 0.76,
+        "y": 12.120000000000001,
+        "z": 1.3599999999999999
+      }
+    }
+  ],
+  "metadataHash": "e3d44945b5efd35f",
+  "geometryHash": "ddef2f8e52339ac0",
+  "sourceHash": "ae2b258033e7a845",
+  "assetHash": "09aeb83855d35811",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-fishing-rod-2614/09aeb83855d35811/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "rod",
+    "fishing",
+    "钓鱼竿",
+    "2614"
+  ],
+  "aliases": [
+    "ldraw-fishing-rod-2614",
+    "2614",
+    "钓鱼竿"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 415,
+    "lod1Vertices": 415,
+    "lod0Bounds": {
+      "min": [
+        -0.4,
+        -0.5999999999999996,
+        -0.700005025325
+      ],
+      "max": [
+        0.4,
+        11.5621474,
+        0.7000050715200001
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -0.4,
+        -0.5999999999999996,
+        -0.700005025325
+      ],
+      "max": [
+        0.4,
+        11.5621474,
+        0.7000050715200001
+      ]
+    }
+  }
+}

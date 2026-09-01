@@ -2,10 +2,11 @@ import type { BrickInstance } from "../parts/brick-instance.js";
 import type { PartRegistry } from "../parts/part-registry.js";
 import type { BrickSpatialIndex, WorldCollider } from "../spatial/brick-spatial-index.js";
 import type { Transform } from "../math/transform.js";
-import { aabbRelation, type AABB } from "./aabb.js";
+import { aabbCenter, aabbRelation, type AABB } from "./aabb.js";
 import type { CollisionConfig, CollisionPairResult, CollisionResult } from "./box-collision.js";
 import { colliderWorldAABB, DEFAULT_COLLISION_CONFIG } from "./box-collision.js";
 import type { ColliderDefinition } from "./collider-definition.js";
+import type { Vec3 } from "../math/vec3.js";
 
 export class CollisionSolver {
   public constructor(
@@ -33,10 +34,12 @@ export class CollisionSolver {
     const status = pairs.some((pair) => pair.relation === "penetrating")
       ? "penetrating"
       : pairs.some((pair) => pair.relation === "touching") ? "touching" : "separated";
+    const push = status === "penetrating" ? findSmallestSeparation(movingBounds, pairs) : undefined;
     return {
       valid: status !== "penetrating",
       status,
-      pairs
+      pairs,
+      ...(push === undefined ? {} : { penetrationDepth: push.depth, separationVector: push.vector })
     };
   }
 
@@ -63,6 +66,27 @@ export class CollisionSolver {
     }), first);
   }
 }
+
+const findSmallestSeparation = (movingBounds: AABB, pairs: CollisionPairResult[]): { depth: number; vector: Vec3 } | undefined => {
+  const movingCenter = aabbCenter(movingBounds);
+  let smallest: { depth: number; vector: Vec3 } | undefined;
+  for (const pair of pairs) {
+    if (pair.relation !== "penetrating") continue;
+    const overlap = {
+      x: Math.min(pair.movingBounds.max.x, pair.targetBounds.max.x) - Math.max(pair.movingBounds.min.x, pair.targetBounds.min.x),
+      y: Math.min(pair.movingBounds.max.y, pair.targetBounds.max.y) - Math.max(pair.movingBounds.min.y, pair.targetBounds.min.y),
+      z: Math.min(pair.movingBounds.max.z, pair.targetBounds.max.z) - Math.max(pair.movingBounds.min.z, pair.targetBounds.min.z)
+    };
+    const targetCenter = aabbCenter(pair.targetBounds);
+    const axis = overlap.x <= overlap.y && overlap.x <= overlap.z ? "x" : overlap.y <= overlap.z ? "y" : "z";
+    const depth = overlap[axis];
+    const direction = movingCenter[axis] >= targetCenter[axis] ? 1 : -1;
+    const vector = { x: 0, y: 0, z: 0 };
+    vector[axis] = direction * (depth + 1e-4);
+    if (smallest === undefined || depth < smallest.depth) smallest = { depth, vector };
+  }
+  return smallest;
+};
 
 export const toWorldCollider = (
   brick: BrickInstance,

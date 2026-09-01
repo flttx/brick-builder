@@ -14,7 +14,7 @@ export class BrickPicker {
 
   public constructor(private readonly renderer: ThreeBrickRenderer, private readonly element: HTMLElement) {}
 
-  public pick(clientX: number, clientY: number, camera: THREE.Camera): PickResult | undefined {
+  public pick(clientX: number, clientY: number, camera: THREE.Camera, excludedBrickId?: string): PickResult | undefined {
     const rect = this.element.getBoundingClientRect();
     this.pointer.set(
       ((clientX - rect.left) / rect.width) * 2 - 1,
@@ -22,7 +22,12 @@ export class BrickPicker {
     );
     this.raycaster.setFromCamera(this.pointer, camera);
     const intersections = this.raycaster.intersectObjects(this.renderer.getPickableObjects(), false);
-    const intersection = intersections[0];
+    const intersection = intersections.find((candidate) => {
+      if (candidate.instanceId === undefined) {
+        return false;
+      }
+      return this.renderer.getBrickIdFromIntersection(candidate) !== excludedBrickId;
+    });
     if (intersection === undefined || intersection.instanceId === undefined) {
       return undefined;
     }

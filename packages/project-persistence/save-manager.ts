@@ -121,12 +121,15 @@ export class SaveManager {
       if (this.disposed) return;
       await this.options.cachedStore.put({ userId: this.options.userId, projectId: this.options.projectId, serverRevision: response.serverRevision, snapshot: cloneSnapshot(snapshot), cachedAt: Date.now() });
       await this.options.indexStore?.patch(this.options.userId, this.options.projectId, { serverRevision: response.serverRevision, lastLocalRevision: clientRevision, dirty: this.localRevision > clientRevision, lastOpenedAt: Date.now() });
-      if (this.options.onCloudSaved !== undefined && Date.now() - this.lastThumbnailAt >= 7000) { this.lastThumbnailAt = Date.now(); try { await this.options.onCloudSaved(snapshot, response); } catch (error) { if (error instanceof Error) void error.message; } }
       this.baseServerRevision = response.serverRevision;
       this.cloudSavedRevision = clientRevision;
       this.patchState({ saving: false, cloudSavedRevision: clientRevision, lastSavedAt: Date.parse(response.savedAt) || Date.now(), dirty: this.localRevision > clientRevision });
       if (this.localSaveFailed) this.patchState({ error: "LOCAL_SAVE_FAILED" });
       else this.clearError();
+      if (this.options.onCloudSaved !== undefined && Date.now() - this.lastThumbnailAt >= 7000) {
+        this.lastThumbnailAt = Date.now();
+        void this.options.onCloudSaved(snapshot, response).catch(() => undefined);
+      }
       if (this.localRevision === clientRevision) await this.options.draftStore.delete(this.options.userId, this.options.projectId);
       if (this.localRevision > clientRevision) this.scheduleCloud();
     } catch (error) {

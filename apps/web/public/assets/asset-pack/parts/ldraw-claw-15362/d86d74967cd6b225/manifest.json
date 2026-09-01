@@ -1,0 +1,144 @@
+{
+  "id": "ldraw-claw-15362",
+  "version": 1,
+  "name": "机械爪钩（15362）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "15362.dat",
+    "sourceFile": "assets-source/ldraw/15362.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=1536.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-claw-15362/d86d74967cd6b225/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-claw-15362/d86d74967cd6b225/lod1.glb"
+  },
+  "dimensions": {
+    "width": 1.93,
+    "height": 1.91,
+    "depth": 6.42
+  },
+  "origin": [
+    0,
+    0.35500000000000004,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.6,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-0-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0,
+        "y": 1.31,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0.35500000000000004,
+        "z": 0
+      },
+      "size": {
+        "x": 1.93,
+        "y": 1.91,
+        "z": 6.42
+      }
+    }
+  ],
+  "metadataHash": "44e985ff9815bc85",
+  "geometryHash": "9a7cc5d9b0154001",
+  "sourceHash": "a74236b1f404be61",
+  "assetHash": "d86d74967cd6b225",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-claw-15362/d86d74967cd6b225/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "technic",
+    "claw",
+    "机械爪",
+    "15362"
+  ],
+  "aliases": [
+    "ldraw-claw-15362",
+    "15362",
+    "机械爪钩",
+    "机械爪"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 574,
+    "lod1Vertices": 574,
+    "lod0Bounds": {
+      "min": [
+        -0.96465,
+        -0.6,
+        -3.2093750000000005
+      ],
+      "max": [
+        0.96465,
+        1.3128500000000003,
+        3.209375
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -0.96465,
+        -0.6,
+        -3.2093750000000005
+      ],
+      "max": [
+        0.96465,
+        1.3128500000000003,
+        3.209375
+      ]
+    }
+  }
+}

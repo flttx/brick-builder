@@ -1,0 +1,137 @@
+{
+  "id": "ldraw-brick-1x1",
+  "version": 1,
+  "name": "LDraw Brick 1x1",
+  "category": "brick",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "ldraw-brick-1x1.dat",
+    "sourceFile": "assets-source/ldraw/ldraw-brick-1x1.dat",
+    "sourceVersion": "internal-1",
+    "author": "Brick Builder",
+    "license": "CC0"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-brick-1x1/778873f3327d04d4/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-brick-1x1/778873f3327d04d4/lod1.glb"
+  },
+  "dimensions": {
+    "width": 1,
+    "height": 1.2,
+    "depth": 1
+  },
+  "origin": [
+    0,
+    0,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "stud-0-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0,
+        "y": 0.6,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.6,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "size": {
+        "x": 0.96,
+        "y": 1.16,
+        "z": 0.96
+      }
+    }
+  ],
+  "metadataHash": "56044b4a6385cad2",
+  "geometryHash": "73eb16a6d5dce552",
+  "sourceHash": "55784b2c7b5c86d8",
+  "assetHash": "778873f3327d04d4",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-brick-1x1/778873f3327d04d4/thumb-256.webp",
+  "tags": [
+    "brick",
+    "ldraw",
+    "1x1"
+  ],
+  "aliases": [
+    "ldraw-brick-1x1",
+    "ldraw 1×1"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 8,
+    "lod1Vertices": 8,
+    "lod0Bounds": {
+      "min": [
+        -0.5,
+        -0.6,
+        -0.5
+      ],
+      "max": [
+        0.5,
+        0.6000000000000002,
+        0.5
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -0.5,
+        -0.6,
+        -0.5
+      ],
+      "max": [
+        0.5,
+        0.6000000000000002,
+        0.5
+      ]
+    }
+  }
+}

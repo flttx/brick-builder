@@ -3,6 +3,7 @@ import type { Vec3 } from "../math/vec3.js";
 import type { ConnectorDefinition } from "../connectors/connector.js";
 
 export type PartCategory = "brick" | "plate" | "tile" | "slope" | "technic" | "special";
+export type ProceduralPartVisual = "wheel" | "flagpole" | "leaf";
 
 export interface PartDefinition {
   id: string;
@@ -16,6 +17,9 @@ export interface PartDefinition {
   connectors: ConnectorDefinition[];
   colliders: ColliderDefinition[];
   origin: Vec3;
+  visual?: {
+    kind: ProceduralPartVisual;
+  };
   version?: number;
   asset?: {
     glb: string;

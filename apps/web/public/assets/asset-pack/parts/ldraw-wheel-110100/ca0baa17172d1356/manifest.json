@@ -1,0 +1,144 @@
+{
+  "id": "ldraw-wheel-110100",
+  "version": 1,
+  "name": "光滑赛车轮 14.9×24（110100）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "110100.dat",
+    "sourceFile": "assets-source/ldraw/110100.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=11010.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-wheel-110100/ca0baa17172d1356/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-wheel-110100/ca0baa17172d1356/lod1.glb"
+  },
+  "dimensions": {
+    "width": 3,
+    "height": 3,
+    "depth": 1.99
+  },
+  "origin": [
+    0,
+    0.8999999999999999,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.6,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-0-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0,
+        "y": 2.4,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0.8999999999999999,
+        "z": 0
+      },
+      "size": {
+        "x": 3.02,
+        "y": 3.02,
+        "z": 2.01
+      }
+    }
+  ],
+  "metadataHash": "211d4a4a07475848",
+  "geometryHash": "f1649310bb4ee53f",
+  "sourceHash": "63a3c9303e4d66c0",
+  "assetHash": "ca0baa17172d1356",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-110100/ca0baa17172d1356/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "wheel",
+    "车轮",
+    "赛车",
+    "110100"
+  ],
+  "aliases": [
+    "ldraw-wheel-110100",
+    "110100",
+    "赛车轮",
+    "车轮"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 2498,
+    "lod1Vertices": 2498,
+    "lod0Bounds": {
+      "min": [
+        -1.5,
+        -0.6,
+        -0.9950000000000001
+      ],
+      "max": [
+        1.5,
+        2.4,
+        0.9950000000000001
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -1.5,
+        -0.6,
+        -0.9950000000000001
+      ],
+      "max": [
+        1.5,
+        2.4,
+        0.9950000000000001
+      ]
+    }
+  }
+}

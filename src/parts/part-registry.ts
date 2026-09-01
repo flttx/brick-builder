@@ -59,6 +59,9 @@ const clonePartDefinition = (definition: PartDefinition): PartDefinition => {
       size: { ...collider.size }
     }))
   };
+  if (definition.visual !== undefined) {
+    clone.visual = { ...definition.visual };
+  }
   if (definition.version !== undefined) {
     clone.version = definition.version;
   }

@@ -55,6 +55,7 @@ export class PartAssetRegistry {
   public loadPart(partId: string): Promise<LoadedPartAsset> {
     const loaded = this.assets.get(partId);
     if (loaded?.source === "runtime") return Promise.resolve(loaded);
+    if (this.parts.tryGet(partId)?.visual !== undefined) return Promise.resolve(this.getPart(partId));
     const pending = this.pending.get(partId);
     if (pending !== undefined) return pending;
     const request = this.loadRuntimePart(partId).catch((error: unknown) => { this.options.onFailure?.(partId, error instanceof Error ? error.message : "asset_load_failed"); return this.getPart(partId); }).finally(() => { this.pending.delete(partId); });

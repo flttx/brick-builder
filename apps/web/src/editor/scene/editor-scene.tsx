@@ -283,6 +283,8 @@ const SceneRuntime = (props: EditorSceneProps): ReactElement => {
         position={[4, 9, 5]}
         intensity={2.2}
         color="#fff4dc"
+        shadow-bias={-0.0002}
+        shadow-normalBias={0.025}
         shadow-mapSize={[2048, 2048]}
         shadow-camera-near={0.1}
         shadow-camera-far={40}

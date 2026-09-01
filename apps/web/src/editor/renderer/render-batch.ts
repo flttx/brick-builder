@@ -1,12 +1,13 @@
 import * as THREE from "three";
 import type { Transform } from "../../../../../src/index.js";
+import { createBrickMaterial } from "./brick-material.js";
 import { toThreeMatrix } from "./three-adapter.js";
 
 export interface RenderBatchOptions {
   parent: THREE.Object3D;
   geometry: THREE.BufferGeometry;
   capacity?: number;
-  material?: THREE.MeshStandardMaterial;
+  material?: THREE.MeshPhysicalMaterial;
 }
 
 export class RenderBatch {
@@ -21,15 +22,11 @@ export class RenderBatch {
   private readonly capacity: number;
   private readonly chunks: Array<{ index: number; mesh: THREE.InstancedMesh; freeSlots: number[]; active: number }> = [];
   private readonly meshToChunk = new Map<THREE.InstancedMesh, { index: number; mesh: THREE.InstancedMesh; freeSlots: number[]; active: number }>();
-  private readonly material: THREE.MeshStandardMaterial;
+  private readonly material: THREE.MeshPhysicalMaterial;
 
   public constructor(options: RenderBatchOptions) {
     this.capacity = options.capacity ?? 128;
-    this.material = options.material ?? new THREE.MeshStandardMaterial({
-      color: "#ffffff",
-      roughness: 0.42,
-      metalness: 0.04
-    });
+    this.material = options.material ?? createBrickMaterial();
     this.mesh = this.createChunk(options.parent, options.geometry, 0);
   }
 

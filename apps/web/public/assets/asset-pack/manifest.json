@@ -52,10 +52,136 @@
       "metadataHash": "9ca883973f19a3ce"
     },
     {
+      "id": "ldraw-antenna-104",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-antenna-104/a2299408cd729252/manifest.json",
+      "geometryHash": "f624edfbc40dd89f",
+      "metadataHash": "a553f3fcf61c3a1a"
+    },
+    {
+      "id": "ldraw-antenna-6899",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-antenna-6899/f71555a4bbc6192f/manifest.json",
+      "geometryHash": "8899a1a7d1f7b110",
+      "metadataHash": "0807a73d2a52f74f"
+    },
+    {
       "id": "ldraw-brick-1x1",
-      "manifestUrl": "/assets/asset-pack/parts/ldraw-brick-1x1/6626468db3b403ac/manifest.json",
-      "geometryHash": "425fbdc4dcdf166d",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-brick-1x1/778873f3327d04d4/manifest.json",
+      "geometryHash": "73eb16a6d5dce552",
       "metadataHash": "56044b4a6385cad2"
+    },
+    {
+      "id": "ldraw-claw-15362",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-claw-15362/d86d74967cd6b225/manifest.json",
+      "geometryHash": "9a7cc5d9b0154001",
+      "metadataHash": "44e985ff9815bc85"
+    },
+    {
+      "id": "ldraw-fishing-rod-2614",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-fishing-rod-2614/5fb34a9a19750621/manifest.json",
+      "geometryHash": "94a7d5d3811d3742",
+      "metadataHash": "9c94ef869869f1c8"
+    },
+    {
+      "id": "ldraw-flag-2335",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-flag-2335/e6ec8d973392e034/manifest.json",
+      "geometryHash": "9cf7f2c3ea73908b",
+      "metadataHash": "22298a4ddcdbbcf0"
+    },
+    {
+      "id": "ldraw-flower-15515",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-flower-15515/39b5f7c77bf72829/manifest.json",
+      "geometryHash": "76c137f328682e13",
+      "metadataHash": "ebe83aaf772061f0"
+    },
+    {
+      "id": "ldraw-grass-15279",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-grass-15279/086d4c4936592726/manifest.json",
+      "geometryHash": "a641ed3e32b92277",
+      "metadataHash": "a86a62d280907652"
+    },
+    {
+      "id": "ldraw-leaf-10884",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-leaf-10884/7e5c1bb90e7e9dcb/manifest.json",
+      "geometryHash": "9a45d5ce97bf3b74",
+      "metadataHash": "4b231b8f61ebbe3a"
+    },
+    {
+      "id": "ldraw-leaf-7096",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-leaf-7096/289c114cc3ac48d1/manifest.json",
+      "geometryHash": "05694cbbe3fdd8c4",
+      "metadataHash": "bc3631567012aadf"
+    },
+    {
+      "id": "ldraw-pole-23421",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-pole-23421/65c2417152f152ec/manifest.json",
+      "geometryHash": "575d10f45c043789",
+      "metadataHash": "160d5c3be1db19a1"
+    },
+    {
+      "id": "ldraw-steering-wheel-16091",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-steering-wheel-16091/cf3e143109bcd116/manifest.json",
+      "geometryHash": "9ad3b60667e1d948",
+      "metadataHash": "e7f99a18a732414f"
+    },
+    {
+      "id": "ldraw-steering-wheel-30663",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-steering-wheel-30663/350699a412022370/manifest.json",
+      "geometryHash": "ba502a6eea65eb95",
+      "metadataHash": "e7f99a18a732414f"
+    },
+    {
+      "id": "ldraw-train-wheel-243c01",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-train-wheel-243c01/598e164a5106c4e4/manifest.json",
+      "geometryHash": "56e4a6c540f55eb3",
+      "metadataHash": "edf41df402174cdf"
+    },
+    {
+      "id": "ldraw-vine-16981",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-vine-16981/1cda45d46e5ac3fd/manifest.json",
+      "geometryHash": "c99913937f042cf7",
+      "metadataHash": "16901353102b3019"
+    },
+    {
+      "id": "ldraw-wheel-110100",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-wheel-110100/b273f8a61e0d07fd/manifest.json",
+      "geometryHash": "227d964afdf3a181",
+      "metadataHash": "31cfe426afc940f0"
+    },
+    {
+      "id": "ldraw-wheel-3482",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-wheel-3482/191cc8d36a717731/manifest.json",
+      "geometryHash": "4e0b135bc155a3ca",
+      "metadataHash": "6f69eaa002d937cb"
+    },
+    {
+      "id": "ldraw-wheel-56145",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-wheel-56145/ee6620ed73bf0e64/manifest.json",
+      "geometryHash": "d0cf60b85c2f992f",
+      "metadataHash": "990c328b7370bd9e"
+    },
+    {
+      "id": "ldraw-wheel-56908",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-wheel-56908/19b25d2eb19ed860/manifest.json",
+      "geometryHash": "b4664815452d1c78",
+      "metadataHash": "ba494c587a404435"
+    },
+    {
+      "id": "ldraw-wheel-64711",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-wheel-64711/5413725a0c829519/manifest.json",
+      "geometryHash": "13abd76f8546553d",
+      "metadataHash": "b9f32402bae7c29a"
+    },
+    {
+      "id": "ldraw-wheel-64712",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-wheel-64712/0787f5f5f8bd833b/manifest.json",
+      "geometryHash": "e0942922bec49244",
+      "metadataHash": "bf879e5d7ccf2e17"
+    },
+    {
+      "id": "ldraw-wheel-7877",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-wheel-7877/f089001d37eee15f/manifest.json",
+      "geometryHash": "bdaeab01f6d486cf",
+      "metadataHash": "c8d517bf6f6416ac"
     },
     {
       "id": "plate-1x1",

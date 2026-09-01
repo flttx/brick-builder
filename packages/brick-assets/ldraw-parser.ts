@@ -18,6 +18,8 @@ interface AffineTransform {
   matrix: [number, number, number, number, number, number, number, number, number];
 }
 
+type LDrawWinding = "ccw" | "cw";
+
 const IDENTITY: AffineTransform = {
   translation: { x: 0, y: 0, z: 0 },
   matrix: [1, 0, 0, 0, 1, 0, 0, 0, 1]
@@ -28,15 +30,23 @@ export const parseLDrawPart = (fileName: string, library: LDrawLibrary, maxDepth
   const indices: number[] = [];
   const stack = new Set<string>();
 
-  const visit = (name: string, parent: AffineTransform, depth: number): void => {
+  const visit = (name: string, parent: AffineTransform, depth: number, inverted: boolean): void => {
     const key = name.toLocaleLowerCase();
     if (depth > maxDepth || stack.has(key)) return;
     const source = library.get(name);
     if (source === undefined) return;
     stack.add(key);
+    let winding: LDrawWinding = "ccw";
+    let invertNext = false;
     for (const rawLine of source.split(/\r?\n/u)) {
       const tokens = rawLine.trim().split(/\s+/u);
       const type = Number(tokens[0]);
+      if (type === 0 && tokens[1]?.toLocaleUpperCase() === "BFC") {
+        const directive = tokens[2]?.toLocaleUpperCase();
+        if (directive === "CERTIFY") winding = tokens[3]?.toLocaleUpperCase() === "CW" ? "cw" : "ccw";
+        if (directive === "INVERTNEXT") invertNext = true;
+        continue;
+      }
       if (type === 3 || type === 4) {
         const pointCount = type === 3 ? 3 : 4;
         const start = positions.length / 3;
@@ -49,33 +59,60 @@ export const parseLDrawPart = (fileName: string, library: LDrawLibrary, maxDepth
           });
           positions.push(point.x, point.y, point.z);
         }
-        indices.push(start, start + 1, start + 2);
-        if (pointCount === 4) indices.push(start, start + 2, start + 3);
+        const reverse = xor(inverted, winding === "cw");
+        if (reverse) {
+          indices.push(start, start + 2, start + 1);
+          if (pointCount === 4) indices.push(start, start + 3, start + 2);
+        } else {
+          indices.push(start, start + 1, start + 2);
+          if (pointCount === 4) indices.push(start, start + 2, start + 3);
+        }
+        invertNext = false;
       } else if (type === 1) {
         const childName = tokens[14];
         if (childName !== undefined) {
-          visit(childName, compose(parent, {
+          const local: AffineTransform = {
             translation: { x: Number(tokens[2]), y: Number(tokens[3]), z: Number(tokens[4]) },
             matrix: [
               Number(tokens[5]), Number(tokens[6]), Number(tokens[7]),
               Number(tokens[8]), Number(tokens[9]), Number(tokens[10]),
               Number(tokens[11]), Number(tokens[12]), Number(tokens[13])
             ]
-          }), depth + 1);
+          };
+          visit(childName, compose(parent, local), depth + 1, xor(xor(inverted, invertNext), determinant(local.matrix) < 0));
         }
+        invertNext = false;
       }
     }
     stack.delete(key);
   };
 
-  visit(fileName, IDENTITY, 0);
+  visit(fileName, IDENTITY, 0, false);
   return { positions, indices };
 };
 
 export const createMapLDrawLibrary = (files: Record<string, string>): LDrawLibrary => {
-  const normalized = new Map(Object.entries(files).map(([name, source]) => [name.toLocaleLowerCase(), source]));
-  return { get: (fileName) => normalized.get(fileName.toLocaleLowerCase()) ?? normalized.get(fileName.split("/").pop()?.toLocaleLowerCase() ?? fileName.toLocaleLowerCase()) };
+  const normalized = new Map<string, string>();
+  for (const [name, source] of Object.entries(files)) {
+    const normalizedName = normalizeFileName(name);
+    normalized.set(normalizedName, source);
+    const baseName = normalizedName.split("/").pop();
+    if (baseName !== undefined && !normalized.has(baseName)) normalized.set(baseName, source);
+  }
+  return { get: (fileName) => {
+    const normalizedName = normalizeFileName(fileName);
+    return normalized.get(normalizedName) ?? normalized.get(normalizedName.split("/").pop() ?? normalizedName);
+  } };
 };
+
+const normalizeFileName = (value: string): string => value.replaceAll("\\", "/").replace(/^\.\//u, "").toLocaleLowerCase();
+
+const determinant = (matrix: AffineTransform["matrix"]): number =>
+  matrix[0] * (matrix[4] * matrix[8] - matrix[5] * matrix[7]) -
+  matrix[1] * (matrix[3] * matrix[8] - matrix[5] * matrix[6]) +
+  matrix[2] * (matrix[3] * matrix[7] - matrix[4] * matrix[6]);
+
+const xor = (a: boolean, b: boolean): boolean => a !== b;
 
 const applyTransform = (transform: AffineTransform, point: LDrawPoint): LDrawPoint => ({
   x: transform.translation.x + transform.matrix[0] * point.x + transform.matrix[1] * point.y + transform.matrix[2] * point.z,
