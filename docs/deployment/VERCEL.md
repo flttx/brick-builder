@@ -80,6 +80,8 @@ Node.js Runtime:     22.x
 
 `.env.example` 只用于本地配置参考；Vercel 的真实值请在 Project Settings → Environment Variables 中按 scope 添加。部署前不需要安装或登录 Vercel CLI。
 
+本地 Node 22 脚本会自动读取项目根目录的 `.env.development`；该文件已被 `.gitignore` 忽略，不要提交到 Git。Vercel 部署时不读取这个文件，而是使用 Vercel Environment Variables。
+
 ## Environment variables
 
 分别在 Vercel Development、Preview、Production scope 配置，不要提交值：
