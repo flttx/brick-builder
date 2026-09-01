@@ -62,7 +62,7 @@ Output Directory:    dist-web
 Node.js Runtime:     22.x
 ```
 
-仓库中的 `vercel.json` 已声明 `dist-web`、Node.js 22 Function、`/media` 到 API 的 rewrite、SPA 路由 rewrite，以及 API/静态资产缓存策略。`/api/*` 不会走 SPA fallback；`/assets/*` 继续从 `apps/web/public/assets` 随 Web Build 发布。
+仓库中的 `vercel.json` 已声明 `dist-web`、`/media` 到 API 的 rewrite、SPA 路由 rewrite，以及 API/静态资产缓存策略；`package.json` 的 `engines` 固定 Node.js 22。`/api/*` 不会走 SPA fallback；`/assets/*` 继续从 `apps/web/public/assets` 随 Web Build 发布。
 
 ## 手动部署前检查清单
 
