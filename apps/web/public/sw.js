@@ -1,7 +1,7 @@
 /* global self, caches, URL, fetch */
 const SHELL_CACHE = "brick-builder-shell-v2";
 const ASSET_CACHE = "brick-builder-assets-v2";
-const SHELL = ["./", "./manifest.webmanifest", "./icon-192.svg", "./icon-512.svg"];
+const SHELL = ["/", "/manifest.webmanifest", "/icon-192.svg", "/icon-512.svg"];
 const ASSET_PREFIX = "/assets/asset-pack/";
 
 self.addEventListener("install", (event) => {

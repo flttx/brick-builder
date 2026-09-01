@@ -26,6 +26,7 @@ export interface S3CompatibleStorageOptions {
   region: string;
   accessKeyId: string;
   secretAccessKey: string;
+  forcePathStyle?: boolean;
   fetchImpl?: typeof fetch;
 }
 
@@ -57,7 +58,7 @@ export class S3CompatibleThumbnailStorage implements S3ThumbnailStorage {
     const now = new Date();
     const amzDate = now.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
     const shortDate = amzDate.slice(0, 8);
-    const url = new URL(`/${encodeURIComponent(this.options.bucket)}/${key}`, ensureTrailingSlash(this.options.endpoint));
+    const url = objectUrl(this.options.endpoint, this.options.bucket, key, this.options.forcePathStyle ?? true);
     const host = url.host;
     const payloadHash = createHash("sha256").update(body ?? new Uint8Array()).digest("hex");
     const headers: Record<string, string> = { host, "x-amz-content-sha256": payloadHash, "x-amz-date": amzDate };
@@ -69,12 +70,21 @@ export class S3CompatibleThumbnailStorage implements S3ThumbnailStorage {
     const stringToSign = ["AWS4-HMAC-SHA256", amzDate, scope, createHash("sha256").update(canonicalRequest).digest("hex")].join("\n");
     const signingKey = hmac(hmac(hmac(hmac(`AWS4${this.options.secretAccessKey}`, shortDate), this.options.region), "s3"), "aws4_request");
     headers.authorization = `AWS4-HMAC-SHA256 Credential=${this.options.accessKeyId}/${scope}, SignedHeaders=${signedHeaders}, Signature=${hmac(signingKey, stringToSign)}`;
-    return this.fetchImpl(url, { method, headers, ...(body === undefined ? {} : { body }) });
+    return this.fetchImpl(url, { method, headers, ...(body === undefined ? {} : { body: Buffer.from(body) }) });
   }
 }
 
 const hmac = (key: string | Buffer, value: string): Buffer => createHmac("sha256", key).update(value).digest();
-const ensureTrailingSlash = (value: string): string => value.endsWith("/") ? value : `${value}/`;
 const objectKey = (projectId: string): string => `thumbnails/${safeId(projectId)}.webp`;
+
+const objectUrl = (endpoint: string, bucket: string, key: string, forcePathStyle: boolean): URL => {
+  const url = new URL(endpoint);
+  const segments = key.split("/").map(encodeURIComponent);
+  if (forcePathStyle) url.pathname = joinPath(url.pathname, [bucket, ...segments]);
+  else { url.hostname = `${bucket}.${url.hostname}`; url.pathname = joinPath(url.pathname, segments); }
+  return url;
+};
+
+const joinPath = (base: string, segments: string[]): string => `${base.replace(/\/+$/u, "")}/${segments.join("/")}`;
 
 const safeId = (value: string): string => value.replace(/[^a-zA-Z0-9_-]/g, "_");

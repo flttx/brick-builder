@@ -30,6 +30,7 @@
     "assets:release": "tsx scripts/assets-release.ts",
     "migrations:validate": "tsx scripts/validate-migrations.ts",
     "bundle:check": "tsx scripts/bundle-check.ts",
+    "smoke:production": "tsx scripts/smoke-production.ts",
     "ci:validate": "tsx scripts/validate-ci-config.ts",
     "release:checklist": "tsx scripts/validate-release-checklist.ts",
     "ui:localization:check": "tsx scripts/check-ui-localization.ts",

@@ -7,10 +7,11 @@ import { readServerConfig } from "../server/config.js";
 
 describe("V1 release gates", () => {
   it("uses strict production configuration and a stable asset version", () => {
-    const config = readServerConfig({ DATABASE_URL: "postgres://localhost/brick-builder", SESSION_SECRET: "12345678901234567890123456789012", NODE_ENV: "production", APP_ORIGIN: "https://brick.example.com", THUMBNAIL_STORAGE_DRIVER: "local" });
+    const config = readServerConfig({ DATABASE_URL: "postgres://localhost/brick-builder?sslmode=require", SESSION_SECRET: "12345678901234567890123456789012", NODE_ENV: "production", APP_ORIGIN: "https://brick.example.com", THUMBNAIL_STORAGE_DRIVER: "s3", S3_ENDPOINT: "https://objects.example.com", S3_BUCKET: "brick-builder", S3_ACCESS_KEY_ID: "access", S3_SECRET_ACCESS_KEY: "secret" });
     expect(config.appOrigin).toBe("https://brick.example.com");
-    expect(config.thumbnailStorageDriver).toBe("local");
+    expect(config.thumbnailStorageDriver).toBe("s3");
     expect(defaultAssetPackVersion()).toMatch(/^v\d+$/u);
+    expect(() => readServerConfig({ DATABASE_URL: "postgres://localhost/brick-builder", SESSION_SECRET: "12345678901234567890123456789012", NODE_ENV: "production", APP_ORIGIN: "https://brick.example.com", THUMBNAIL_STORAGE_DRIVER: "local" })).toThrow(/must be s3/u);
     expect(() => readServerConfig({ DATABASE_URL: "postgres://localhost/brick-builder", SESSION_SECRET: "12345678901234567890123456789012", NODE_ENV: "production", THUMBNAIL_STORAGE_DRIVER: "s3" })).toThrow(/APP_ORIGIN/u);
   });
 

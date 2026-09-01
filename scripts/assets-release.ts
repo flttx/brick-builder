@@ -33,5 +33,5 @@ function valueAfter(flag: string): string | undefined { const index = args.index
 function createObjectStore(): AssetReleaseObjectStore | undefined {
   const endpoint = process.env.S3_ENDPOINT; const bucket = process.env.S3_BUCKET; const accessKeyId = process.env.S3_ACCESS_KEY_ID; const secretAccessKey = process.env.S3_SECRET_ACCESS_KEY;
   if ([endpoint, bucket, accessKeyId, secretAccessKey].some((value) => value === undefined || value.length === 0)) return undefined;
-  return new S3CompatibleObjectStorage({ endpoint: endpoint as string, bucket: bucket as string, accessKeyId: accessKeyId as string, secretAccessKey: secretAccessKey as string, region: process.env.S3_REGION ?? "us-east-1" });
+  return new S3CompatibleObjectStorage({ endpoint: endpoint as string, bucket: bucket as string, accessKeyId: accessKeyId as string, secretAccessKey: secretAccessKey as string, region: process.env.S3_REGION ?? "us-east-1", forcePathStyle: process.env.S3_FORCE_PATH_STYLE !== "false" });
 }

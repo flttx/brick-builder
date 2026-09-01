@@ -16,6 +16,6 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["node"]
   },
-  "include": ["src", "tests", "scripts", "apps", "vite.config.ts", "eslint.config.js"],
+  "include": ["src", "tests", "scripts", "apps", "api", "server", "vite.config.ts", "eslint.config.js"],
   "exclude": ["dist", "node_modules"]
 }
