@@ -1,0 +1,474 @@
+{
+  "id": "plate-2x4",
+  "version": 1,
+  "name": "Plate 2x4",
+  "category": "plate",
+  "source": {
+    "sourceType": "procedural",
+    "sourcePartId": "plate-2x4",
+    "sourceFile": "assets-source/procedural/standard-rectangles.json",
+    "sourceVersion": "1",
+    "author": "Brick Builder",
+    "license": "CC0"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/plate-2x4/bde63c56b60440a7/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/plate-2x4/bde63c56b60440a7/lod1.glb"
+  },
+  "dimensions": {
+    "width": 2,
+    "height": 0.4,
+    "depth": 4
+  },
+  "origin": [
+    0,
+    0,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "stud-0-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": -0.5,
+        "y": 0.2,
+        "z": -1.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": -0.5,
+        "y": -0.2,
+        "z": -1.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-0-1",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": -0.5,
+        "y": 0.2,
+        "z": -0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "anti-stud-0-1",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": -0.5,
+        "y": -0.2,
+        "z": -0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-0-2",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": -0.5,
+        "y": 0.2,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "anti-stud-0-2",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": -0.5,
+        "y": -0.2,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-0-3",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": -0.5,
+        "y": 0.2,
+        "z": 1.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "anti-stud-0-3",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": -0.5,
+        "y": -0.2,
+        "z": 1.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-1-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0.5,
+        "y": 0.2,
+        "z": -1.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "anti-stud-1-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0.5,
+        "y": -0.2,
+        "z": -1.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-1-1",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0.5,
+        "y": 0.2,
+        "z": -0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "anti-stud-1-1",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0.5,
+        "y": -0.2,
+        "z": -0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-1-2",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0.5,
+        "y": 0.2,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "anti-stud-1-2",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0.5,
+        "y": -0.2,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-1-3",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0.5,
+        "y": 0.2,
+        "z": 1.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "anti-stud-1-3",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0.5,
+        "y": -0.2,
+        "z": 1.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "size": {
+        "x": 1.96,
+        "y": 0.36000000000000004,
+        "z": 3.96
+      }
+    }
+  ],
+  "metadataHash": "82ac8cf35d377279",
+  "geometryHash": "917689c90fa71779",
+  "sourceHash": "9df7f3e74c66cc45",
+  "assetHash": "bde63c56b60440a7",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/plate-2x4/bde63c56b60440a7/thumb-256.webp",
+  "tags": [
+    "plate",
+    "2x4"
+  ],
+  "aliases": [
+    "plate-2x4",
+    "2x4",
+    "2×4",
+    "板"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 344,
+    "lod1Vertices": 152,
+    "lod0Bounds": {
+      "min": [
+        -1,
+        -0.2,
+        -2
+      ],
+      "max": [
+        1,
+        0.36000000000000004,
+        2
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -1,
+        -0.2,
+        -2
+      ],
+      "max": [
+        1,
+        0.36000000000000004,
+        2
+      ]
+    }
+  }
+}

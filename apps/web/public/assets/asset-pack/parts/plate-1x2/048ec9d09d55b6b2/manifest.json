@@ -1,0 +1,186 @@
+{
+  "id": "plate-1x2",
+  "version": 1,
+  "name": "Plate 1x2",
+  "category": "plate",
+  "source": {
+    "sourceType": "procedural",
+    "sourcePartId": "plate-1x2",
+    "sourceFile": "assets-source/procedural/standard-rectangles.json",
+    "sourceVersion": "1",
+    "author": "Brick Builder",
+    "license": "CC0"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/plate-1x2/048ec9d09d55b6b2/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/plate-1x2/048ec9d09d55b6b2/lod1.glb"
+  },
+  "dimensions": {
+    "width": 1,
+    "height": 0.4,
+    "depth": 2
+  },
+  "origin": [
+    0,
+    0,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "stud-0-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0,
+        "y": 0.2,
+        "z": -0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.2,
+        "z": -0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-0-1",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0,
+        "y": 0.2,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "anti-stud-0-1",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.2,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "size": {
+        "x": 0.96,
+        "y": 0.36000000000000004,
+        "z": 1.96
+      }
+    }
+  ],
+  "metadataHash": "b264b6efc1a3395d",
+  "geometryHash": "7c70a99bbbce1a47",
+  "sourceHash": "74dbec40c3797650",
+  "assetHash": "048ec9d09d55b6b2",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/plate-1x2/048ec9d09d55b6b2/thumb-256.webp",
+  "tags": [
+    "plate",
+    "1x2"
+  ],
+  "aliases": [
+    "plate-1x2",
+    "1x2",
+    "1×2",
+    "板"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 92,
+    "lod1Vertices": 44,
+    "lod0Bounds": {
+      "min": [
+        -0.5,
+        -0.2,
+        -1
+      ],
+      "max": [
+        0.5,
+        0.36000000000000004,
+        1
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -0.5,
+        -0.2,
+        -1
+      ],
+      "max": [
+        0.5,
+        0.36000000000000004,
+        1
+      ]
+    }
+  }
+}

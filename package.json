@@ -1,0 +1,65 @@
+{
+  "name": "brick-builder-engine",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:unit": "vitest run --exclude tests/backend.integration.test.ts",
+    "test:integration": "vitest run tests/backend.integration.test.ts",
+    "test:e2e": "playwright test",
+    "build:engine": "tsc -p tsconfig.build.json",
+    "build": "npm run build:engine && vite build",
+    "api": "tsx server/start.ts",
+    "db:migrate": "tsx server/run-migrations.ts",
+    "assets:build": "tsx scripts/assets-build.ts",
+    "assets:build:all": "tsx scripts/assets-build.ts",
+    "assets:validate": "tsx scripts/assets-validate.ts",
+    "assets:determinism": "tsx scripts/assets-determinism.ts",
+    "assets:release": "tsx scripts/assets-release.ts",
+    "migrations:validate": "tsx scripts/validate-migrations.ts",
+    "bundle:check": "tsx scripts/bundle-check.ts",
+    "ci:validate": "tsx scripts/validate-ci-config.ts",
+    "release:checklist": "tsx scripts/validate-release-checklist.ts",
+    "ui:localization:check": "tsx scripts/check-ui-localization.ts",
+    "benchmark": "tsx scripts/benchmark.ts",
+    "benchmark:renderer": "tsx scripts/renderer-benchmark.ts",
+    "benchmark:browser": "playwright test e2e/performance.spec.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^22.15.0",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "@typescript-eslint/eslint-plugin": "^8.31.0",
+    "@typescript-eslint/parser": "^8.31.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "eslint": "^9.25.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.31.0",
+    "vite": "^7.3.6",
+    "vitest": "^3.1.2"
+  },
+  "dependencies": {
+    "@dimforge/rapier3d-compat": "^0.20.0",
+    "@react-three/drei": "^10.7.8",
+    "@react-three/fiber": "^9.7.0",
+    "pg": "^8.23.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "three": "^0.185.1"
+  }
+}

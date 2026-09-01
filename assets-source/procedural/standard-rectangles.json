@@ -1,0 +1,7 @@
+{
+  "sourceType": "procedural",
+  "description": "Deterministic standard Brick / Plate / Tile source templates used when no redistributable LDraw source is selected.",
+  "units": "BU",
+  "coordinateSystem": "Y-up",
+  "license": "CC0"
+}

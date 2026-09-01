@@ -1,0 +1,282 @@
+{
+  "id": "brick-2x2",
+  "version": 1,
+  "name": "Brick 2x2",
+  "category": "brick",
+  "source": {
+    "sourceType": "procedural",
+    "sourcePartId": "brick-2x2",
+    "sourceFile": "assets-source/procedural/standard-rectangles.json",
+    "sourceVersion": "1",
+    "author": "Brick Builder",
+    "license": "CC0"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/brick-2x2/b6c7bb6add4d706f/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/brick-2x2/b6c7bb6add4d706f/lod1.glb"
+  },
+  "dimensions": {
+    "width": 2,
+    "height": 1.2,
+    "depth": 2
+  },
+  "origin": [
+    0,
+    0,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "stud-0-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": -0.5,
+        "y": 0.6,
+        "z": -0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": -0.5,
+        "y": -0.6,
+        "z": -0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-0-1",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": -0.5,
+        "y": 0.6,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "anti-stud-0-1",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": -0.5,
+        "y": -0.6,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-1-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0.5,
+        "y": 0.6,
+        "z": -0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "anti-stud-1-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0.5,
+        "y": -0.6,
+        "z": -0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "stud-1-1",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0.5,
+        "y": 0.6,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "anti-stud-1-1",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0.5,
+        "y": -0.6,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "size": {
+        "x": 1.96,
+        "y": 1.16,
+        "z": 1.96
+      }
+    }
+  ],
+  "metadataHash": "183c917c98b1b4c8",
+  "geometryHash": "76786a6ca48ace2d",
+  "sourceHash": "272da42f9b2ea810",
+  "assetHash": "b6c7bb6add4d706f",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/brick-2x2/b6c7bb6add4d706f/thumb-256.webp",
+  "tags": [
+    "brick",
+    "2x2"
+  ],
+  "aliases": [
+    "brick-2x2",
+    "2x2",
+    "2×2",
+    "砖"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 176,
+    "lod1Vertices": 80,
+    "lod0Bounds": {
+      "min": [
+        -1,
+        -0.6,
+        -1
+      ],
+      "max": [
+        1,
+        0.7599999999999999,
+        1
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -1,
+        -0.6,
+        -1
+      ],
+      "max": [
+        1,
+        0.7599999999999999,
+        1
+      ]
+    }
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "assetPackVersion": 1,
+  "pipelineVersion": 1,
+  "generatedAt": "deterministic-build",
+  "parts": [
+    {
+      "id": "brick-1x1",
+      "manifestUrl": "/assets/asset-pack/parts/brick-1x1/07256dfd890d8565/manifest.json",
+      "geometryHash": "cc8eb25a9dcf33ba",
+      "metadataHash": "56044b4a6385cad2"
+    },
+    {
+      "id": "brick-1x2",
+      "manifestUrl": "/assets/asset-pack/parts/brick-1x2/f93f0f268d800894/manifest.json",
+      "geometryHash": "73e5a7fe5bbfba93",
+      "metadataHash": "2ab4ace418335b00"
+    },
+    {
+      "id": "brick-1x3",
+      "manifestUrl": "/assets/asset-pack/parts/brick-1x3/328bea9ad6d71bfc/manifest.json",
+      "geometryHash": "909c404f2ddba2e5",
+      "metadataHash": "80c71f231e21dec1"
+    },
+    {
+      "id": "brick-1x4",
+      "manifestUrl": "/assets/asset-pack/parts/brick-1x4/636d9e5673e3ca48/manifest.json",
+      "geometryHash": "107b6338b18640e2",
+      "metadataHash": "f9ba620f2a5eb964"
+    },
+    {
+      "id": "brick-2x2",
+      "manifestUrl": "/assets/asset-pack/parts/brick-2x2/b6c7bb6add4d706f/manifest.json",
+      "geometryHash": "76786a6ca48ace2d",
+      "metadataHash": "183c917c98b1b4c8"
+    },
+    {
+      "id": "brick-2x3",
+      "manifestUrl": "/assets/asset-pack/parts/brick-2x3/bfdd191b131da2e0/manifest.json",
+      "geometryHash": "545fbebaed04d705",
+      "metadataHash": "a3fe454ea64ab770"
+    },
+    {
+      "id": "brick-2x4",
+      "manifestUrl": "/assets/asset-pack/parts/brick-2x4/8b1020fee6d6d79c/manifest.json",
+      "geometryHash": "f8d45aa57d9c4d3d",
+      "metadataHash": "191847d8c2d549a6"
+    },
+    {
+      "id": "brick-2x6",
+      "manifestUrl": "/assets/asset-pack/parts/brick-2x6/1020f796b2b9b670/manifest.json",
+      "geometryHash": "48f81d69eccf4d53",
+      "metadataHash": "9ca883973f19a3ce"
+    },
+    {
+      "id": "ldraw-brick-1x1",
+      "manifestUrl": "/assets/asset-pack/parts/ldraw-brick-1x1/6626468db3b403ac/manifest.json",
+      "geometryHash": "425fbdc4dcdf166d",
+      "metadataHash": "56044b4a6385cad2"
+    },
+    {
+      "id": "plate-1x1",
+      "manifestUrl": "/assets/asset-pack/parts/plate-1x1/c95dfb6836b9da9c/manifest.json",
+      "geometryHash": "2c46e6510300dcc9",
+      "metadataHash": "1b0cbe12904afdcb"
+    },
+    {
+      "id": "plate-1x2",
+      "manifestUrl": "/assets/asset-pack/parts/plate-1x2/048ec9d09d55b6b2/manifest.json",
+      "geometryHash": "7c70a99bbbce1a47",
+      "metadataHash": "b264b6efc1a3395d"
+    },
+    {
+      "id": "plate-1x4",
+      "manifestUrl": "/assets/asset-pack/parts/plate-1x4/ca1c8c3aac4abb82/manifest.json",
+      "geometryHash": "911632432876c0d1",
+      "metadataHash": "6238dc8fcd671a96"
+    },
+    {
+      "id": "plate-2x2",
+      "manifestUrl": "/assets/asset-pack/parts/plate-2x2/fb4ca838247f15cf/manifest.json",
+      "geometryHash": "fedab9e7959ab20d",
+      "metadataHash": "f856c15e35f4e14f"
+    },
+    {
+      "id": "plate-2x4",
+      "manifestUrl": "/assets/asset-pack/parts/plate-2x4/bde63c56b60440a7/manifest.json",
+      "geometryHash": "917689c90fa71779",
+      "metadataHash": "82ac8cf35d377279"
+    },
+    {
+      "id": "tile-1x1",
+      "manifestUrl": "/assets/asset-pack/parts/tile-1x1/2abc3b29a78e7edd/manifest.json",
+      "geometryHash": "c9723e351b865438",
+      "metadataHash": "e7b1c6fa027d4102"
+    },
+    {
+      "id": "tile-1x2",
+      "manifestUrl": "/assets/asset-pack/parts/tile-1x2/c32a3fc2a1ab1789/manifest.json",
+      "geometryHash": "dfd67b455f7a35e9",
+      "metadataHash": "e72ba4630eaf68cd"
+    },
+    {
+      "id": "tile-2x2",
+      "manifestUrl": "/assets/asset-pack/parts/tile-2x2/e5188eb93d2cce48/manifest.json",
+      "geometryHash": "9d823b005a2668e4",
+      "metadataHash": "50d7a9b2d2404060"
+    }
+  ]
+}

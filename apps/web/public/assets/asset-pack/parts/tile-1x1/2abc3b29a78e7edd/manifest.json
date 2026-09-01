@@ -1,0 +1,114 @@
+{
+  "id": "tile-1x1",
+  "version": 1,
+  "name": "Tile 1x1",
+  "category": "tile",
+  "source": {
+    "sourceType": "procedural",
+    "sourcePartId": "tile-1x1",
+    "sourceFile": "assets-source/procedural/standard-rectangles.json",
+    "sourceVersion": "1",
+    "author": "Brick Builder",
+    "license": "CC0"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/tile-1x1/2abc3b29a78e7edd/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/tile-1x1/2abc3b29a78e7edd/lod1.glb"
+  },
+  "dimensions": {
+    "width": 1,
+    "height": 0.4,
+    "depth": 1
+  },
+  "origin": [
+    0,
+    0,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "size": {
+        "x": 0.96,
+        "y": 0.36000000000000004,
+        "z": 0.96
+      }
+    }
+  ],
+  "metadataHash": "e7b1c6fa027d4102",
+  "geometryHash": "c9723e351b865438",
+  "sourceHash": "4989418d21c77bdd",
+  "assetHash": "2abc3b29a78e7edd",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/tile-1x1/2abc3b29a78e7edd/thumb-256.webp",
+  "tags": [
+    "tile",
+    "1x1"
+  ],
+  "aliases": [
+    "tile-1x1",
+    "1x1",
+    "1×1",
+    "平板"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 8,
+    "lod1Vertices": 8,
+    "lod0Bounds": {
+      "min": [
+        -0.5,
+        -0.2,
+        -0.5
+      ],
+      "max": [
+        0.5,
+        0.2,
+        0.5
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -0.5,
+        -0.2,
+        -0.5
+      ],
+      "max": [
+        0.5,
+        0.2,
+        0.5
+      ]
+    }
+  }
+}

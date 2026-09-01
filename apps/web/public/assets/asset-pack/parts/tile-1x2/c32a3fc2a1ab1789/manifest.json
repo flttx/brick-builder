@@ -1,0 +1,138 @@
+{
+  "id": "tile-1x2",
+  "version": 1,
+  "name": "Tile 1x2",
+  "category": "tile",
+  "source": {
+    "sourceType": "procedural",
+    "sourcePartId": "tile-1x2",
+    "sourceFile": "assets-source/procedural/standard-rectangles.json",
+    "sourceVersion": "1",
+    "author": "Brick Builder",
+    "license": "CC0"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/tile-1x2/c32a3fc2a1ab1789/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/tile-1x2/c32a3fc2a1ab1789/lod1.glb"
+  },
+  "dimensions": {
+    "width": 1,
+    "height": 0.4,
+    "depth": 2
+  },
+  "origin": [
+    0,
+    0,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.2,
+        "z": -0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "anti-stud-0-1",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.2,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "size": {
+        "x": 0.96,
+        "y": 0.36000000000000004,
+        "z": 1.96
+      }
+    }
+  ],
+  "metadataHash": "e72ba4630eaf68cd",
+  "geometryHash": "dfd67b455f7a35e9",
+  "sourceHash": "31834fbe6b3d4369",
+  "assetHash": "c32a3fc2a1ab1789",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/tile-1x2/c32a3fc2a1ab1789/thumb-256.webp",
+  "tags": [
+    "tile",
+    "1x2"
+  ],
+  "aliases": [
+    "tile-1x2",
+    "1x2",
+    "1×2",
+    "平板"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 8,
+    "lod1Vertices": 8,
+    "lod0Bounds": {
+      "min": [
+        -0.5,
+        -0.2,
+        -1
+      ],
+      "max": [
+        0.5,
+        0.2,
+        1
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -0.5,
+        -0.2,
+        -1
+      ],
+      "max": [
+        0.5,
+        0.2,
+        1
+      ]
+    }
+  }
+}

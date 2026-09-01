@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-31T00:00:00.000Z",
+  "title": "Design System: Brick Builder Prototype",
+  "extensions": {
+    "colorMeta": {
+      "graphite": { "role": "neutral", "displayName": "Graphite Instrument Shell", "canonical": "#111619", "tonalRamp": ["#111619", "#1a2224", "#20292b", "#293335", "#414d4f", "#657273", "#9ba9a8", "#e4e9e8"] },
+      "amber": { "role": "primary", "displayName": "Calibration Amber", "canonical": "#f6c453", "tonalRamp": ["#4b3a13", "#6d5117", "#936f1d", "#b58a2a", "#d2a13d", "#e4b64c", "#f6c453", "#fff4d4"] },
+      "signal-blue": { "role": "secondary", "displayName": "Signal Blue", "canonical": "#2f79c5", "tonalRamp": ["#102b48", "#17436f", "#205b94", "#2f79c5", "#4d91d2", "#78afe0", "#aed1ee", "#e3f0fb"] },
+      "signal-red": { "role": "secondary", "displayName": "Signal Red", "canonical": "#d84b43", "tonalRamp": ["#491613", "#721f1b", "#a12e27", "#d84b43", "#df6d66", "#e99c97", "#f3c3c0", "#fbe9e7"] }
+    },
+    "typographyMeta": {
+      "title": { "displayName": "Workbench Title", "purpose": "Short panel and tool titles." },
+      "label": { "displayName": "Instrument Label", "purpose": "Compact uppercase labels and runtime markers." }
+    },
+    "shadows": [
+      { "name": "ambient-panel", "value": "0 12px 32px rgba(14, 18, 19, 0.16)", "purpose": "Separates floating utility chrome from the 3D desk." }
+    ],
+    "motion": [
+      { "name": "utility-state", "value": "120ms ease", "purpose": "Button hover and focus color transitions." }
+    ],
+    "breakpoints": [
+      { "name": "compact", "value": "840px" },
+      { "name": "small", "value": "600px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Tool Button",
+      "kind": "button",
+      "refersTo": "tool-button",
+      "description": "Compact square control for fit, rotate, undo, and redo.",
+      "html": "<button class=\"ds-tool-button\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M6 3H3v3M18 3h3v3M21 18v3h-3M3 18v3h3\"/></svg><span>FIT</span></button>",
+      "css": ".ds-tool-button { display:inline-flex; align-items:center; gap:8px; height:34px; padding:0 11px; border:1px solid #414d4f; border-radius:0; color:#e4e9e8; background:#293335; cursor:pointer; transition:border-color 120ms ease,color 120ms ease,background 120ms ease; } .ds-tool-button:hover { border-color:#f6c453; color:#f6c453; background:#333e40; } .ds-tool-button:focus-visible { outline:2px solid #f6c453; outline-offset:2px; } .ds-tool-button svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.6; }"
+    },
+    {
+      "name": "Runtime Panel",
+      "kind": "card",
+      "refersTo": "debug-panel",
+      "description": "Dense observability surface for prototype engine and renderer facts.",
+      "html": "<section class=\"ds-runtime-panel\"><span class=\"ds-label\">OBSERVABILITY</span><h2>Runtime readout</h2><div class=\"ds-metric\"><span>FPS</span><strong>60.0</strong></div></section>",
+      "css": ".ds-runtime-panel { width:248px; padding:17px 16px 15px; border:1px solid rgba(212,221,218,.15); border-radius:0; color:#e4e9e8; background:#111619; box-shadow:0 12px 32px rgba(14,18,19,.16); } .ds-label { color:#f6c453; font-size:9px; font-weight:650; letter-spacing:.13em; text-transform:uppercase; } .ds-runtime-panel h2 { margin:4px 0 14px; font-size:16px; font-weight:500; } .ds-metric { padding:9px; background:#20292b; } .ds-metric span { display:block; color:#9ba9a8; font-size:8px; letter-spacing:.1em; } .ds-metric strong { display:block; margin-top:6px; color:#f6c453; font-size:16px; font-weight:500; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Precision Workbench",
+    "overview": "The interface is a quiet instrument panel wrapped around a tactile 3D desk. Graphite controls and chalk-gray ground keep attention on the saturated physical objects; amber is reserved for diagnostics, focus, and decisions. The visual system is intentionally tool-first rather than a brand or marketing surface.\n\nThe page uses hard-edged utility chrome, dense readouts, and a full-viewport work surface. Depth belongs to the Three.js scene through plastic highlights, contact shadows, and the ground grid; UI depth comes from tonal layering and a restrained ambient shadow.",
+    "keyCharacteristics": ["Dark graphite control rail over a chalk-gray 3D desk.", "Amber as a precise state signal, not decoration.", "Square controls and compact uppercase labels.", "Saturated blue and red procedural bricks as the visual anchors."],
+    "rules": [
+      { "name": "The Rare Accent Rule", "body": "Amber marks a state change, focus, or measured decision; it does not fill ordinary surfaces.", "section": "colors" },
+      { "name": "The Scene-First Depth Rule", "body": "Use lighting and contact shadow to explain the bricks; keep interface elevation quiet so it never competes with manipulation.", "section": "elevation" }
+    ],
+    "dos": ["Do keep the center viewport clear for picking and dragging.", "Do use amber to explain active state, candidate lock, or a focused control.", "Do preserve square utility chrome and compact tracked labels.", "Do make important state legible in text as well as color."],
+    "donts": ["Don't add gradients, bloom, marketing hero copy, or ornamental navigation to this prototype surface.", "Don't use emoji, icon fonts, or ambiguous glyph-only controls when an inline SVG or accessible label is available.", "Don't let debug layers become the default visual treatment for every brick.", "Don't replace the physical brick colors with neutral placeholder geometry."]
+  }
+}

@@ -1,0 +1,279 @@
+{
+  "generatedAt": "2026-08-31T10:05:14.441Z",
+  "commit": null,
+  "appVersion": "0.1.0",
+  "assetPackVersion": "v1",
+  "browser": "chromium",
+  "os": "win32",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "hardware": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.34 Safari/537.36",
+    "hardwareConcurrency": 16,
+    "deviceMemory": 32
+  },
+  "metrics": [
+    {
+      "size": 100,
+      "layout": "sparse",
+      "warmupSeconds": 3,
+      "sampleSeconds": 10,
+      "fps": {
+        "p50": 2.399808015358788,
+        "p95": 2.5006251562890744,
+        "p99": 2.5006251562890744,
+        "p05": 2.3073373327180455
+      },
+      "frameMs": {
+        "p50": 416.60000000000036,
+        "p95": 433.3000000000029,
+        "p99": 433.39999999999964
+      },
+      "drawCalls": 13,
+      "instances": 100,
+      "triangles": 931890,
+      "batchCount": 5,
+      "chunkCount": 5,
+      "dpr": 1.25,
+      "quality": "balanced",
+      "glbLoadCount": 5,
+      "memoryUsedBytes": 56800000
+    },
+    {
+      "size": 100,
+      "layout": "dense",
+      "warmupSeconds": 3,
+      "sampleSeconds": 10,
+      "fps": {
+        "p50": 5.455537370430901,
+        "p95": 5.455537370431009,
+        "p99": 5.4585152838427735,
+        "p05": 5
+      },
+      "frameMs": {
+        "p50": 183.3000000000029,
+        "p95": 200,
+        "p99": 200.09999999999854
+      },
+      "drawCalls": 13,
+      "instances": 100,
+      "triangles": 931890,
+      "batchCount": 5,
+      "chunkCount": 5,
+      "dpr": 1.25,
+      "quality": "balanced",
+      "glbLoadCount": 5,
+      "memoryUsedBytes": 56800000
+    },
+    {
+      "size": 500,
+      "layout": "sparse",
+      "warmupSeconds": 3,
+      "sampleSeconds": 10,
+      "fps": {
+        "p50": 1.666944490748464,
+        "p95": 1.7649135192375505,
+        "p99": 1.7649135192375505,
+        "p05": 1.5384615384615385
+      },
+      "frameMs": {
+        "p50": 599.8999999999978,
+        "p95": 616.6000000000004,
+        "p99": 616.6000000000004
+      },
+      "drawCalls": 13,
+      "instances": 500,
+      "triangles": 931890,
+      "batchCount": 5,
+      "chunkCount": 5,
+      "dpr": 1.25,
+      "quality": "balanced",
+      "glbLoadCount": 5,
+      "memoryUsedBytes": 56800000
+    },
+    {
+      "size": 500,
+      "layout": "dense",
+      "warmupSeconds": 3,
+      "sampleSeconds": 10,
+      "fps": {
+        "p50": 2,
+        "p95": 2.0695364238410563,
+        "p99": 2.0695364238410563,
+        "p05": 1.874765654293221
+      },
+      "frameMs": {
+        "p50": 500,
+        "p95": 533.3000000000011,
+        "p99": 533.3000000000011
+      },
+      "drawCalls": 13,
+      "instances": 500,
+      "triangles": 931890,
+      "batchCount": 5,
+      "chunkCount": 5,
+      "dpr": 1.25,
+      "quality": "balanced",
+      "glbLoadCount": 5,
+      "memoryUsedBytes": 56800000
+    },
+    {
+      "size": 1000,
+      "layout": "sparse",
+      "warmupSeconds": 3,
+      "sampleSeconds": 10,
+      "fps": {
+        "p50": 2.5006251562890744,
+        "p95": 2.857142857142857,
+        "p99": 2.857142857142857,
+        "p05": 2.3998080153587673
+      },
+      "frameMs": {
+        "p50": 399.8999999999978,
+        "p95": 416.6000000000022,
+        "p99": 416.7000000000007
+      },
+      "drawCalls": 8,
+      "instances": 1000,
+      "triangles": 465970,
+      "batchCount": 5,
+      "chunkCount": 5,
+      "dpr": 1.25,
+      "quality": "balanced",
+      "glbLoadCount": 5,
+      "memoryUsedBytes": 56800000
+    },
+    {
+      "size": 1000,
+      "layout": "dense",
+      "warmupSeconds": 3,
+      "sampleSeconds": 10,
+      "fps": {
+        "p50": 2.0004000800160044,
+        "p95": 2.2222222222222223,
+        "p99": 2.2222222222222223,
+        "p05": 1.874765654293221
+      },
+      "frameMs": {
+        "p50": 483.3000000000029,
+        "p95": 533.2999999999993,
+        "p99": 533.2999999999993
+      },
+      "drawCalls": 8,
+      "instances": 1000,
+      "triangles": 465970,
+      "batchCount": 5,
+      "chunkCount": 5,
+      "dpr": 1.25,
+      "quality": "balanced",
+      "glbLoadCount": 5,
+      "memoryUsedBytes": 56800000
+    },
+    {
+      "size": 3000,
+      "layout": "sparse",
+      "warmupSeconds": 3,
+      "sampleSeconds": 10,
+      "fps": {
+        "p50": 1.4285714285714286,
+        "p95": 1.7143836790673774,
+        "p99": 1.7143836790673774,
+        "p05": 1.276487107480218
+      },
+      "frameMs": {
+        "p50": 700,
+        "p95": 749.8999999999978,
+        "p99": 749.8999999999978
+      },
+      "drawCalls": 18,
+      "instances": 3000,
+      "triangles": 1397810,
+      "batchCount": 5,
+      "chunkCount": 15,
+      "dpr": 1.25,
+      "quality": "balanced",
+      "glbLoadCount": 5,
+      "memoryUsedBytes": 56800000
+    },
+    {
+      "size": 3000,
+      "layout": "dense",
+      "warmupSeconds": 3,
+      "sampleSeconds": 10,
+      "fps": {
+        "p50": 1,
+        "p95": 1.1539349180706227,
+        "p99": 1.1539349180706227,
+        "p05": 0.9374707040405013
+      },
+      "frameMs": {
+        "p50": 883.3000000000029,
+        "p95": 1066.5999999999985,
+        "p99": 1066.5999999999985
+      },
+      "drawCalls": 18,
+      "instances": 3000,
+      "triangles": 1397810,
+      "batchCount": 5,
+      "chunkCount": 15,
+      "dpr": 1.25,
+      "quality": "balanced",
+      "glbLoadCount": 5,
+      "memoryUsedBytes": 56800000
+    },
+    {
+      "size": 5000,
+      "layout": "sparse",
+      "warmupSeconds": 3,
+      "sampleSeconds": 10,
+      "fps": {
+        "p50": 1.6217969510217312,
+        "p95": 1.7649135192375562,
+        "p99": 1.7649135192375562,
+        "p05": 1.0168802115110844
+      },
+      "frameMs": {
+        "p50": 616.6000000000004,
+        "p95": 950,
+        "p99": 950
+      },
+      "drawCalls": 23,
+      "instances": 5000,
+      "triangles": 1863730,
+      "batchCount": 5,
+      "chunkCount": 20,
+      "dpr": 1.25,
+      "quality": "balanced",
+      "glbLoadCount": 5,
+      "memoryUsedBytes": 56800000
+    },
+    {
+      "size": 5000,
+      "layout": "dense",
+      "warmupSeconds": 3,
+      "sampleSeconds": 10,
+      "fps": {
+        "p50": 1.7143836790673774,
+        "p95": 2.143163309044156,
+        "p99": 2.143163309044156,
+        "p05": 1.5790304752881659
+      },
+      "frameMs": {
+        "p50": 516.5999999999985,
+        "p95": 616.5999999999985,
+        "p99": 616.5999999999985
+      },
+      "drawCalls": 23,
+      "instances": 5000,
+      "triangles": 1863730,
+      "batchCount": 5,
+      "chunkCount": 20,
+      "dpr": 1.25,
+      "quality": "balanced",
+      "glbLoadCount": 5,
+      "memoryUsedBytes": 56800000
+    }
+  ]
+}

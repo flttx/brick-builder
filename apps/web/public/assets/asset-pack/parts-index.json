@@ -1,0 +1,375 @@
+[
+  {
+    "id": "brick-1x1",
+    "name": "Brick 1x1",
+    "category": "brick",
+    "tags": [
+      "brick",
+      "1x1"
+    ],
+    "aliases": [
+      "brick-1x1",
+      "1x1",
+      "1×1",
+      "砖"
+    ],
+    "dimensions": {
+      "width": 1,
+      "height": 1.2,
+      "depth": 1
+    },
+    "thumbnail": "/assets/asset-pack/parts/brick-1x1/07256dfd890d8565/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/brick-1x1/07256dfd890d8565/manifest.json"
+  },
+  {
+    "id": "brick-1x2",
+    "name": "Brick 1x2",
+    "category": "brick",
+    "tags": [
+      "brick",
+      "1x2"
+    ],
+    "aliases": [
+      "brick-1x2",
+      "1x2",
+      "1×2",
+      "砖"
+    ],
+    "dimensions": {
+      "width": 1,
+      "height": 1.2,
+      "depth": 2
+    },
+    "thumbnail": "/assets/asset-pack/parts/brick-1x2/f93f0f268d800894/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/brick-1x2/f93f0f268d800894/manifest.json"
+  },
+  {
+    "id": "brick-1x3",
+    "name": "Brick 1x3",
+    "category": "brick",
+    "tags": [
+      "brick",
+      "1x3"
+    ],
+    "aliases": [
+      "brick-1x3",
+      "1x3",
+      "1×3",
+      "砖"
+    ],
+    "dimensions": {
+      "width": 1,
+      "height": 1.2,
+      "depth": 3
+    },
+    "thumbnail": "/assets/asset-pack/parts/brick-1x3/328bea9ad6d71bfc/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/brick-1x3/328bea9ad6d71bfc/manifest.json"
+  },
+  {
+    "id": "brick-1x4",
+    "name": "Brick 1x4",
+    "category": "brick",
+    "tags": [
+      "brick",
+      "1x4"
+    ],
+    "aliases": [
+      "brick-1x4",
+      "1x4",
+      "1×4",
+      "砖"
+    ],
+    "dimensions": {
+      "width": 1,
+      "height": 1.2,
+      "depth": 4
+    },
+    "thumbnail": "/assets/asset-pack/parts/brick-1x4/636d9e5673e3ca48/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/brick-1x4/636d9e5673e3ca48/manifest.json"
+  },
+  {
+    "id": "brick-2x2",
+    "name": "Brick 2x2",
+    "category": "brick",
+    "tags": [
+      "brick",
+      "2x2"
+    ],
+    "aliases": [
+      "brick-2x2",
+      "2x2",
+      "2×2",
+      "砖"
+    ],
+    "dimensions": {
+      "width": 2,
+      "height": 1.2,
+      "depth": 2
+    },
+    "thumbnail": "/assets/asset-pack/parts/brick-2x2/b6c7bb6add4d706f/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/brick-2x2/b6c7bb6add4d706f/manifest.json"
+  },
+  {
+    "id": "brick-2x3",
+    "name": "Brick 2x3",
+    "category": "brick",
+    "tags": [
+      "brick",
+      "2x3"
+    ],
+    "aliases": [
+      "brick-2x3",
+      "2x3",
+      "2×3",
+      "砖"
+    ],
+    "dimensions": {
+      "width": 2,
+      "height": 1.2,
+      "depth": 3
+    },
+    "thumbnail": "/assets/asset-pack/parts/brick-2x3/bfdd191b131da2e0/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/brick-2x3/bfdd191b131da2e0/manifest.json"
+  },
+  {
+    "id": "brick-2x4",
+    "name": "Brick 2x4",
+    "category": "brick",
+    "tags": [
+      "brick",
+      "2x4"
+    ],
+    "aliases": [
+      "brick-2x4",
+      "2x4",
+      "2×4",
+      "砖"
+    ],
+    "dimensions": {
+      "width": 2,
+      "height": 1.2,
+      "depth": 4
+    },
+    "thumbnail": "/assets/asset-pack/parts/brick-2x4/8b1020fee6d6d79c/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/brick-2x4/8b1020fee6d6d79c/manifest.json"
+  },
+  {
+    "id": "brick-2x6",
+    "name": "Brick 2x6",
+    "category": "brick",
+    "tags": [
+      "brick",
+      "2x6"
+    ],
+    "aliases": [
+      "brick-2x6",
+      "2x6",
+      "2×6",
+      "砖"
+    ],
+    "dimensions": {
+      "width": 2,
+      "height": 1.2,
+      "depth": 6
+    },
+    "thumbnail": "/assets/asset-pack/parts/brick-2x6/1020f796b2b9b670/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/brick-2x6/1020f796b2b9b670/manifest.json"
+  },
+  {
+    "id": "ldraw-brick-1x1",
+    "name": "LDraw Brick 1x1",
+    "category": "brick",
+    "tags": [
+      "brick",
+      "ldraw",
+      "1x1"
+    ],
+    "aliases": [
+      "ldraw-brick-1x1",
+      "ldraw 1×1"
+    ],
+    "dimensions": {
+      "width": 1,
+      "height": 1.2,
+      "depth": 1
+    },
+    "thumbnail": "/assets/asset-pack/parts/ldraw-brick-1x1/6626468db3b403ac/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/ldraw-brick-1x1/6626468db3b403ac/manifest.json"
+  },
+  {
+    "id": "plate-1x1",
+    "name": "Plate 1x1",
+    "category": "plate",
+    "tags": [
+      "plate",
+      "1x1"
+    ],
+    "aliases": [
+      "plate-1x1",
+      "1x1",
+      "1×1",
+      "板"
+    ],
+    "dimensions": {
+      "width": 1,
+      "height": 0.4,
+      "depth": 1
+    },
+    "thumbnail": "/assets/asset-pack/parts/plate-1x1/c95dfb6836b9da9c/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/plate-1x1/c95dfb6836b9da9c/manifest.json"
+  },
+  {
+    "id": "plate-1x2",
+    "name": "Plate 1x2",
+    "category": "plate",
+    "tags": [
+      "plate",
+      "1x2"
+    ],
+    "aliases": [
+      "plate-1x2",
+      "1x2",
+      "1×2",
+      "板"
+    ],
+    "dimensions": {
+      "width": 1,
+      "height": 0.4,
+      "depth": 2
+    },
+    "thumbnail": "/assets/asset-pack/parts/plate-1x2/048ec9d09d55b6b2/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/plate-1x2/048ec9d09d55b6b2/manifest.json"
+  },
+  {
+    "id": "plate-1x4",
+    "name": "Plate 1x4",
+    "category": "plate",
+    "tags": [
+      "plate",
+      "1x4"
+    ],
+    "aliases": [
+      "plate-1x4",
+      "1x4",
+      "1×4",
+      "板"
+    ],
+    "dimensions": {
+      "width": 1,
+      "height": 0.4,
+      "depth": 4
+    },
+    "thumbnail": "/assets/asset-pack/parts/plate-1x4/ca1c8c3aac4abb82/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/plate-1x4/ca1c8c3aac4abb82/manifest.json"
+  },
+  {
+    "id": "plate-2x2",
+    "name": "Plate 2x2",
+    "category": "plate",
+    "tags": [
+      "plate",
+      "2x2"
+    ],
+    "aliases": [
+      "plate-2x2",
+      "2x2",
+      "2×2",
+      "板"
+    ],
+    "dimensions": {
+      "width": 2,
+      "height": 0.4,
+      "depth": 2
+    },
+    "thumbnail": "/assets/asset-pack/parts/plate-2x2/fb4ca838247f15cf/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/plate-2x2/fb4ca838247f15cf/manifest.json"
+  },
+  {
+    "id": "plate-2x4",
+    "name": "Plate 2x4",
+    "category": "plate",
+    "tags": [
+      "plate",
+      "2x4"
+    ],
+    "aliases": [
+      "plate-2x4",
+      "2x4",
+      "2×4",
+      "板"
+    ],
+    "dimensions": {
+      "width": 2,
+      "height": 0.4,
+      "depth": 4
+    },
+    "thumbnail": "/assets/asset-pack/parts/plate-2x4/bde63c56b60440a7/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/plate-2x4/bde63c56b60440a7/manifest.json"
+  },
+  {
+    "id": "tile-1x1",
+    "name": "Tile 1x1",
+    "category": "tile",
+    "tags": [
+      "tile",
+      "1x1"
+    ],
+    "aliases": [
+      "tile-1x1",
+      "1x1",
+      "1×1",
+      "平板"
+    ],
+    "dimensions": {
+      "width": 1,
+      "height": 0.4,
+      "depth": 1
+    },
+    "thumbnail": "/assets/asset-pack/parts/tile-1x1/2abc3b29a78e7edd/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/tile-1x1/2abc3b29a78e7edd/manifest.json"
+  },
+  {
+    "id": "tile-1x2",
+    "name": "Tile 1x2",
+    "category": "tile",
+    "tags": [
+      "tile",
+      "1x2"
+    ],
+    "aliases": [
+      "tile-1x2",
+      "1x2",
+      "1×2",
+      "平板"
+    ],
+    "dimensions": {
+      "width": 1,
+      "height": 0.4,
+      "depth": 2
+    },
+    "thumbnail": "/assets/asset-pack/parts/tile-1x2/c32a3fc2a1ab1789/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/tile-1x2/c32a3fc2a1ab1789/manifest.json"
+  },
+  {
+    "id": "tile-2x2",
+    "name": "Tile 2x2",
+    "category": "tile",
+    "tags": [
+      "tile",
+      "2x2"
+    ],
+    "aliases": [
+      "tile-2x2",
+      "2x2",
+      "2×2",
+      "平板"
+    ],
+    "dimensions": {
+      "width": 2,
+      "height": 0.4,
+      "depth": 2
+    },
+    "thumbnail": "/assets/asset-pack/parts/tile-2x2/e5188eb93d2cce48/thumb-256.webp",
+    "manifestUrl": "/assets/asset-pack/parts/tile-2x2/e5188eb93d2cce48/manifest.json"
+  }
+]

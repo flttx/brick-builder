@@ -1,0 +1,138 @@
+{
+  "id": "plate-1x1",
+  "version": 1,
+  "name": "Plate 1x1",
+  "category": "plate",
+  "source": {
+    "sourceType": "procedural",
+    "sourcePartId": "plate-1x1",
+    "sourceFile": "assets-source/procedural/standard-rectangles.json",
+    "sourceVersion": "1",
+    "author": "Brick Builder",
+    "license": "CC0"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/plate-1x1/c95dfb6836b9da9c/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/plate-1x1/c95dfb6836b9da9c/lod1.glb"
+  },
+  "dimensions": {
+    "width": 1,
+    "height": 0.4,
+    "depth": 1
+  },
+  "origin": [
+    0,
+    0,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "stud-0-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0,
+        "y": 0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "anti-stud-0-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": -0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "main",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "size": {
+        "x": 0.96,
+        "y": 0.36000000000000004,
+        "z": 0.96
+      }
+    }
+  ],
+  "metadataHash": "1b0cbe12904afdcb",
+  "geometryHash": "2c46e6510300dcc9",
+  "sourceHash": "3b746d09e63d6cc6",
+  "assetHash": "c95dfb6836b9da9c",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/plate-1x1/c95dfb6836b9da9c/thumb-256.webp",
+  "tags": [
+    "plate",
+    "1x1"
+  ],
+  "aliases": [
+    "plate-1x1",
+    "1x1",
+    "1×1",
+    "板"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 50,
+    "lod1Vertices": 26,
+    "lod0Bounds": {
+      "min": [
+        -0.5,
+        -0.2,
+        -0.5
+      ],
+      "max": [
+        0.5,
+        0.36000000000000004,
+        0.5
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -0.5,
+        -0.2,
+        -0.5
+      ],
+      "max": [
+        0.5,
+        0.36000000000000004,
+        0.5
+      ]
+    }
+  }
+}
