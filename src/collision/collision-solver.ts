@@ -1,12 +1,28 @@
 import type { BrickInstance } from "../parts/brick-instance.js";
 import type { PartRegistry } from "../parts/part-registry.js";
 import type { BrickSpatialIndex, WorldCollider } from "../spatial/brick-spatial-index.js";
-import type { Transform } from "../math/transform.js";
-import { aabbCenter, aabbRelation, type AABB } from "./aabb.js";
+import { GROUND_LEVEL, type Transform } from "../math/transform.js";
+import type { Quat } from "../math/quat.js";
+import { aabbCenter, aabbRelation, aabbUnion, type AABB } from "./aabb.js";
 import type { CollisionConfig, CollisionPairResult, CollisionResult } from "./box-collision.js";
-import { colliderWorldAABB, DEFAULT_COLLISION_CONFIG } from "./box-collision.js";
+import { colliderLocalAABB, colliderWorldAABB, DEFAULT_COLLISION_CONFIG } from "./box-collision.js";
 import type { ColliderDefinition } from "./collider-definition.js";
 import type { Vec3 } from "../math/vec3.js";
+
+/** Returns the transform y that keeps a part's rotated collider on the ground. */
+export const groundPositionYForColliders = (
+  colliders: ColliderDefinition[],
+  rotation: Quat,
+  groundLevel = GROUND_LEVEL
+): number => {
+  if (colliders.length === 0) return groundLevel;
+  const localBounds = combineBounds(colliders.map(colliderLocalAABB));
+  const rotatedBounds = combineBounds(colliders.map((collider) => colliderWorldAABB(collider, {
+    position: { x: 0, y: 0, z: 0 },
+    rotation
+  })));
+  return groundLevel + Math.max(0, localBounds.min.y - rotatedBounds.min.y);
+};
 
 export class CollisionSolver {
   public constructor(
@@ -16,25 +32,26 @@ export class CollisionSolver {
   ) {}
 
   public checkBrick(brick: BrickInstance, transform: Transform, excludeBrickId = brick.id): CollisionResult {
-    const definition = this.parts.get(brick.partId);
-    const movingBounds = this.combinedBounds(definition.colliders.map((collider) => colliderWorldAABB(collider, transform)));
-    const targets = this.brickSpatial.queryAABB(movingBounds, excludeBrickId);
     const pairs: CollisionPairResult[] = [];
-    for (const target of targets) {
-      const relation = aabbRelation(movingBounds, target.bounds, Math.max(this.config.contactEpsilon, this.config.penetrationEpsilon));
-      pairs.push({
-        movingColliderId: "combined",
-        targetBrickId: target.brickId,
-        targetColliderId: target.colliderId,
-        relation,
-        movingBounds,
-        targetBounds: target.bounds
-      });
+    const definition = this.parts.get(brick.partId);
+    for (const collider of definition.colliders) {
+      const movingBounds = colliderWorldAABB(collider, transform);
+      for (const target of this.brickSpatial.queryAABB(movingBounds, excludeBrickId)) {
+        const relation = aabbRelation(movingBounds, target.bounds, Math.max(this.config.contactEpsilon, this.config.penetrationEpsilon));
+        pairs.push({
+          movingColliderId: collider.id,
+          targetBrickId: target.brickId,
+          targetColliderId: target.colliderId,
+          relation,
+          movingBounds,
+          targetBounds: target.bounds
+        });
+      }
     }
     const status = pairs.some((pair) => pair.relation === "penetrating")
       ? "penetrating"
       : pairs.some((pair) => pair.relation === "touching") ? "touching" : "separated";
-    const push = status === "penetrating" ? findSmallestSeparation(movingBounds, pairs) : undefined;
+    const push = status === "penetrating" ? findSmallestSeparation(pairs) : undefined;
     return {
       valid: status !== "penetrating",
       status,
@@ -47,31 +64,21 @@ export class CollisionSolver {
     return this.checkBrick(brick, transform, brick.id);
   }
 
-  private combinedBounds(bounds: AABB[]): AABB {
-    const first = bounds[0];
-    if (first === undefined) {
-      return { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } };
-    }
-    return bounds.slice(1).reduce((current, next) => ({
-      min: {
-        x: Math.min(current.min.x, next.min.x),
-        y: Math.min(current.min.y, next.min.y),
-        z: Math.min(current.min.z, next.min.z)
-      },
-      max: {
-        x: Math.max(current.max.x, next.max.x),
-        y: Math.max(current.max.y, next.max.y),
-        z: Math.max(current.max.z, next.max.z)
-      }
-    }), first);
-  }
 }
 
-const findSmallestSeparation = (movingBounds: AABB, pairs: CollisionPairResult[]): { depth: number; vector: Vec3 } | undefined => {
-  const movingCenter = aabbCenter(movingBounds);
+const combineBounds = (bounds: AABB[]): AABB => {
+  const first = bounds[0];
+  if (first === undefined) {
+    return { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } };
+  }
+  return bounds.slice(1).reduce((current, next) => aabbUnion(current, next), first);
+};
+
+const findSmallestSeparation = (pairs: CollisionPairResult[]): { depth: number; vector: Vec3 } | undefined => {
   let smallest: { depth: number; vector: Vec3 } | undefined;
   for (const pair of pairs) {
     if (pair.relation !== "penetrating") continue;
+    const movingCenter = aabbCenter(pair.movingBounds);
     const overlap = {
       x: Math.min(pair.movingBounds.max.x, pair.targetBounds.max.x) - Math.max(pair.movingBounds.min.x, pair.targetBounds.min.x),
       y: Math.min(pair.movingBounds.max.y, pair.targetBounds.max.y) - Math.max(pair.movingBounds.min.y, pair.targetBounds.min.y),

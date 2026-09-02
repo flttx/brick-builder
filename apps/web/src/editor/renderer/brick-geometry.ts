@@ -5,7 +5,7 @@ import type { PartDefinition } from "../../../../../src/index.js";
 export const createBrickGeometry = (part: PartDefinition): THREE.BufferGeometry => {
   const pieces = part.visual === undefined
     ? [new THREE.BoxGeometry(part.dimensions.width, part.dimensions.height, part.dimensions.depth)]
-    : createSpecialGeometry(part.visual.kind);
+    : createSpecialGeometry(part);
   for (const connector of part.connectors) {
     if (connector.type !== "stud") {
       continue;
@@ -26,7 +26,11 @@ export const createBrickGeometry = (part: PartDefinition): THREE.BufferGeometry 
   return geometry;
 };
 
-const createSpecialGeometry = (kind: NonNullable<PartDefinition["visual"]>["kind"]): THREE.BufferGeometry[] => {
+const createSpecialGeometry = (part: PartDefinition): THREE.BufferGeometry[] => {
+  const kind = part.visual?.kind;
+  if (kind === undefined) {
+    return [];
+  }
   if (kind === "wheel") {
     const tire = new THREE.TorusGeometry(0.43, 0.14, 12, 24);
     const hub = new THREE.CylinderGeometry(0.19, 0.19, 0.42, 16);
@@ -41,6 +45,13 @@ const createSpecialGeometry = (kind: NonNullable<PartDefinition["visual"]>["kind
     const flag = new THREE.BoxGeometry(0.58, 0.62, 0.06);
     flag.translate(0.29, 1.95, 0);
     return [base, pole, flag];
+  }
+  if (kind === "technic_axle") {
+    return part.colliders.map((collider) => {
+      const geometry = new THREE.BoxGeometry(collider.size.x, collider.size.y, collider.size.z);
+      geometry.translate(collider.center.x, collider.center.y, collider.center.z);
+      return geometry;
+    });
   }
   const stem = new THREE.CylinderGeometry(0.065, 0.065, 0.55, 12);
   stem.translate(0, -0.325, 0);

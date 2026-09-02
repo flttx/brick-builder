@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties, ReactElement } from "react";
-import type { BrickProjectSnapshot, ConnectionGroup, DragResult, PrecisionSnapRequest, RotationAxis, Transform } from "../../../../src/index.js";
+import type { BrickProjectSnapshot, ConnectionGroup, DragResult, ExplicitSnapRequest, RotationAxis, Transform } from "../../../../src/index.js";
 import { BASIC_BRICK_BUCKET, BrickBucket, BrickEngine } from "../../../../src/index.js";
 import { createWebpThumbnail, IndexedDbCachedProjectStore, IndexedDbLocalDraftStore, SaveManager, type LocalProjectIndexStore, type ProjectRepository, type SaveState } from "../../../../packages/project-persistence/index.js";
 import { isRuntimePartManifest, partDefinitionFromRuntimeManifest } from "../../../../packages/brick-assets/asset-types.js";
@@ -51,9 +51,7 @@ interface PrecisionEditorSession {
   movingBrickId: string;
   state: PrecisionInteractionState;
   sourceConnectorA1Id?: string;
-  sourceConnectorA2Id?: string;
   targetConnectorB1Id?: string;
-  targetConnectorB2Id?: string;
   targetBrickId?: string;
   preview?: PrecisionPreviewState;
 }
@@ -257,6 +255,7 @@ export const EditorApp = ({ projectId = "local-project", projectName = "Local Dr
     try { engine.deleteBrick(ui.selectedBrickId); void feedback.afterUserGesture(() => { feedback.detach(); feedback.delete(); }).catch(() => undefined); setUi((current) => ({ ...current, selectedBrickId: undefined })); syncAfterCommand(); } catch { setNotice(messages.editor.placement.cannotDelete); }
   }, [engine, feedback, syncAfterCommand, ui.selectedBrickId]);
   const chooseColor = useCallback((color: BrickColor) => { setCurrentColorId(color.id); if (ui.selectedBrickId !== undefined) { engine.changeBrickColor(ui.selectedBrickId, color.id); syncAfterCommand(); } setUi((current) => ({ ...current, activePanel: null, debugOpen: false })); }, [engine, syncAfterCommand, ui.selectedBrickId]);
+  const choosePlacementColor = useCallback((color: BrickColor) => { setCurrentColorId(color.id); }, []);
   const undo = useCallback(() => { if (engine.undo()) { void feedback.afterUserGesture(() => feedback.undo()).catch(() => undefined); syncAfterCommand(); } }, [engine, feedback, syncAfterCommand]);
   const redo = useCallback(() => { if (engine.redo()) { void feedback.afterUserGesture(() => feedback.redo()).catch(() => undefined); syncAfterCommand(); } }, [engine, feedback, syncAfterCommand]);
 
@@ -289,53 +288,28 @@ export const EditorApp = ({ projectId = "local-project", projectName = "Local Dr
     setNotice(undefined);
     setPrecision((current) => current === undefined ? current : {
       movingBrickId: current.movingBrickId,
-      state: "precision_pick_source_a2",
+      state: "precision_pick_target_b1",
       sourceConnectorA1Id
     });
   }, []);
 
-  const handlePrecisionSourceA2 = useCallback((sourceConnectorA2Id: string) => {
-    setNotice(undefined);
-    setPrecision((current) => current === undefined || current.sourceConnectorA1Id === undefined ? current : {
-      movingBrickId: current.movingBrickId,
-      state: "precision_pick_target_b1",
-      sourceConnectorA1Id: current.sourceConnectorA1Id,
-      sourceConnectorA2Id
-    });
-  }, []);
-
   const handlePrecisionTargetB1 = useCallback((targetConnectorB1Id: string, targetBrickId: string) => {
-    setNotice(undefined);
-    setPrecision((current) => current === undefined || current.sourceConnectorA1Id === undefined || current.sourceConnectorA2Id === undefined ? current : {
-      movingBrickId: current.movingBrickId,
-      state: "precision_pick_target_b2",
-      sourceConnectorA1Id: current.sourceConnectorA1Id,
-      sourceConnectorA2Id: current.sourceConnectorA2Id,
-      targetConnectorB1Id,
-      targetBrickId
-    });
-  }, []);
-
-  const handlePrecisionTargetB2 = useCallback((targetConnectorB2Id: string, targetBrickId: string) => {
     const current = precision;
-    if (current === undefined || current.sourceConnectorA1Id === undefined || current.sourceConnectorA2Id === undefined || current.targetConnectorB1Id === undefined) {
-      return;
-    }
+    if (current === undefined || current.sourceConnectorA1Id === undefined) return;
     const movingBrick = engine.bricks.tryGet(current.movingBrickId);
-    if (movingBrick === undefined) {
+    const targetBrick = engine.bricks.tryGet(targetBrickId);
+    if (movingBrick === undefined || targetBrick === undefined) {
       setNotice(messages.editor.placement.brickUnavailable);
       return;
     }
-    const request: PrecisionSnapRequest = {
+    const request: ExplicitSnapRequest = {
       movingBrickId: current.movingBrickId,
-      movingConnectorA1Id: current.sourceConnectorA1Id,
-      movingConnectorA2Id: current.sourceConnectorA2Id,
+      movingConnectorId: current.sourceConnectorA1Id,
       targetBrickId,
-      targetConnectorB1Id: current.targetConnectorB1Id,
-      targetConnectorB2Id,
+      targetConnectorId: targetConnectorB1Id,
       freeTransform: movingBrick.transform
     };
-    const result = engine.solvePrecisionSnap(request);
+    const result = engine.solveExplicitSnap(request);
     if (!result.valid || result.transform === undefined) {
       setNotice(explicitSnapMessage(result.reason));
       return;
@@ -345,9 +319,7 @@ export const EditorApp = ({ projectId = "local-project", projectName = "Local Dr
       movingBrickId: current.movingBrickId,
       state: "precision_preview",
       sourceConnectorA1Id: current.sourceConnectorA1Id,
-      sourceConnectorA2Id: current.sourceConnectorA2Id,
-      targetConnectorB1Id: current.targetConnectorB1Id,
-      targetConnectorB2Id,
+      targetConnectorB1Id,
       targetBrickId,
       preview: { request, result }
     });
@@ -365,7 +337,7 @@ export const EditorApp = ({ projectId = "local-project", projectName = "Local Dr
       return;
     }
     try {
-      const result = engine.commitPrecisionSnap(preview.request);
+      const result = engine.commitExplicitSnap(preview.request);
       setUi((current) => ({ ...current, selectedBrickId: preview.request.movingBrickId }));
       syncAfterCommand();
       setNotice(messages.editor.placement.connected(result.matchedPairs.length));
@@ -445,19 +417,19 @@ export const EditorApp = ({ projectId = "local-project", projectName = "Local Dr
         <button className={`snap-toggle${ui.snapEnabled ? " is-active" : ""}`} type="button" role="switch" aria-checked={ui.snapEnabled} onClick={() => setUi((current) => ({ ...current, snapEnabled: !current.snapEnabled }))}><span className="snap-icon" aria-hidden="true"><MagnetIcon /></span><span>{messages.editor.toolbar.snap}</span><strong>{ui.snapEnabled ? messages.common.on : messages.common.off}</strong></button>
         <span className="rail-shortcut"><kbd>Alt</kbd><span>{messages.editor.toolbar.altHint}</span></span>
       </nav>
-      <section className="scene-wrap" aria-label={messages.editor.sceneAria}><EditorScene engine={engine} cameraController={cameraController} debugFlags={debugFlags} quality={quality} benchmark={benchmark} {...(physics === undefined ? {} : { physics })} rendererOptions={rendererOptions} selectedBrickId={ui.selectedBrickId} placementSession={placementSession} placementMode={ui.snapEnabled ? "auto" : "free"} precision={precision === undefined ? undefined : { movingBrickId: precision.movingBrickId, state: precision.state, ...(precision.sourceConnectorA1Id === undefined ? {} : { sourceConnectorA1Id: precision.sourceConnectorA1Id }), ...(precision.sourceConnectorA2Id === undefined ? {} : { sourceConnectorA2Id: precision.sourceConnectorA2Id }), ...(precision.targetConnectorB1Id === undefined ? {} : { targetConnectorB1Id: precision.targetConnectorB1Id }), ...(precision.targetConnectorB2Id === undefined ? {} : { targetConnectorB2Id: precision.targetConnectorB2Id }), ...(precision.targetBrickId === undefined ? {} : { targetBrickId: precision.targetBrickId }), ...(precision.preview === undefined ? {} : { preview: precision.preview }), onSourceConnectorA1: handlePrecisionSourceA1, onSourceConnectorA2: handlePrecisionSourceA2, onTargetConnectorB1: handlePrecisionTargetB1, onTargetConnectorB2: handlePrecisionTargetB2 }} onSelectionChange={handleSelectionChange} onHoverChange={handleHoverChange} onStateChange={handleStateChange} onDragResult={handleDragResult} onDragPlaneChange={handleDragPlaneChange} onInteractionMetricsChange={handleInteractionMetricsChange} onHistoryChange={bumpRevision} onFrameMetrics={handleFrameMetrics} onRendererReady={handleRendererReady} onDebugReady={handleDebugReady} onPlacementCommitted={handlePlacementCommitted} onPlacementCancelled={handlePlacementCancelled} onPlacementModeChange={handlePlacementModeChange} onCanvasReady={handleCanvasReady} onRecoveryStateChange={handleRecoveryStateChange} onRecoveryRetryReady={handleRecoveryRetryReady} saveLocal={saveLocal} /></section>
+      <section className="scene-wrap" aria-label={messages.editor.sceneAria}><EditorScene engine={engine} cameraController={cameraController} debugFlags={debugFlags} quality={quality} benchmark={benchmark} {...(physics === undefined ? {} : { physics })} rendererOptions={rendererOptions} selectedBrickId={ui.selectedBrickId} placementSession={placementSession} placementMode={ui.snapEnabled ? "auto" : "free"} precision={precision === undefined ? undefined : { movingBrickId: precision.movingBrickId, state: precision.state, ...(precision.sourceConnectorA1Id === undefined ? {} : { sourceConnectorA1Id: precision.sourceConnectorA1Id }), ...(precision.targetConnectorB1Id === undefined ? {} : { targetConnectorB1Id: precision.targetConnectorB1Id }), ...(precision.targetBrickId === undefined ? {} : { targetBrickId: precision.targetBrickId }), ...(precision.preview === undefined ? {} : { preview: precision.preview }), onSourceConnectorA1: handlePrecisionSourceA1, onTargetConnectorB1: handlePrecisionTargetB1 }} onSelectionChange={handleSelectionChange} onHoverChange={handleHoverChange} onStateChange={handleStateChange} onDragResult={handleDragResult} onDragPlaneChange={handleDragPlaneChange} onInteractionMetricsChange={handleInteractionMetricsChange} onHistoryChange={bumpRevision} onFrameMetrics={handleFrameMetrics} onRendererReady={handleRendererReady} onDebugReady={handleDebugReady} onPlacementCommitted={handlePlacementCommitted} onPlacementCancelled={handlePlacementCancelled} onPlacementModeChange={handlePlacementModeChange} onCanvasReady={handleCanvasReady} onRecoveryStateChange={handleRecoveryStateChange} onRecoveryRetryReady={handleRecoveryRetryReady} saveLocal={saveLocal} /></section>
       {engine.bricks.size === 0 && placementSession === undefined && precision === undefined && <EmptyEditorPrompt onParts={() => togglePanel("parts")} onBucket={() => togglePanel("bucket")} />}
       {placementSession !== undefined && <div className="context-notice placement-notice" role="status"><strong>{messages.editor.placement.placePart(localizePartName(placementSession.partId, engine.parts.get(placementSession.partId).name))}</strong><span>{messages.editor.placement.dragHint}</span><button type="button" onClick={handlePlacementCancelled}>{messages.common.cancel}</button></div>}
-      {precision !== undefined && <div className="context-notice precision-notice" role="status"><strong>{precision.state === "precision_pick_source_a1" ? messages.editor.placement.precision.pickSourceA1 : precision.state === "precision_pick_source_a2" ? messages.editor.placement.precision.pickSourceA2 : precision.state === "precision_pick_target_b1" ? messages.editor.placement.precision.pickTargetB1 : precision.state === "precision_pick_target_b2" ? messages.editor.placement.precision.pickTargetB2 : messages.editor.placement.precision.preview}</strong><span>{precision.state === "precision_preview" ? messages.editor.placement.precision.pairCount(precision.preview?.result.matchedPairs.length ?? 0) : messages.editor.placement.precision.hint}</span>{precision.state === "precision_preview" && <button className="primary-action" type="button" onClick={handlePrecisionConfirm}>{messages.editor.placement.precision.confirm}</button>}<button type="button" onClick={handlePrecisionCancel}>{messages.editor.placement.precision.cancel}</button></div>}
+      {precision !== undefined && <div className="context-notice precision-notice" role="status"><strong>{precision.state === "precision_pick_source_a1" ? messages.editor.placement.precision.pickSourceA1 : precision.state === "precision_pick_target_b1" ? messages.editor.placement.precision.pickTargetB1 : messages.editor.placement.precision.preview}</strong><span>{precision.state === "precision_preview" ? messages.editor.placement.precision.pairCount(precision.preview?.result.matchedPairs.length ?? 0) : messages.editor.placement.precision.hint}</span>{precision.state === "precision_preview" && <button className="primary-action" type="button" onClick={handlePrecisionConfirm}>{messages.editor.placement.precision.confirm}</button>}<button type="button" onClick={handlePrecisionCancel}>{messages.editor.placement.precision.cancel}</button></div>}
       {notice !== undefined && <div className="toast-notice" role="alert">{notice}<button type="button" onClick={() => setNotice(undefined)} aria-label={messages.editor.dismissNotice}>×</button></div>}
       {saveState?.error === "AUTH_REQUIRED" && <div className="auth-expiry-banner" role="alert">{messages.editor.authExpired}<button type="button" onClick={onAuthRequired}>{messages.editor.loginAgain}</button></div>}
       {recoveryState !== "healthy" && <div className="auth-expiry-banner" role="alert"><span>{recoveryState === "context_lost" ? messages.editor.recovery.contextLost : recoveryState === "recovering" ? messages.editor.recovery.recovering : messages.editor.recovery.failed}</span>{recoveryState === "failed" && <button type="button" onClick={() => void recoveryRetryRef.current?.()}>{messages.editor.recovery.retry}</button>}</div>}
-      <PartBrowser open={ui.activePanel === "parts"} items={partIndex} recentPartIds={recentPartIds} onClose={closePanels} onSelect={(partId) => startPlacement(partId, recentPartIds.includes(partId) ? "recent" : "browser")} />
+      <PartBrowser open={ui.activePanel === "parts"} items={partIndex} recentPartIds={recentPartIds} colors={engine.colors.values()} currentColorId={currentColorId} onClose={closePanels} onColorSelect={choosePlacementColor} onSelect={(partId) => startPlacement(partId, recentPartIds.includes(partId) ? "recent" : "browser")} />
       {ui.activePanel === "bucket" && <BucketPanel pulse={bucketPulse} onDraw={handleBucketDraw} onClose={closePanels} />}
-      {ui.activePanel === "color" && <ColorPanel colors={engine.colors.values()} currentColorId={currentColorId} onChoose={chooseColor} onClose={closePanels} />}
+      {ui.activePanel === "color" && <ColorPanel colors={engine.colors.values()} currentColorId={selectedBrick?.colorId ?? currentColorId} onChoose={chooseColor} onClose={closePanels} />}
       {ui.activePanel === "settings" && <SettingsPanel snapEnabled={ui.snapEnabled} onSnapChange={(enabled) => setUi((current) => ({ ...current, snapEnabled: enabled }))} onOpenDebug={() => togglePanel("debug")} onClose={closePanels} debugAvailable={import.meta.env.DEV} />}
       <DevToolsShell open={ui.debugOpen} tab={devToolsTab} onTabChange={setDevToolsTab} onClose={closePanels} onValidate={handleValidate} onExportDiagnostics={handleExportDiagnostics} consistency={engine.validateEngineConsistency().valid ? messages.editor.debug.consistent : messages.editor.debug.checkRequired} performance={`FPS ${formatNumber(ui.frame.fps, 1)} · FRAME MS ${formatNumber(ui.frame.frameMs, 1)} · DPR ${quality.dpr.toFixed(2)} · ${quality.level}`} faults={faultState} onToggleFault={handleFaultToggle} enabled={import.meta.env.DEV} metrics={{ frame: ui.frame, interaction: ui.interaction, brickCount: engine.bricks.size, connectionCount: engine.graph.size, selected: selectedBrick?.id, candidatePairs: candidate?.matchedPairs.length, matchedPairs: precision?.preview?.result.matchedPairs.length }} debugFlags={debugFlags} onToggleDebug={handleDebugToggle} />
-      {selectedBrick !== undefined && <div className="context-toolbar" aria-live="polite"><div className="selection-swatch" style={{ backgroundColor: engine.colors.get(selectedBrick.colorId).baseColor }} /><div className="selection-copy"><span>{messages.editor.selection.activeObject}</span><strong>{localizePartName(selectedBrick.partId, selectedBrick.partId)}</strong></div><span className="selection-meta">{messages.editor.selection.summary(localizePartName(selectedBrick.partId, selectedBrick.partId), selectedConnections.length)}</span><div className="selection-actions"><button type="button" onClick={() => rotateSelected("y")} aria-label={messages.editor.toolbar.rotateSelected}><RotateIcon /></button><button type="button" onClick={() => rotateSelected("x")} aria-label={messages.editor.toolbar.rotateSelectedVertical}><VerticalRotateIcon /></button><button type="button" onClick={duplicateSelected} aria-label={`${messages.common.duplicate}${localizePartName(selectedBrick.partId, selectedBrick.partId)}`}><DuplicateIcon /></button><button type="button" onClick={() => requestActiveTool("precision_connect")} aria-label={messages.editor.toolbar.precisionConnect}><PrecisionIcon /></button><button type="button" onClick={deleteSelected} aria-label={`${messages.common.delete}${localizePartName(selectedBrick.partId, selectedBrick.partId)}`}><DeleteIcon /></button><button type="button" onClick={clearSelection} aria-label={messages.editor.toolbar.clearSelection}><ClearSelectionIcon /></button></div></div>}
+      {selectedBrick !== undefined && <div className="context-toolbar" aria-live="polite"><button className="selection-color-button" type="button" onClick={() => togglePanel("color")} aria-expanded={ui.activePanel === "color"} aria-label={messages.editor.toolbar.color}><span className="selection-swatch" style={{ backgroundColor: engine.colors.get(selectedBrick.colorId).baseColor }} /></button><div className="selection-copy"><span>{messages.editor.selection.activeObject}</span><strong>{localizePartName(selectedBrick.partId, selectedBrick.partId)}</strong></div><span className="selection-meta">{messages.editor.selection.summary(localizePartName(selectedBrick.partId, selectedBrick.partId), selectedConnections.length)}</span><div className="selection-actions"><button type="button" onClick={() => rotateSelected("y")} aria-label={messages.editor.toolbar.rotateSelected}><RotateIcon /></button><button type="button" onClick={() => rotateSelected("x")} aria-label={messages.editor.toolbar.rotateSelectedVertical}><VerticalRotateIcon /></button><button type="button" onClick={duplicateSelected} aria-label={`${messages.common.duplicate}${localizePartName(selectedBrick.partId, selectedBrick.partId)}`}><DuplicateIcon /></button><button type="button" onClick={() => requestActiveTool("precision_connect")} aria-label={messages.editor.toolbar.precisionConnect}><PrecisionIcon /></button><button type="button" onClick={deleteSelected} aria-label={`${messages.common.delete}${localizePartName(selectedBrick.partId, selectedBrick.partId)}`}><DeleteIcon /></button><button type="button" onClick={clearSelection} aria-label={messages.editor.toolbar.clearSelection}><ClearSelectionIcon /></button></div></div>}
       <div className="mobile-tool-bar" aria-label={messages.editor.toolbar.tools}><ToolRailButton icon={<MoveIcon />} label={messages.editor.toolbar.move} active={ui.activeTool === "move"} onClick={() => requestActiveTool("move")} /><ToolRailButton icon={<PartsIcon />} label={messages.editor.toolbar.parts} active={ui.activePanel === "parts"} onClick={() => togglePanel("parts")} /><ToolRailButton icon={<BucketIcon />} label={messages.editor.toolbar.bucket} active={ui.activePanel === "bucket"} onClick={() => togglePanel("bucket")} /><ToolRailButton icon={<ColorIcon />} label={messages.editor.toolbar.color} active={ui.activePanel === "color"} onClick={() => togglePanel("color")} /><ToolRailButton icon={<PrecisionIcon />} label={messages.editor.toolbar.precisionConnect} active={ui.activeTool === "precision_connect"} disabled={selectedBrick === undefined} onClick={() => requestActiveTool(ui.activeTool === "precision_connect" ? "move" : "precision_connect")} /><ToolRailButton icon={<MoreIcon />} label={messages.editor.toolbar.settings} active={ui.activePanel === "settings"} onClick={() => togglePanel("settings")} /></div>
       <footer className="bottom-hints" aria-label={messages.editor.debug.shortcuts}><span><kbd>DRAG</kbd> {messages.editor.debug.dragHint}</span><span><kbd>R</kbd> {messages.editor.debug.rotateHint}</span><span><kbd>SHIFT+R</kbd> {messages.editor.toolbar.rotateSelectedVertical}</span><span><kbd>WASD</kbd> {messages.editor.debug.cameraMoveHint}</span><span><kbd>ALT</kbd> {messages.editor.toolbar.altHint}</span><span><kbd>ESC</kbd> {messages.editor.debug.cancelHint}</span></footer>
     </main>

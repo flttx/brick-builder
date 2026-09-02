@@ -1,0 +1,330 @@
+{
+  "id": "ldraw-wheel-56908",
+  "version": 1,
+  "name": "越野车轮 26×43（56908）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "56908c01.dat",
+    "sourceFile": "assets-source/ldraw/56908c01.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=56908.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-wheel-56908/e89a3248a2b20dce/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-wheel-56908/e89a3248a2b20dce/lod1.glb"
+  },
+  "dimensions": {
+    "width": 10.23,
+    "height": 10.23,
+    "depth": 4.8
+  },
+  "origin": [
+    0,
+    4.515000000000001,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "technic-hole-0",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": 3.5157994280000002,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": -1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-1",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 0.8660500000000001,
+        "y": 4.015799428,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": -1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-2",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": -0.8660500000000001,
+        "y": 4.015799428,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": -1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-3",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": 5.515799428,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": -1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-4",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": -0.8660500000000001,
+        "y": 5.015799428,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": -1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-5",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 0.8660500000000001,
+        "y": 5.015799428,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": -1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "axle-hole-6",
+      "type": "axle_hole",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": 4.515799428,
+        "z": -1
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": -1
+      },
+      "compatibilityGroup": "technic-axle",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "axle-hole-7",
+      "type": "axle_hole",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": 4.515799428,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-axle",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "wheel-top",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 8.40860699328,
+        "z": 0
+      },
+      "size": {
+        "x": 10.191598856,
+        "y": 2.44598372544,
+        "z": 4.760000000000001
+      }
+    },
+    {
+      "id": "wheel-bottom",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0.6229918627200004,
+        "z": 0
+      },
+      "size": {
+        "x": 10.191598856,
+        "y": 2.44598372544,
+        "z": 4.760000000000001
+      }
+    },
+    {
+      "id": "wheel-left",
+      "type": "box",
+      "center": {
+        "x": -3.89280756528,
+        "y": 4.515799428,
+        "z": 0
+      },
+      "size": {
+        "x": 2.44598372544,
+        "y": 5.29963140512,
+        "z": 4.760000000000001
+      }
+    },
+    {
+      "id": "wheel-right",
+      "type": "box",
+      "center": {
+        "x": 3.89280756528,
+        "y": 4.515799428,
+        "z": 0
+      },
+      "size": {
+        "x": 2.44598372544,
+        "y": 5.29963140512,
+        "z": 4.760000000000001
+      }
+    }
+  ],
+  "metadataHash": "f373bcf0443fa5cf",
+  "geometryHash": "b4664815452d1c78",
+  "sourceHash": "baab527ed3f80249",
+  "assetHash": "e89a3248a2b20dce",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-56908/e89a3248a2b20dce/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "wheel",
+    "车轮",
+    "越野",
+    "56908"
+  ],
+  "aliases": [
+    "ldraw-wheel-56908",
+    "56908",
+    "越野车轮",
+    "车轮"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 7426,
+    "lod1Vertices": 7426,
+    "lod0Bounds": {
+      "min": [
+        -5.115799428,
+        -0.5999999999999996,
+        -2.4000000000000004
+      ],
+      "max": [
+        5.115799428,
+        9.631598856,
+        2.4000000000000004
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -5.115799428,
+        -0.5999999999999996,
+        -2.4000000000000004
+      ],
+      "max": [
+        5.115799428,
+        9.631598856,
+        2.4000000000000004
+      ]
+    }
+  }
+}

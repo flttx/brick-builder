@@ -1,0 +1,143 @@
+{
+  "id": "ldraw-wheel-3482",
+  "version": 1,
+  "name": "小车轮 8×17.5（3482）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "3482c01.dat",
+    "sourceFile": "assets-source/ldraw/3482c01.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=3482.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-wheel-3482/9017bfa5e374faae/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-wheel-3482/9017bfa5e374faae/lod1.glb"
+  },
+  "dimensions": {
+    "width": 3.1,
+    "height": 3.1,
+    "depth": 1
+  },
+  "origin": [
+    0,
+    0.9500000000000001,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "axle-hole-0",
+      "type": "axle_hole",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": 0.9500000000000001,
+        "z": 0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": -1
+      },
+      "compatibilityGroup": "technic-axle",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "axle-hole-1",
+      "type": "axle_hole",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": 0.9500000000000001,
+        "z": -0.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": -1
+      },
+      "compatibilityGroup": "technic-axle",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "visual-bounds",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0.95,
+        "z": 0
+      },
+      "size": {
+        "x": 3.06,
+        "y": 3.06,
+        "z": 0.96
+      }
+    }
+  ],
+  "metadataHash": "bf6098c533d71ada",
+  "geometryHash": "4e0b135bc155a3ca",
+  "sourceHash": "948fbb2a753f64db",
+  "assetHash": "9017bfa5e374faae",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-3482/9017bfa5e374faae/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "wheel",
+    "车轮",
+    "3482"
+  ],
+  "aliases": [
+    "ldraw-wheel-3482",
+    "3482",
+    "小车轮",
+    "车轮"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 946,
+    "lod1Vertices": 946,
+    "lod0Bounds": {
+      "min": [
+        -1.55,
+        -0.6,
+        -0.5
+      ],
+      "max": [
+        1.55,
+        2.5,
+        0.5
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -1.55,
+        -0.6,
+        -0.5
+      ],
+      "max": [
+        1.55,
+        2.5,
+        0.5
+      ]
+    }
+  }
+}

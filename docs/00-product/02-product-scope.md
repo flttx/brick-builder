@@ -12,7 +12,7 @@
 
 在 Prototype PASS 后增加：
 
-- 16~30 标准 Part
+- 16~30 标准 Part，以及基础 Technic Pin / Axle / Bar / Clip 连接件
 - Brick / Plate / Tile
 - 8~10 种颜色
 - Part Browser / Recent Parts / Brick Bucket
@@ -24,4 +24,4 @@
 
 ## V1
 
-增加：LDraw 资产管线、30~50+ Parts、LOD、Authoring Tool、完整 Offline、多端冲突、Auto Quality、1000+ Brick 性能优化、Audio/Haptics、Physics Bucket、Telemetry、生产级 CI 与资产发布。
+增加：LDraw 资产管线、30~50+ Parts、LOD、Authoring Tool、完整 Offline、多端冲突、Auto Quality、1000+ Brick 性能优化、Audio/Haptics、Physics Bucket、Telemetry、生产级 CI 与资产发布。复杂 Technic 机构仍不在当前范围内。

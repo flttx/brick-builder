@@ -1,0 +1,95 @@
+{
+  "id": "ldraw-claw-15362",
+  "version": 1,
+  "name": "机械爪钩（15362）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "15362.dat",
+    "sourceFile": "assets-source/ldraw/15362.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=1536.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-claw-15362/86eabb9157b98e39/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-claw-15362/86eabb9157b98e39/lod1.glb"
+  },
+  "dimensions": {
+    "width": 1.93,
+    "height": 1.91,
+    "depth": 6.42
+  },
+  "origin": [
+    0,
+    0.355,
+    0
+  ],
+  "connectors": [],
+  "colliders": [
+    {
+      "id": "visual-bounds",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0.35642500000000016,
+        "z": -2.220446049250313e-16
+      },
+      "size": {
+        "x": 1.8893,
+        "y": 1.8728500000000001,
+        "z": 6.378750000000001
+      }
+    }
+  ],
+  "metadataHash": "0c121cffa6764daa",
+  "geometryHash": "9a7cc5d9b0154001",
+  "sourceHash": "a74236b1f404be61",
+  "assetHash": "86eabb9157b98e39",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-claw-15362/86eabb9157b98e39/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "technic",
+    "claw",
+    "机械爪",
+    "15362"
+  ],
+  "aliases": [
+    "ldraw-claw-15362",
+    "15362",
+    "机械爪钩",
+    "机械爪"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 574,
+    "lod1Vertices": 574,
+    "lod0Bounds": {
+      "min": [
+        -0.96465,
+        -0.6,
+        -3.2093750000000005
+      ],
+      "max": [
+        0.96465,
+        1.3128500000000003,
+        3.209375
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -0.96465,
+        -0.6,
+        -3.2093750000000005
+      ],
+      "max": [
+        0.96465,
+        1.3128500000000003,
+        3.209375
+      ]
+    }
+  }
+}

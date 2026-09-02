@@ -137,9 +137,9 @@ export const zhCN: UiMessages = {
       connected: (count) => `已连接 ${count} 对连接点。`,
       connectorUnavailable: "这对连接点已不可用。",
       precision: {
-        pickSourceA1: "第 1 步：选择当前积木的第一个连接点",
+        pickSourceA1: "第 1 步：选择移动积木的一个连接点",
         pickSourceA2: "第 2 步：选择当前积木的第二个连接点",
-        pickTargetB1: "第 3 步：选择目标积木的第一个连接点",
+        pickTargetB1: "第 2 步：选择目标积木的一个连接点",
         pickTargetB2: "第 4 步：选择目标积木的第二个连接点",
         pickSource: "选择当前积木的连接点",
         pickTarget: "选择目标连接点",
@@ -234,6 +234,7 @@ export const zhCN: UiMessages = {
     searchLabel: "搜索零件",
     searchPlaceholder: "搜索 2×4、车轮、旗杆…",
     categories: { recent: "最近使用", brick: "砖块", plate: "薄板", tile: "光面板", special: "特殊件" },
+    specialGroups: { all: "全部", wheel: "车轮", plant: "植物", flag: "旗帜", antenna: "天线", technic: "机械/工具", other: "其他" },
     noMatches: "没有找到匹配零件。试试 2×4、车轮或旗杆。",
     place: (partName) => `放置 ${partName}`,
     categoryName: (category) => category === "brick" ? "砖块" : category === "plate" ? "薄板" : category === "tile" ? "光面板" : category === "special" ? "特殊件" : category,
@@ -303,7 +304,7 @@ export const zhCN: UiMessages = {
     size: "尺寸",
     generatedVsManual: "生成基础 vs 手动覆盖",
     overlayDescription: (hash) => `基础 Hash 为 ${hash}；当前编辑保存在独立的本机 JSON 文档中。`,
-    connectorType: (type) => type === "stud" ? "凸点" : type === "anti_stud" ? "防拆连接点" : type,
+    connectorType: (type) => type === "stud" ? "凸点" : type === "anti_stud" ? "防拆连接点" : type === "technic_pin" ? "Technic 插销" : type === "technic_hole" ? "Technic 孔" : type === "axle" ? "车轴" : type === "axle_hole" ? "车轴孔" : type === "bar" ? "杆" : type === "clip" ? "夹子" : type === "tube" ? "套管" : type,
     colliderType: (type) => type === "box" ? "盒体" : type,
     baseHash: (hash) => `基础 Hash：${hash}`
   },

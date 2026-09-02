@@ -1,0 +1,95 @@
+{
+  "id": "ldraw-wheel-64712",
+  "version": 1,
+  "name": "锥形带刺轮（64712）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "64712.dat",
+    "sourceFile": "assets-source/ldraw/64712.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=6471.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-wheel-64712/3effddcfbb8cebc9/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-wheel-64712/3effddcfbb8cebc9/lod1.glb"
+  },
+  "dimensions": {
+    "width": 7.79,
+    "height": 7.72,
+    "depth": 3.95
+  },
+  "origin": [
+    0,
+    3.26,
+    0
+  ],
+  "connectors": [],
+  "colliders": [
+    {
+      "id": "visual-bounds",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 3.25750175738,
+        "z": 0
+      },
+      "size": {
+        "x": 7.746213839999999,
+        "y": 7.675003514759999,
+        "z": 3.91
+      }
+    }
+  ],
+  "metadataHash": "a02b7a7f9fbc2213",
+  "geometryHash": "e0942922bec49244",
+  "sourceHash": "a97f545e19483c7a",
+  "assetHash": "3effddcfbb8cebc9",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-64712/3effddcfbb8cebc9/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "wheel",
+    "车轮",
+    "锥形",
+    "64712"
+  ],
+  "aliases": [
+    "ldraw-wheel-64712",
+    "64712",
+    "锥形带刺轮",
+    "车轮"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 8023,
+    "lod1Vertices": 8023,
+    "lod0Bounds": {
+      "min": [
+        -3.8931069199999997,
+        -0.6000000000000001,
+        -1.975
+      ],
+      "max": [
+        3.8931069199999997,
+        7.11500351476,
+        1.975
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -3.8931069199999997,
+        -0.6000000000000001,
+        -1.975
+      ],
+      "max": [
+        3.8931069199999997,
+        7.11500351476,
+        1.975
+      ]
+    }
+  }
+}

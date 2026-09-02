@@ -1,0 +1,120 @@
+{
+  "id": "ldraw-steering-wheel-30663",
+  "version": 1,
+  "name": "Technic 方向盘（30663）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "30663.dat",
+    "sourceFile": "assets-source/ldraw/30663.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=3066.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-steering-wheel-30663/e73ea6de03c88768/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-steering-wheel-30663/e73ea6de03c88768/lod1.glb"
+  },
+  "dimensions": {
+    "width": 2,
+    "height": 0.8,
+    "depth": 2
+  },
+  "origin": [
+    0,
+    -0.19999999999999996,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "anti-stud-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": 0.000024999999999997247,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "visual-bounds",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": -0.19998749999999998,
+        "z": 0
+      },
+      "size": {
+        "x": 1.9600500000000003,
+        "y": 0.760025,
+        "z": 1.9600500000000003
+      }
+    }
+  ],
+  "metadataHash": "c97077786e0049cd",
+  "geometryHash": "ba502a6eea65eb95",
+  "sourceHash": "49a8a82742629316",
+  "assetHash": "e73ea6de03c88768",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-steering-wheel-30663/e73ea6de03c88768/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "technic",
+    "steering",
+    "方向盘",
+    "30663"
+  ],
+  "aliases": [
+    "ldraw-steering-wheel-30663",
+    "30663",
+    "Technic 方向盘",
+    "方向盘"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 1003,
+    "lod1Vertices": 1003,
+    "lod0Bounds": {
+      "min": [
+        -1.0000250000000002,
+        -0.6,
+        -1.0000250000000002
+      ],
+      "max": [
+        1.0000250000000002,
+        0.200025,
+        1.0000250000000002
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -1.0000250000000002,
+        -0.6,
+        -1.0000250000000002
+      ],
+      "max": [
+        1.0000250000000002,
+        0.200025,
+        1.0000250000000002
+      ]
+    }
+  }
+}

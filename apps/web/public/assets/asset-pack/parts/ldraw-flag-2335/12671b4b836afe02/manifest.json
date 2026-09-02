@@ -1,0 +1,94 @@
+{
+  "id": "ldraw-flag-2335",
+  "version": 1,
+  "name": "标准旗面 2×2（2335）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "2335.dat",
+    "sourceFile": "assets-source/ldraw/2335.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=2335.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-flag-2335/12671b4b836afe02/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-flag-2335/12671b4b836afe02/lod1.glb"
+  },
+  "dimensions": {
+    "width": 0.66,
+    "height": 2,
+    "depth": 2.7
+  },
+  "origin": [
+    0,
+    0.4,
+    0
+  ],
+  "connectors": [],
+  "colliders": [
+    {
+      "id": "visual-bounds",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0.39999999999999997,
+        "z": 1.1102230246251565e-16
+      },
+      "size": {
+        "x": 0.6161,
+        "y": 1.96,
+        "z": 2.6624999999999996
+      }
+    }
+  ],
+  "metadataHash": "a10c3b4d15f0f602",
+  "geometryHash": "9cf7f2c3ea73908b",
+  "sourceHash": "03b16e0a0b8a8cf5",
+  "assetHash": "12671b4b836afe02",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-flag-2335/12671b4b836afe02/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "flag",
+    "旗面",
+    "2335"
+  ],
+  "aliases": [
+    "ldraw-flag-2335",
+    "2335",
+    "旗面",
+    "旗"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 136,
+    "lod1Vertices": 136,
+    "lod0Bounds": {
+      "min": [
+        -0.32805,
+        -0.6,
+        -1.3512499999999998
+      ],
+      "max": [
+        0.32805,
+        1.4,
+        1.35125
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -0.32805,
+        -0.6,
+        -1.3512499999999998
+      ],
+      "max": [
+        0.32805,
+        1.4,
+        1.35125
+      ]
+    }
+  }
+}

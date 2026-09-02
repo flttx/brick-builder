@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { GROUND_LEVEL } from "../../../../../src/math/transform.js";
+import { groundPositionYForColliders } from "../../../../../src/index.js";
 import type { BrickColorRegistry, BrickEngine, BrickInstance, DragResult, PartDefinition, Transform } from "../../../../../src/index.js";
 import { PartAssetRegistry } from "../assets/part-asset-registry.js";
 import { DragProxy } from "./drag-proxy.js";
@@ -151,17 +152,23 @@ export class ThreeBrickRenderer implements BrickRenderer {
   }
 
   public updateDrag(freeTransform: Transform, result: DragResult): void {
+    const draggingPartId = this.draggingBrickId === undefined ? undefined : this.engine.bricks.get(this.draggingBrickId).partId;
     let displayTransform = result.mode === "free"
-      ? { ...result.transform, position: { ...result.transform.position, y: Math.max(GROUND_LEVEL, result.transform.position.y) } }
+      ? this.clampToGround(result.transform, draggingPartId)
       : freeTransform;
     if (result.candidate !== undefined && result.valid) {
       const strength = magnetStrength(result.candidate.distance, this.engine.snap.config.detectRadius, this.engine.snap.config.strongLockRadius);
       const freePosition = toThreeVector(freeTransform.position);
-      freePosition.y = Math.max(GROUND_LEVEL, freePosition.y);
+      freePosition.y = Math.max(this.groundY(draggingPartId, freeTransform.rotation), freePosition.y);
       const snapPosition = toThreeVector(result.candidate.transform.position);
       const displayPosition = freePosition.lerp(snapPosition, strength);
-      displayPosition.y = Math.max(GROUND_LEVEL, displayPosition.y);
       const displayRotation = toThreeQuaternion(freeTransform.rotation).slerp(toThreeQuaternion(result.candidate.transform.rotation), strength);
+      displayPosition.y = Math.max(this.groundY(draggingPartId, {
+        x: displayRotation.x,
+        y: displayRotation.y,
+        z: displayRotation.z,
+        w: displayRotation.w
+      }), displayPosition.y);
       displayTransform = {
         position: { x: displayPosition.x, y: displayPosition.y, z: displayPosition.z },
         rotation: { x: displayRotation.x, y: displayRotation.y, z: displayRotation.z, w: displayRotation.w }
@@ -229,7 +236,7 @@ export class ThreeBrickRenderer implements BrickRenderer {
     if (proxy === undefined) {
       return;
     }
-    proxy.setTransform(this.displayTransform(freeTransform, result));
+    proxy.setTransform(this.displayTransform(freeTransform, result, proxy.partId));
     proxy.setInvalid(!result.valid);
   }
 
@@ -355,19 +362,38 @@ export class ThreeBrickRenderer implements BrickRenderer {
     return proxy;
   }
 
-  private displayTransform(freeTransform: Transform, result: DragResult): Transform {
+  private displayTransform(freeTransform: Transform, result: DragResult, partId?: string): Transform {
     if (result.candidate === undefined || !result.valid) {
-      return freeTransform;
+      return this.clampToGround(freeTransform, partId);
     }
     const strength = magnetStrength(result.candidate.distance, this.engine.snap.config.detectRadius, this.engine.snap.config.strongLockRadius);
     const freePosition = toThreeVector(freeTransform.position);
+    freePosition.y = Math.max(this.groundY(partId, freeTransform.rotation), freePosition.y);
     const snapPosition = toThreeVector(result.candidate.transform.position);
     const displayPosition = freePosition.lerp(snapPosition, strength);
     const displayRotation = toThreeQuaternion(freeTransform.rotation).slerp(toThreeQuaternion(result.candidate.transform.rotation), strength);
+    displayPosition.y = Math.max(this.groundY(partId, {
+      x: displayRotation.x,
+      y: displayRotation.y,
+      z: displayRotation.z,
+      w: displayRotation.w
+    }), displayPosition.y);
     return {
       position: { x: displayPosition.x, y: displayPosition.y, z: displayPosition.z },
       rotation: { x: displayRotation.x, y: displayRotation.y, z: displayRotation.z, w: displayRotation.w }
     };
+  }
+
+  private clampToGround(transform: Transform, partId?: string): Transform {
+    return {
+      ...transform,
+      position: { ...transform.position, y: Math.max(this.groundY(partId, transform.rotation), transform.position.y) }
+    };
+  }
+
+  private groundY(partId: string | undefined, rotation: Transform["rotation"]): number {
+    if (partId === undefined) return GROUND_LEVEL;
+    return groundPositionYForColliders(this.engine.parts.get(partId).colliders, rotation);
   }
 
   private refreshProxy(brickId: string | undefined, proxy: SelectionProxy): void {

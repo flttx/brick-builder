@@ -173,6 +173,23 @@ describe("connections, drag, commands and snapshot", () => {
     expect(engine.bricks.get(brickId).transform.rotation.w).toBeCloseTo(axisRotationQuarter("x", 1).w);
   });
 
+  it("keeps a vertically rotated brick above the ground during a free drag", () => {
+    const engine = new BrickEngine();
+    const brickId = engine.createBrick({ id: "vertical-wide", partId: "brick-2x4", transform: transformAt(0, 0, 0) });
+
+    engine.rotateBrick(brickId, 1, "x");
+    const rotated = engine.bricks.get(brickId).transform;
+    expect(rotated.position.y).toBeCloseTo(1.4);
+
+    engine.beginDrag(brickId, "free");
+    const result = engine.updateDrag({ position: vec3(3, -20, 2), rotation: rotated.rotation }, undefined, "free");
+    expect(result.valid).toBe(true);
+    expect(result.transform.position).toEqual({ x: 3, y: 1.4, z: 2 });
+
+    engine.commitDrag();
+    expect(engine.bricks.get(brickId).transform.position).toEqual({ x: 3, y: 1.4, z: 2 });
+  });
+
   it("computes connected components with BFS", () => {
     const graph = new ConnectionGraph();
     graph.add({ id: "ab", brickA: "a", brickB: "b", type: "rigid", pairs: [{ connectorA: "x", connectorB: "y" }] });

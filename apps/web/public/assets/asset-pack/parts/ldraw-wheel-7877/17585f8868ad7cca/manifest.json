@@ -1,0 +1,94 @@
+{
+  "id": "ldraw-wheel-7877",
+  "version": 1,
+  "name": "大轮毂 12 辐（7877）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "7877.dat",
+    "sourceFile": "assets-source/ldraw/7877.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/51616"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-wheel-7877/17585f8868ad7cca/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-wheel-7877/17585f8868ad7cca/lod1.glb"
+  },
+  "dimensions": {
+    "width": 7,
+    "height": 7,
+    "depth": 1.63
+  },
+  "origin": [
+    0,
+    2.9,
+    0
+  ],
+  "connectors": [],
+  "colliders": [
+    {
+      "id": "visual-bounds",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 2.9000000000000004,
+        "z": 0
+      },
+      "size": {
+        "x": 6.96,
+        "y": 6.96,
+        "z": 1.585
+      }
+    }
+  ],
+  "metadataHash": "0f6b2533a696f942",
+  "geometryHash": "bdaeab01f6d486cf",
+  "sourceHash": "90892083200e8af4",
+  "assetHash": "17585f8868ad7cca",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-7877/17585f8868ad7cca/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "wheel",
+    "轮毂",
+    "7877"
+  ],
+  "aliases": [
+    "ldraw-wheel-7877",
+    "7877",
+    "大轮毂",
+    "轮毂"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 2616,
+    "lod1Vertices": 2616,
+    "lod0Bounds": {
+      "min": [
+        -3.5,
+        -0.6000000000000001,
+        -0.8125
+      ],
+      "max": [
+        3.5,
+        6.4,
+        0.8125
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -3.5,
+        -0.6000000000000001,
+        -0.8125
+      ],
+      "max": [
+        3.5,
+        6.4,
+        0.8125
+      ]
+    }
+  }
+}

@@ -52,6 +52,6 @@ export const quantizeTransform = (transform: Transform, positionQuantum = 0.001)
 export const transformKey = (transform: Transform, positionQuantum = 0.001): string => {
   const quantized = quantizeTransform(transform, positionQuantum);
   const values = [quantized.position.x, quantized.position.y, quantized.position.z].map((value) => value.toFixed(6));
-  const rotation = quantized.rotation;
+  const rotation = isQuarterAxisRotation(transform.rotation) ? normalize(transform.rotation) : quantized.rotation;
   return `${values.join(",")}:${rotation.x.toFixed(6)},${rotation.y.toFixed(6)},${rotation.z.toFixed(6)},${rotation.w.toFixed(6)}`;
 };

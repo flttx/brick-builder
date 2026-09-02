@@ -1,0 +1,94 @@
+{
+  "id": "ldraw-antenna-104",
+  "version": 1,
+  "name": "6 高度天线（104）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "104.dat",
+    "sourceFile": "assets-source/ldraw/104.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=104.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-antenna-104/6ed8d3d983d27718/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-antenna-104/6ed8d3d983d27718/lod1.glb"
+  },
+  "dimensions": {
+    "width": 0.5,
+    "height": 7.25,
+    "depth": 0.5
+  },
+  "origin": [
+    0,
+    3.025,
+    0
+  ],
+  "connectors": [],
+  "colliders": [
+    {
+      "id": "visual-bounds",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 3.0250000000000004,
+        "z": 0
+      },
+      "size": {
+        "x": 0.46,
+        "y": 7.21,
+        "z": 0.46
+      }
+    }
+  ],
+  "metadataHash": "1973a36bcbfda03e",
+  "geometryHash": "f624edfbc40dd89f",
+  "sourceHash": "27163497251baa3d",
+  "assetHash": "6ed8d3d983d27718",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-antenna-104/6ed8d3d983d27718/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "antenna",
+    "天线",
+    "104"
+  ],
+  "aliases": [
+    "ldraw-antenna-104",
+    "104",
+    "6 高度天线",
+    "天线"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 164,
+    "lod1Vertices": 164,
+    "lod0Bounds": {
+      "min": [
+        -0.25,
+        -0.5999999999999996,
+        -0.25
+      ],
+      "max": [
+        0.25,
+        6.65,
+        0.25
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -0.25,
+        -0.5999999999999996,
+        -0.25
+      ],
+      "max": [
+        0.25,
+        6.65,
+        0.25
+      ]
+    }
+  }
+}

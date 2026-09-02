@@ -1,5 +1,6 @@
 export type UiPlacementMode = "auto" | "free" | "precision";
 export type UiPartCategory = "recent" | "brick" | "plate" | "tile" | "special";
+export type UiSpecialPartGroup = "all" | "wheel" | "plant" | "flag" | "antenna" | "technic" | "other";
 
 export interface UiMessages {
   brand: string;
@@ -240,6 +241,7 @@ export interface UiMessages {
     searchLabel: string;
     searchPlaceholder: string;
     categories: Record<UiPartCategory, string>;
+    specialGroups: Record<UiSpecialPartGroup, string>;
     noMatches: string;
     place: (partName: string) => string;
     categoryName: (category: string) => string;

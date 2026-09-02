@@ -1,5 +1,6 @@
 import { distance } from "../math/vec3.js";
-import { cloneTransform, GROUND_LEVEL } from "../math/transform.js";
+import { cloneTransform } from "../math/transform.js";
+import { groundPositionYForColliders } from "../collision/collision-solver.js";
 import { validateSnapConfig, type SnapConfig, DEFAULT_SNAP_CONFIG } from "./snap-config.js";
 import { generateExplicitSnap, generatePrecisionSnap, generateSnapCandidates } from "./candidate-generator.js";
 import { chooseBestSnapCandidate } from "./candidate-scorer.js";
@@ -14,9 +15,11 @@ export class SnapSolver {
     if (request.mode === "disabled") {
       return undefined;
     }
+    const movingBrick = this.context.bricks.get(request.movingBrickId);
+    const movingPart = this.context.parts.get(movingBrick.partId);
     const candidates = generateSnapCandidates(this.context, request, this.config);
     const eligibleCandidates = candidates.filter((candidate) => {
-      if (candidate.transform.position.y < GROUND_LEVEL - this.config.positionEpsilon) {
+      if (candidate.transform.position.y < groundPositionYForColliders(movingPart.colliders, candidate.transform.rotation) - this.config.positionEpsilon) {
         return false;
       }
       if (candidate.distance <= this.config.enterRadius) {

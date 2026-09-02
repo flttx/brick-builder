@@ -1,6 +1,6 @@
 import type { PartDefinition } from "./part-definition.js";
 import { createRectPart, type StandardRectOptions } from "./standard-part-generator.js";
-import { createLDrawPartDefinition, createSpecialPartDefinition, type LDrawPartDefinitionOptions, type SpecialPartOptions } from "./special-part-generator.js";
+import { createLDrawPartDefinition, createSpecialPartDefinition, createTechnicAxleDefinition, type LDrawPartDefinitionOptions, type SpecialPartOptions, type TechnicAxleOptions } from "./special-part-generator.js";
 
 export const STANDARD_PART_CATALOG: readonly StandardRectOptions[] = [
   { id: "brick-1x1", width: 1, depth: 1, height: "brick" },
@@ -25,6 +25,10 @@ export const SPECIAL_PART_CATALOG: readonly SpecialPartOptions[] = [
   { id: "wheel-1x1", kind: "wheel" },
   { id: "flagpole-1x1", kind: "flagpole" },
   { id: "leaf-1x1", kind: "leaf" }
+];
+
+export const TECHNIC_PART_CATALOG: readonly TechnicAxleOptions[] = [
+  { id: "technic-axle-4", name: "Technic 车轴 4L", length: 4.8 }
 ];
 
 export const LDRAW_PART_CATALOG: readonly LDrawPartDefinitionOptions[] = [
@@ -53,6 +57,7 @@ export const LDRAW_PART_CATALOG: readonly LDrawPartDefinitionOptions[] = [
 
 export const createSpecialPartDefinitions = (): PartDefinition[] => [
   ...SPECIAL_PART_CATALOG.map((options) => createSpecialPartDefinition(options)),
+  ...TECHNIC_PART_CATALOG.map((options) => createTechnicAxleDefinition(options)),
   ...LDRAW_PART_CATALOG.map((options) => createLDrawPartDefinition(options))
 ];
 

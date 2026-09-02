@@ -1,0 +1,95 @@
+{
+  "id": "ldraw-wheel-110100",
+  "version": 1,
+  "name": "光滑赛车轮 14.9×24（110100）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "110100.dat",
+    "sourceFile": "assets-source/ldraw/110100.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=11010.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-wheel-110100/3ed461d5d4185cda/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-wheel-110100/3ed461d5d4185cda/lod1.glb"
+  },
+  "dimensions": {
+    "width": 3,
+    "height": 3,
+    "depth": 1.99
+  },
+  "origin": [
+    0,
+    0.9,
+    0
+  ],
+  "connectors": [],
+  "colliders": [
+    {
+      "id": "visual-bounds",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0.8999999999999999,
+        "z": 0
+      },
+      "size": {
+        "x": 2.96,
+        "y": 2.96,
+        "z": 1.9500000000000002
+      }
+    }
+  ],
+  "metadataHash": "138d5b5826bd4814",
+  "geometryHash": "227d964afdf3a181",
+  "sourceHash": "63a3c9303e4d66c0",
+  "assetHash": "3ed461d5d4185cda",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-110100/3ed461d5d4185cda/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "wheel",
+    "车轮",
+    "赛车",
+    "110100"
+  ],
+  "aliases": [
+    "ldraw-wheel-110100",
+    "110100",
+    "赛车轮",
+    "车轮"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 2498,
+    "lod1Vertices": 2498,
+    "lod0Bounds": {
+      "min": [
+        -1.5,
+        -0.6,
+        -0.9950000000000001
+      ],
+      "max": [
+        1.5,
+        2.4,
+        0.9950000000000001
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -1.5,
+        -0.6,
+        -0.9950000000000001
+      ],
+      "max": [
+        1.5,
+        2.4,
+        0.9950000000000001
+      ]
+    }
+  }
+}

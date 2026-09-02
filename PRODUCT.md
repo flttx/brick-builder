@@ -1,52 +1,52 @@
-# Product
+# 产品
 
 <!-- impeccable:product-schema 1 -->
 
-## Platform
+## 平台
 
-web
+Web
 
-## Stack
+## 技术栈
 
-delegated: React + React Three Fiber + Three.js + Vite, because Prototype Phase 2 explicitly requires a browser-based R3F renderer while keeping Brick Engine framework-independent.
+采用 React + React Three Fiber + Three.js + Vite。原型阶段 2 明确要求基于浏览器的 R3F 渲染器，同时保持 Brick Engine 与框架无关。
 
-## Users
+## 用户
 
-Brief-derived assumption: people experimenting with small digital brick assemblies in a desktop browser, primarily evaluating whether two standard 2×4 bricks feel natural to pick, drag, snap, detach, and reconnect.
+基于需求简报的假设：在桌面浏览器中尝试搭建小型数字积木模型的用户，主要评估两个标准 2×4 积木在拾取、拖拽、吸附、拆开和重新连接时是否自然。
 
-## Product Purpose
+## 产品目的
 
-Brick Builder lets a user arrange standard bricks in a 3D workspace. Success for this prototype means that Engine truth and direct manipulation stay synchronized through the full pick → drag → snap → commit → undo/redo loop.
+Brick Builder 允许用户在三维工作区中排列标准积木。本原型的成功标准是：在完整的“拾取 → 拖拽 → 吸附 → 提交 → 撤销/重做”流程中，引擎状态与直接操作始终保持同步。
 
-## Positioning
+## 产品定位
 
-The product's core mechanism is deterministic connector-aware brick placement: the renderer presents the work, while Brick Engine remains the sole authority for transforms, connections, collision, and history.
+产品的核心机制是基于连接点的确定性积木放置：渲染器负责展示结果，Brick Engine 始终是变换、连接、碰撞和历史记录的唯一事实来源。
 
-## Operating Context
+## 使用场景
 
-The first surface is a full-screen interactive 3D editor with a gray desk. The normal project is empty; `?demo=1` provides two bricks for interaction checks. Parts, Bucket, Color, placement, selection actions, and a compact debug HUD surround the canvas.
+首个界面是带灰色桌面的全屏交互式三维编辑器。普通项目默认为空；`?demo=1` 会提供两个积木用于交互检查。画布周围提供零件、零件桶、颜色、放置、选择操作以及紧凑的调试 HUD。
 
-## Capabilities and Constraints
+## 能力与约束
 
-- Implemented scope is T32–T61: the connector-aware editor, ProjectFile migration, IndexedDB Draft/Cache recovery, autosave, opaque-session auth, project API, My Builds, thumbnails, conflict handling, Basic PWA shell, a deterministic local Asset Pack, runtime GLB registry, LOD, asset validation, Asset Inspector, and Part Authoring metadata overlays.
-- Brick Engine must remain free of React, Three.js, DOM, and browser APIs.
-- Renderer uses InstancedMesh batches and adapters; interaction uses explicit state transitions and pointer capture.
-- No Technic behavior, Rapier, audio, haptics, community, sharing, multiplayer, full offline asset system, CDN release, or future part systems are in scope.
+- 已实现范围为 T32–T61：基于连接点的编辑器、ProjectFile 迁移、IndexedDB 草稿/缓存恢复、自动保存、不透明会话认证、项目 API、我的作品、缩略图、冲突处理、基础 PWA 外壳、确定性的本地 Asset Pack、运行时 GLB 注册、LOD、资源校验、资源检查器以及零件创作元数据覆盖层。
+- Brick Engine 必须继续与 React、Three.js、DOM 及浏览器 API 解耦。
+- 渲染器使用 InstancedMesh 批处理和适配器；交互使用明确的状态转换和指针捕获。
+- 已支持自定义零件的基础 Technic 连接几何（Pin / Axle / Bar / Clip）；复杂 Technic 行为（Hinge、Ball Joint、运动学）、Rapier、音频、触觉反馈、社区、分享、多人协作、完整离线资源系统、CDN 发布及未来零件系统不在当前范围内。
 
-## Evidence on Hand
+## 当前依据
 
-The repository contains the Phase 1 architecture documents, pure TypeScript engine, tests, benchmarks, a local Asset Pack with 16 generated GLBs/LODs/thumbnails, runtime manifests, and Asset Inspector/Authoring routes. Runtime assets use procedural source records with CC0 provenance; the LDraw parser is covered by a basic fixture and remains available for future source records.
+仓库包含阶段 1 架构文档、纯 TypeScript 引擎、测试、基准测试、包含已生成 GLB/LOD/缩略图的本地 Asset Pack、运行时 manifest，以及资源检查器/零件创作页面。运行时资源使用带 CC0 来源信息的程序化资源记录；选定的 LDraw 特殊件通过本地解析器生成，并附带连接点元数据。
 
-## Product Principles
+## 产品原则
 
-- Engine truth over renderer convenience.
-- A brick should follow the user's grab point without jumping.
-- Snap should feel stable and explainable.
-- Camera and brick gestures must have clear ownership.
-- Debug visibility is part of prototype quality, not a substitute for interaction quality.
-- Precision Connect selects one moving connector and one nearby compatible target, then lets the Engine solve the transform and complete all valid matched pairs before confirmation.
-- Local Draft reliability comes before cloud polish; revision conflicts never silently overwrite another device.
+- 以引擎事实为准，而不是迁就渲染器。
+- 积木应跟随用户抓取的位置，不应发生跳动。
+- 吸附应稳定且可解释。
+- 相机操作和积木操作必须有清晰的控制归属。
+- 调试可见性是原型质量的一部分，不能替代交互质量。
+- 精准连接先选择一个移动连接点和附近兼容的目标连接点，再由引擎计算变换，并在确认前完成所有有效匹配连接点的配对。
+- 本地草稿的可靠性优先于云端体验；版本冲突绝不能静默覆盖另一台设备上的内容。
 
-## Accessibility & Inclusion
+## 无障碍与包容性
 
-The prototype should provide keyboard-accessible controls and visible focus states for HUD actions, respect reduced-motion preferences for visual feedback, and expose important state changes through text labels rather than color alone.
+原型应提供可通过键盘访问的控件，并为 HUD 操作提供清晰可见的焦点状态；视觉反馈应尊重减少动态效果的偏好；重要状态变化应通过文字标签表达，不能只依赖颜色。

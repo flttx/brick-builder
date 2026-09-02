@@ -1,0 +1,94 @@
+{
+  "id": "ldraw-wheel-3482",
+  "version": 1,
+  "name": "小车轮 8×17.5（3482）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "3482c01.dat",
+    "sourceFile": "assets-source/ldraw/3482c01.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=3482.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-wheel-3482/223723daab582559/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-wheel-3482/223723daab582559/lod1.glb"
+  },
+  "dimensions": {
+    "width": 3.1,
+    "height": 3.1,
+    "depth": 1
+  },
+  "origin": [
+    0,
+    0.9500000000000001,
+    0
+  ],
+  "connectors": [],
+  "colliders": [
+    {
+      "id": "visual-bounds",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0.95,
+        "z": 0
+      },
+      "size": {
+        "x": 3.06,
+        "y": 3.06,
+        "z": 0.96
+      }
+    }
+  ],
+  "metadataHash": "fd928f3f1a2c030e",
+  "geometryHash": "4e0b135bc155a3ca",
+  "sourceHash": "948fbb2a753f64db",
+  "assetHash": "223723daab582559",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-3482/223723daab582559/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "wheel",
+    "车轮",
+    "3482"
+  ],
+  "aliases": [
+    "ldraw-wheel-3482",
+    "3482",
+    "小车轮",
+    "车轮"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 946,
+    "lod1Vertices": 946,
+    "lod0Bounds": {
+      "min": [
+        -1.55,
+        -0.6,
+        -0.5
+      ],
+      "max": [
+        1.55,
+        2.5,
+        0.5
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -1.55,
+        -0.6,
+        -0.5
+      ],
+      "max": [
+        1.55,
+        2.5,
+        0.5
+      ]
+    }
+  }
+}

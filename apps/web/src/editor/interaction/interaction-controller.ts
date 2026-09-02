@@ -1,16 +1,22 @@
 import * as THREE from "three";
+import { groundPositionYForColliders } from "../../../../../src/index.js";
 import type { BrickEngine, DragResult, Transform, Vec3 } from "../../../../../src/index.js";
 import type { BrickCameraController } from "../camera/camera-controller.js";
 import type { ThreeBrickRenderer } from "../renderer/brick-renderer.js";
 import { fromThreeVector } from "../renderer/three-adapter.js";
 import { BrickPicker } from "./picker.js";
+import { findSnapAssist } from "./snap-assist.js";
 import { GROUND_LEVEL } from "../../../../../src/math/transform.js";
 import type { PlacementMode } from "../../../../../src/drag/placement-mode.js";
 
-export type PrecisionInteractionState = "precision_pick_source_a1" | "precision_pick_source_a2" | "precision_pick_target_b1" | "precision_pick_target_b2" | "precision_preview";
+export type PrecisionInteractionState = "precision_pick_source_a1" | "precision_pick_target_b1" | "precision_preview";
 export type InteractionState = "idle" | "pressed" | "dragging_brick" | "orbiting_camera" | PrecisionInteractionState;
 
-const CAMERA_MOVE_STEP = 0.45;
+const CAMERA_MOVE_SPEED = 24;
+const MAX_CAMERA_MOVE_DELTA = 0.1;
+const CAMERA_MOVE_SMOOTHING = 14;
+
+type CameraMoveKey = "w" | "a" | "s" | "d";
 
 export interface InteractionMetrics {
   snapTime: number;
@@ -69,6 +75,8 @@ export class InteractionController {
   private dragRotation: Transform["rotation"] | undefined;
   private hoveredBrickId: string | undefined;
   private readonly activePointers = new Map<number, string | undefined>();
+  private readonly pressedCameraKeys = new Set<CameraMoveKey>();
+  private readonly cameraMoveVelocity = new THREE.Vector2();
   private enabled = true;
   private placementMode: PlacementMode;
   private temporaryFree = false;
@@ -89,6 +97,10 @@ export class InteractionController {
 
   public setEnabled(enabled: boolean): void {
     this.enabled = enabled;
+    if (!enabled) {
+      this.pressedCameraKeys.clear();
+      this.cameraMoveVelocity.set(0, 0);
+    }
     if (!enabled && this.state === "dragging_brick") {
       this.cancelDrag();
     }
@@ -127,8 +139,12 @@ export class InteractionController {
     return this.state;
   }
 
-  public update(_delta: number): void {
-    if (!this.enabled || this.state !== "idle" || this.latestPointer === undefined || this.latestPointer.pointerType === "touch") {
+  public update(delta: number): void {
+    if (!this.enabled || this.state !== "idle") {
+      return;
+    }
+    this.updateCameraMovement(delta);
+    if (this.latestPointer === undefined || this.latestPointer.pointerType === "touch") {
       return;
     }
     const picked = this.picker.pick(this.latestPointer.x, this.latestPointer.y, this.options.camera);
@@ -170,7 +186,7 @@ export class InteractionController {
       const cameraMove = cameraMoveForKey(event.key);
       if (cameraMove !== undefined && this.state === "idle" && !isTextInputTarget(event.target)) {
         event.preventDefault();
-        this.options.cameraController.move?.(cameraMove.forward * CAMERA_MOVE_STEP, cameraMove.right * CAMERA_MOVE_STEP);
+        this.pressedCameraKeys.add(cameraMove.key);
         return;
       }
       const commandKey = event.metaKey || event.ctrlKey;
@@ -219,6 +235,11 @@ export class InteractionController {
       }
     };
     const handleKeyUp = (event: KeyboardEvent): void => {
+      const cameraMove = cameraMoveForKey(event.key);
+      if (cameraMove !== undefined) {
+        this.pressedCameraKeys.delete(cameraMove.key);
+        return;
+      }
       if (event.key !== "Alt" || !this.temporaryFree || this.placementMode !== "auto" || this.state !== "dragging_brick") {
         return;
       }
@@ -229,9 +250,14 @@ export class InteractionController {
     };
     target.addEventListener("keydown", handleKeyDown);
     target.addEventListener("keyup", handleKeyUp);
+    const clearCameraKeys = (): void => this.pressedCameraKeys.clear();
+    const windowTarget = typeof window === "undefined" ? undefined : window;
+    windowTarget?.addEventListener("blur", clearCameraKeys);
     return () => {
       target.removeEventListener("keydown", handleKeyDown);
       target.removeEventListener("keyup", handleKeyUp);
+      windowTarget?.removeEventListener("blur", clearCameraKeys);
+      clearCameraKeys();
     };
   }
 
@@ -244,6 +270,12 @@ export class InteractionController {
     if (this.state === "dragging_brick") {
       this.cancelDrag();
     }
+    this.pressedCameraKeys.clear();
+    this.cameraMoveVelocity.set(0, 0);
+  }
+
+  public hasActiveCameraMovement(): boolean {
+    return this.enabled && this.state === "idle" && (this.pressedCameraKeys.size > 0 || this.cameraMoveVelocity.lengthSq() > 0.01);
   }
 
   private readonly handlePointerDown = (event: PointerEvent): void => {
@@ -491,21 +523,7 @@ export class InteractionController {
     if (target === undefined) {
       return undefined;
     }
-    const movingBrick = this.options.engine.bricks.get(this.pointer.pickedBrickId);
-    const targetBrick = this.options.engine.bricks.get(target.brickId);
-    const movingPart = this.options.engine.parts.get(movingBrick.partId);
-    const targetPart = this.options.engine.parts.get(targetBrick.partId);
-    return {
-      transform: {
-        position: {
-          x: target.point.x,
-          y: targetBrick.transform.position.y + (targetPart.dimensions.height + movingPart.dimensions.height) / 2,
-          z: target.point.z
-        },
-        rotation: { ...freeTransform.rotation }
-      },
-      pointerWorld: fromThreeVector(target.point)
-    };
+    return findSnapAssist(this.options.engine, this.pointer.pickedBrickId, target.brickId, fromThreeVector(target.point), freeTransform);
   }
 
   private finishDrag(): void {
@@ -513,7 +531,9 @@ export class InteractionController {
     let committed = false;
     try {
       const canCommitSnap = session.placementMode === "auto" && session.snapCandidate !== undefined && session.mode === "snap";
-      const canCommitGround = session.mode === "free" && Math.abs(session.currentTransform.position.y - GROUND_LEVEL) <= 1e-4;
+      const movingBrick = this.options.engine.bricks.get(session.brickId);
+      const groundY = groundPositionYForColliders(this.options.engine.parts.get(movingBrick.partId).colliders, session.currentTransform.rotation);
+      const canCommitGround = session.mode === "free" && Math.abs(session.currentTransform.position.y - groundY) <= 1e-4;
       if (canCommitSnap || canCommitGround) {
         this.options.engine.commitDrag();
         committed = true;
@@ -573,16 +593,41 @@ export class InteractionController {
     this.state = next;
     this.options.onStateChange(next);
   }
+
+  private updateCameraMovement(delta: number): void {
+    let forward = 0;
+    let right = 0;
+    for (const key of this.pressedCameraKeys) {
+      const movement = cameraMoveForKey(key);
+      if (movement === undefined) {
+        continue;
+      }
+      forward += movement.forward;
+      right += movement.right;
+    }
+    const length = Math.hypot(forward, right);
+    if (length === 0) {
+      forward = 0;
+      right = 0;
+    } else {
+      forward /= length;
+      right /= length;
+    }
+    const frameDelta = Math.min(Math.max(delta, 0), MAX_CAMERA_MOVE_DELTA);
+    const smoothing = 1 - Math.exp(-CAMERA_MOVE_SMOOTHING * frameDelta);
+    this.cameraMoveVelocity.lerp(new THREE.Vector2(forward * CAMERA_MOVE_SPEED, right * CAMERA_MOVE_SPEED), smoothing);
+    this.options.cameraController.move?.(this.cameraMoveVelocity.x * frameDelta, this.cameraMoveVelocity.y * frameDelta);
+  }
 }
 
 const isPrecisionState = (state: InteractionState): state is PrecisionInteractionState => state.startsWith("precision_");
 
-const cameraMoveForKey = (key: string): { forward: number; right: number } | undefined => {
+const cameraMoveForKey = (key: string): { key: CameraMoveKey; forward: number; right: number } | undefined => {
   switch (key.toLowerCase()) {
-    case "w": return { forward: 1, right: 0 };
-    case "s": return { forward: -1, right: 0 };
-    case "a": return { forward: 0, right: -1 };
-    case "d": return { forward: 0, right: 1 };
+    case "w": return { key: "w", forward: 1, right: 0 };
+    case "s": return { key: "s", forward: -1, right: 0 };
+    case "a": return { key: "a", forward: 0, right: -1 };
+    case "d": return { key: "d", forward: 0, right: 1 };
     default: return undefined;
   }
 };

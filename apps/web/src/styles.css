@@ -538,11 +538,20 @@ body { color: var(--text); }
 .parts-browser-head { padding-bottom: 14px; border-bottom: 1px solid var(--line); }
 .parts-browser-head .section-label { display: none; }
 .parts-browser h2 { margin: 0; font-size: 17px; font-weight: 650; }
+.parts-color-picker { margin: 15px 0 14px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 11px; background: var(--shell-raised); }
+.parts-color-picker-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 9px; }
+.parts-color-picker-head .section-label { margin: 0; }
+.parts-color-picker-head strong { overflow: hidden; color: var(--text); font-size: 11px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
+.parts-color-options { display: flex; flex-wrap: wrap; gap: 7px; }
+.parts-color-option { width: 26px; height: 26px; padding: 0; border: 1px solid rgba(255,255,255,.35); border-radius: 50%; background: var(--swatch); cursor: pointer; }
+.parts-color-option:hover, .parts-color-option.is-active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(246,196,83,.22); }
 .parts-search { margin: 16px 0 11px; }
 .parts-search input { height: 40px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 9px; color: var(--text); background: var(--shell-raised); }
 .parts-tabs { gap: 4px; margin-bottom: 12px; overflow: auto; }
 .parts-tabs button { min-height: 31px; padding: 0 9px; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); background: transparent; white-space: nowrap; }
 .parts-tabs button:hover, .parts-tabs button.is-active { border-color: var(--accent); color: var(--accent); background: rgba(246,196,83,.08); }
+.parts-subtabs { margin-top: -5px; padding-left: 8px; }
+.parts-subtabs button { min-height: 28px; padding: 0 8px; font-size: 10px; }
 .part-grid { gap: 8px; }
 .part-card { min-height: 112px; padding: 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--shell-raised); }
 .part-card:hover, .part-card:focus-visible { border-color: var(--accent); background: var(--shell-soft); }
@@ -555,6 +564,8 @@ body { color: var(--text); }
 .toast-notice { position: absolute; right: 22px; bottom: 22px; z-index: var(--z-toast); display: flex; align-items: center; gap: 12px; max-width: min(360px, calc(100vw - 44px)); padding: 11px 12px; border: 1px solid rgba(238,133,120,.65); border-radius: 11px; color: var(--text); background: rgba(21, 28, 30, .97); box-shadow: 0 14px 30px rgba(12,17,18,.26); font-size: 11px; }
 .toast-notice button { padding: 0; border: 0; color: var(--muted); background: transparent; cursor: pointer; font-size: 18px; }
 .context-toolbar { position: absolute; bottom: 26px; left: 50%; z-index: var(--z-toolbar); display: flex; min-height: 54px; align-items: center; gap: 10px; padding: 7px 9px; border: 1px solid rgba(218,229,225,.24); border-radius: 14px; color: var(--text); background: rgba(21,28,30,.96); box-shadow: 0 14px 32px rgba(12,17,18,.23); transform: translateX(-50%); }
+.selection-color-button { display: grid; width: 34px; height: 34px; flex: 0 0 34px; place-items: center; padding: 0; border: 1px solid transparent; border-radius: 9px; background: transparent; cursor: pointer; }
+.selection-color-button:hover, .selection-color-button[aria-expanded="true"] { border-color: var(--accent); background: rgba(255,255,255,.08); }
 .context-toolbar .selection-swatch { width: 28px; height: 28px; border-radius: 8px; }
 .context-toolbar .selection-copy { gap: 2px; }
 .context-toolbar .selection-copy span { color: var(--quiet); font-size: 9px; }

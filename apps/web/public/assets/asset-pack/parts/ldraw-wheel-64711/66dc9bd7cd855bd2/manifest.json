@@ -1,0 +1,95 @@
+{
+  "id": "ldraw-wheel-64711",
+  "version": 1,
+  "name": "带刺轮（64711）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "64711.dat",
+    "sourceFile": "assets-source/ldraw/64711.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=6471.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-wheel-64711/66dc9bd7cd855bd2/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-wheel-64711/66dc9bd7cd855bd2/lod1.glb"
+  },
+  "dimensions": {
+    "width": 7.65,
+    "height": 7.7,
+    "depth": 2.5
+  },
+  "origin": [
+    0,
+    3.25,
+    0
+  ],
+  "connectors": [],
+  "colliders": [
+    {
+      "id": "visual-bounds",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 3.25,
+        "z": 0
+      },
+      "size": {
+        "x": 7.606930830000001,
+        "y": 7.659999999999999,
+        "z": 2.46
+      }
+    }
+  ],
+  "metadataHash": "89ecb196c89d2ce8",
+  "geometryHash": "13abd76f8546553d",
+  "sourceHash": "a4007a08c70a6181",
+  "assetHash": "66dc9bd7cd855bd2",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-64711/66dc9bd7cd855bd2/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "wheel",
+    "车轮",
+    "带刺",
+    "64711"
+  ],
+  "aliases": [
+    "ldraw-wheel-64711",
+    "64711",
+    "带刺轮",
+    "车轮"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 5792,
+    "lod1Vertices": 5792,
+    "lod0Bounds": {
+      "min": [
+        -3.8234654150000007,
+        -0.6000000000000001,
+        -1.25
+      ],
+      "max": [
+        3.8234654150000007,
+        7.1,
+        1.25
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -3.8234654150000007,
+        -0.6000000000000001,
+        -1.25
+      ],
+      "max": [
+        3.8234654150000007,
+        7.1,
+        1.25
+      ]
+    }
+  }
+}

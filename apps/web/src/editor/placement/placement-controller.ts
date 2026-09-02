@@ -6,6 +6,7 @@ import type { BrickCameraController } from "../camera/camera-controller.js";
 import type { ThreeBrickRenderer } from "../renderer/brick-renderer.js";
 import { fromThreeVector } from "../renderer/three-adapter.js";
 import { BrickPicker } from "../interaction/picker.js";
+import { findSnapAssist } from "../interaction/snap-assist.js";
 import type { NewBrickPlacementSession } from "./placement-session.js";
 import type { PlacementMode } from "../../../../../src/drag/placement-mode.js";
 
@@ -237,21 +238,7 @@ export class PlacementController {
     if (target === undefined) {
       return undefined;
     }
-    const movingBrick = this.previewEngine.bricks.get(this.previewId);
-    const targetBrick = this.previewEngine.bricks.get(target.brickId);
-    const movingPart = this.previewEngine.parts.get(movingBrick.partId);
-    const targetPart = this.previewEngine.parts.get(targetBrick.partId);
-    return {
-      transform: {
-        position: {
-          x: target.point.x,
-          y: targetBrick.transform.position.y + (targetPart.dimensions.height + movingPart.dimensions.height) / 2,
-          z: target.point.z
-        },
-        rotation: { ...freeTransform.rotation }
-      },
-      pointerWorld: fromThreeVector(target.point)
-    };
+    return findSnapAssist(this.previewEngine, this.previewId, target.brickId, fromThreeVector(target.point), freeTransform);
   }
 
   private finish(commit: boolean): void {

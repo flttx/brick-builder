@@ -4,12 +4,12 @@ import { join, resolve } from "node:path";
 import { createStandardPartDefinitions } from "../../src/parts/standard-part-catalog.js";
 import { createRectPart } from "../../src/parts/standard-part-generator.js";
 import type { PartDefinition } from "../../src/index.js";
-import { generateColliders, generateConnectors } from "./connector-generator.js";
-import { createStandardGeometry, normalizeLDrawGeometry } from "./geometry.js";
+import { generateColliders, generateConnectors, generateGeometryColliders, generateLDrawConnectors, generateWheelColliders } from "./connector-generator.js";
+import { createStandardGeometry, getLDrawNormalization, normalizeLDrawGeometry } from "./geometry.js";
 import { createGlb } from "./glb.js";
-import { createMapLDrawLibrary, parseLDrawPart } from "./ldraw-parser.js";
+import { createMapLDrawLibrary, parseLDrawPart, parseLDrawReferences } from "./ldraw-parser.js";
 import { loadLDrawSource, type LoadedLDrawSource } from "./ldraw-source.js";
-import type { PartSourceRecord, RuntimeAssetPackManifest, RuntimePartManifest } from "./asset-types.js";
+import type { NormalizedGeometry, PartSourceRecord, RuntimeAssetPackManifest, RuntimePartManifest } from "./asset-types.js";
 import { convertPpmToWebp, createPartThumbnailPpm, createPartThumbnailSvg } from "./thumbnail.js";
 
 export const ASSET_PIPELINE_VERSION = 1;
@@ -56,13 +56,27 @@ export const buildAssetPack = async (options: AssetBuildOptions): Promise<AssetB
     const ldrawSource = record.source.sourceType === "ldraw" ? await getLDrawSource(options.projectRoot, record.source.sourceRoot, sourceText, sourcePath, ldrawSources) : undefined;
     const sourceHash = sha256(`${canonical(record.source)}:${ldrawSource?.fingerprint ?? sourceText}`);
     const rectangularPart = record.category === "brick" || record.category === "plate" || record.category === "tile";
+    const ldrawLibrary = ldrawSource?.library ?? createMapLDrawLibrary({ [sourcePath.split(/[\\/]/u).pop() ?? sourcePath]: sourceText });
+    const ldrawMesh = record.source.sourceType === "ldraw" ? parseLDrawPart(record.source.sourcePartId, ldrawLibrary) : undefined;
+    const ldrawNormalization = ldrawMesh === undefined ? undefined : getLDrawNormalization(ldrawMesh, 1 / 20, { alignToGround: true });
+    const ldrawGeometry = ldrawMesh === undefined ? undefined : normalizeLDrawGeometry(ldrawMesh, 1 / 20, { alignToGround: true });
     const gameplayPart: PartDefinition = {
       ...part,
-      connectors: rectangularPart ? generateConnectors(record.id, record.template) : part.connectors,
-      colliders: rectangularPart ? generateColliders(part) : part.colliders
+      connectors: rectangularPart
+          ? generateConnectors(record.id, record.template)
+          : ldrawMesh === undefined || ldrawGeometry === undefined
+            ? part.connectors
+          : generateLDrawConnectors(ldrawMesh, parseLDrawReferences(record.source.sourcePartId, ldrawLibrary), ldrawNormalization, record.connectorAdditions),
+      colliders: rectangularPart
+        ? generateColliders(part)
+        : ldrawGeometry === undefined
+          ? part.colliders
+          : isWheelRecord(record)
+            ? generateWheelColliders(ldrawGeometry)
+            : generateGeometryColliders(ldrawGeometry)
     };
-    const lod0 = await geometryForRecord(record, gameplayPart, sourceText, ldrawSource?.library);
-    const lod1 = await geometryForRecord(record, gameplayPart, sourceText, ldrawSource?.library, 1);
+    const lod0 = await geometryForRecord(record, gameplayPart, sourceText, ldrawSource?.library, 0, ldrawGeometry);
+    const lod1 = await geometryForRecord(record, gameplayPart, sourceText, ldrawSource?.library, 1, ldrawGeometry);
     const metadataHash = sha256(canonical({ dimensions: gameplayPart.dimensions, origin: gameplayPart.origin, connectors: gameplayPart.connectors, colliders: gameplayPart.colliders }));
     const glb0 = createGlb(lod0);
     const glb1 = createGlb(lod1);
@@ -143,14 +157,20 @@ export const buildAssetPack = async (options: AssetBuildOptions): Promise<AssetB
   return { built, skipped, assetPackVersion: ASSET_PACK_VERSION, manifests: sorted };
 };
 
+const isWheelRecord = (record: PartSourceRecord): boolean => {
+  const text = [record.id, record.name, ...record.tags, ...record.aliases].join(" ").toLocaleLowerCase();
+  return /(wheel|车轮|轮毂|火车轮)/u.test(text);
+};
+
 export const canonical = (value: unknown): string => {
   if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
   if (typeof value === "object" && value !== null) return `{${Object.entries(value).sort(([a], [b]) => a.localeCompare(b)).map(([key, child]) => `${JSON.stringify(key)}:${canonical(child)}`).join(",")}}`;
   return JSON.stringify(value);
 };
 
-const geometryForRecord = async (record: PartSourceRecord, part: PartDefinition, sourceText: string, ldrawLibrary?: LoadedLDrawSource["library"], lod: 0 | 1 = 0) => {
+const geometryForRecord = async (record: PartSourceRecord, part: PartDefinition, sourceText: string, ldrawLibrary?: LoadedLDrawSource["library"], lod: 0 | 1 = 0, normalizedLDrawGeometry?: NormalizedGeometry): Promise<NormalizedGeometry> => {
   if (record.source.sourceType === "procedural") return createStandardGeometry(part, lod);
+  if (normalizedLDrawGeometry !== undefined) return normalizedLDrawGeometry;
   const fileName = record.source.sourceFile.split(/[\\/]/u).pop() ?? record.source.sourceFile;
   return normalizeLDrawGeometry(parseLDrawPart(record.source.sourcePartId || fileName, ldrawLibrary ?? createMapLDrawLibrary({ [fileName]: sourceText })), 1 / 20, { alignToGround: true });
 };

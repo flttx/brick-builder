@@ -9,7 +9,7 @@ type ConnectorType =
  | "axle" | "axle_hole" | "bar" | "clip";
 ```
 
-V1 只实现 `stud` 和 `anti_stud`。
+连接识别器支持上述全部类型；LDraw 零件中的 stud、Technic 孔、车轴孔、杆/夹等连接原语会转换为 Gameplay Connection Geometry。
 
 ```ts
 interface ConnectorDefinition {

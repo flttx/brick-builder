@@ -1,0 +1,162 @@
+{
+  "id": "ldraw-wheel-110100",
+  "version": 1,
+  "name": "光滑赛车轮 14.9×24（110100）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "110100.dat",
+    "sourceFile": "assets-source/ldraw/110100.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=11010.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-wheel-110100/c597cbacf659bc79/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-wheel-110100/c597cbacf659bc79/lod1.glb"
+  },
+  "dimensions": {
+    "width": 3,
+    "height": 3,
+    "depth": 1.99
+  },
+  "origin": [
+    0,
+    0.9,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "technic-hole-0",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": 0.9,
+        "z": 0.4950000000000001
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": -1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "wheel-top",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 2.0448,
+        "z": 0
+      },
+      "size": {
+        "x": 2.96,
+        "y": 0.7103999999999999,
+        "z": 1.9500000000000002
+      }
+    },
+    {
+      "id": "wheel-bottom",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": -0.24480000000000002,
+        "z": 0
+      },
+      "size": {
+        "x": 2.96,
+        "y": 0.7103999999999999,
+        "z": 1.9500000000000002
+      }
+    },
+    {
+      "id": "wheel-left",
+      "type": "box",
+      "center": {
+        "x": -1.1448,
+        "y": 0.8999999999999999,
+        "z": 0
+      },
+      "size": {
+        "x": 0.7103999999999999,
+        "y": 1.5392000000000001,
+        "z": 1.9500000000000002
+      }
+    },
+    {
+      "id": "wheel-right",
+      "type": "box",
+      "center": {
+        "x": 1.1448,
+        "y": 0.8999999999999999,
+        "z": 0
+      },
+      "size": {
+        "x": 0.7103999999999999,
+        "y": 1.5392000000000001,
+        "z": 1.9500000000000002
+      }
+    }
+  ],
+  "metadataHash": "659ad9797d99a6ee",
+  "geometryHash": "227d964afdf3a181",
+  "sourceHash": "63a3c9303e4d66c0",
+  "assetHash": "c597cbacf659bc79",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-110100/c597cbacf659bc79/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "wheel",
+    "车轮",
+    "赛车",
+    "110100"
+  ],
+  "aliases": [
+    "ldraw-wheel-110100",
+    "110100",
+    "赛车轮",
+    "车轮"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 2498,
+    "lod1Vertices": 2498,
+    "lod0Bounds": {
+      "min": [
+        -1.5,
+        -0.6,
+        -0.9950000000000001
+      ],
+      "max": [
+        1.5,
+        2.4,
+        0.9950000000000001
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -1.5,
+        -0.6,
+        -0.9950000000000001
+      ],
+      "max": [
+        1.5,
+        2.4,
+        0.9950000000000001
+      ]
+    }
+  }
+}

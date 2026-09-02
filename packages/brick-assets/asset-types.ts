@@ -21,12 +21,20 @@ export interface RectPartTemplate {
   bottomSockets: boolean;
 }
 
+export interface ConnectorAddition {
+  id: string;
+  type: ConnectorDefinition["type"];
+  position: ConnectorDefinition["position"];
+  normal: ConnectorDefinition["normal"];
+}
+
 export interface PartSourceRecord {
   id: string;
   name: string;
   category: PartCategory;
   source: PartSourceManifest;
   template: RectPartTemplate;
+  connectorAdditions?: ConnectorAddition[];
   tags: string[];
   aliases: string[];
 }

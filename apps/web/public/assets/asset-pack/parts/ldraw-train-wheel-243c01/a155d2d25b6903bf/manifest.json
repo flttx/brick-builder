@@ -1,0 +1,162 @@
+{
+  "id": "ldraw-train-wheel-243c01",
+  "version": 1,
+  "name": "火车轮（243c01）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "243c01.dat",
+    "sourceFile": "assets-source/ldraw/243c01.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableFilters%5Bcategory%5D%5Bvalues%5D%5B0%5D=Train"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-train-wheel-243c01/a155d2d25b6903bf/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-train-wheel-243c01/a155d2d25b6903bf/lod1.glb"
+  },
+  "dimensions": {
+    "width": 2.8,
+    "height": 2.8,
+    "depth": 2.3
+  },
+  "origin": [
+    0,
+    0.7999999999999999,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "stud-0",
+      "type": "stud",
+      "role": "plug",
+      "position": {
+        "x": 0,
+        "y": 0.8000000000000002,
+        "z": -0.9500000000000001
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "wheel-top",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 1.8688000000000002,
+        "z": 0
+      },
+      "size": {
+        "x": 2.7600000000000002,
+        "y": 0.6624,
+        "z": 2.26
+      }
+    },
+    {
+      "id": "wheel-bottom",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": -0.2688,
+        "z": 0
+      },
+      "size": {
+        "x": 2.7600000000000002,
+        "y": 0.6624,
+        "z": 2.26
+      }
+    },
+    {
+      "id": "wheel-left",
+      "type": "box",
+      "center": {
+        "x": -1.0688000000000002,
+        "y": 0.8,
+        "z": 0
+      },
+      "size": {
+        "x": 0.6624,
+        "y": 1.4352000000000003,
+        "z": 2.26
+      }
+    },
+    {
+      "id": "wheel-right",
+      "type": "box",
+      "center": {
+        "x": 1.0688000000000002,
+        "y": 0.8,
+        "z": 0
+      },
+      "size": {
+        "x": 0.6624,
+        "y": 1.4352000000000003,
+        "z": 2.26
+      }
+    }
+  ],
+  "metadataHash": "ef00debd24f944d7",
+  "geometryHash": "56e4a6c540f55eb3",
+  "sourceHash": "ba0dc858a24de9f8",
+  "assetHash": "a155d2d25b6903bf",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-train-wheel-243c01/a155d2d25b6903bf/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "train",
+    "wheel",
+    "火车轮",
+    "243c01"
+  ],
+  "aliases": [
+    "ldraw-train-wheel-243c01",
+    "243c01",
+    "火车轮",
+    "车轮"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 537,
+    "lod1Vertices": 537,
+    "lod0Bounds": {
+      "min": [
+        -1.4000000000000001,
+        -0.6,
+        -1.15
+      ],
+      "max": [
+        1.4000000000000001,
+        2.2,
+        1.15
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -1.4000000000000001,
+        -0.6,
+        -1.15
+      ],
+      "max": [
+        1.4000000000000001,
+        2.2,
+        1.15
+      ]
+    }
+  }
+}

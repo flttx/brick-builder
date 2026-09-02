@@ -1,0 +1,94 @@
+{
+  "id": "ldraw-vine-16981",
+  "version": 1,
+  "name": "藤蔓 16L（16981）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "16981.dat",
+    "sourceFile": "assets-source/ldraw/16981.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableFilters%5Bcategory%5D%5Bvalues%5D%5B0%5D=Plant"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-vine-16981/23210c35a72fa145/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-vine-16981/23210c35a72fa145/lod1.glb"
+  },
+  "dimensions": {
+    "width": 16,
+    "height": 0.75,
+    "depth": 3.04
+  },
+  "origin": [
+    0,
+    -0.22499999999999998,
+    0
+  ],
+  "connectors": [],
+  "colliders": [
+    {
+      "id": "visual-bounds",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": -0.22499999999999998,
+        "z": 0
+      },
+      "size": {
+        "x": 15.96,
+        "y": 0.71,
+        "z": 3.0039900000000004
+      }
+    }
+  ],
+  "metadataHash": "0c1a81aa52fd8286",
+  "geometryHash": "c99913937f042cf7",
+  "sourceHash": "6d642acce3ce0966",
+  "assetHash": "23210c35a72fa145",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-vine-16981/23210c35a72fa145/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "plant",
+    "vine",
+    "藤蔓",
+    "16981"
+  ],
+  "aliases": [
+    "ldraw-vine-16981",
+    "16981",
+    "藤蔓"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 2174,
+    "lod1Vertices": 2174,
+    "lod0Bounds": {
+      "min": [
+        -8,
+        -0.6,
+        -1.5219950000000002
+      ],
+      "max": [
+        8,
+        0.15000000000000002,
+        1.5219950000000002
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -8,
+        -0.6,
+        -1.5219950000000002
+      ],
+      "max": [
+        8,
+        0.15000000000000002,
+        1.5219950000000002
+      ]
+    }
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "id": "ldraw-wheel-56908",
+  "version": 1,
+  "name": "越野车轮 26×43（56908）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "56908c01.dat",
+    "sourceFile": "assets-source/ldraw/56908c01.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=56908.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-wheel-56908/6580755430cae99e/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-wheel-56908/6580755430cae99e/lod1.glb"
+  },
+  "dimensions": {
+    "width": 10.23,
+    "height": 10.23,
+    "depth": 4.8
+  },
+  "origin": [
+    0,
+    4.515000000000001,
+    0
+  ],
+  "connectors": [],
+  "colliders": [
+    {
+      "id": "visual-bounds",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 4.515799428,
+        "z": 0
+      },
+      "size": {
+        "x": 10.191598856,
+        "y": 10.191598856,
+        "z": 4.760000000000001
+      }
+    }
+  ],
+  "metadataHash": "d6926a0100a25e90",
+  "geometryHash": "b4664815452d1c78",
+  "sourceHash": "baab527ed3f80249",
+  "assetHash": "6580755430cae99e",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-56908/6580755430cae99e/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "wheel",
+    "车轮",
+    "越野",
+    "56908"
+  ],
+  "aliases": [
+    "ldraw-wheel-56908",
+    "56908",
+    "越野车轮",
+    "车轮"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 7426,
+    "lod1Vertices": 7426,
+    "lod0Bounds": {
+      "min": [
+        -5.115799428,
+        -0.5999999999999996,
+        -2.4000000000000004
+      ],
+      "max": [
+        5.115799428,
+        9.631598856,
+        2.4000000000000004
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -5.115799428,
+        -0.5999999999999996,
+        -2.4000000000000004
+      ],
+      "max": [
+        5.115799428,
+        9.631598856,
+        2.4000000000000004
+      ]
+    }
+  }
+}

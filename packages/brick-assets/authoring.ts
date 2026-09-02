@@ -1,5 +1,6 @@
 import { fromAxisAngle, identity } from "../../src/math/quat.js";
-import type { ColliderDefinition, ConnectorDefinition, Quat, Vec3 } from "../../src/index.js";
+import { connectorCompatibilityGroupForType, connectorRoleForType } from "../../src/connectors/connector.js";
+import type { ColliderDefinition, ConnectorDefinition, ConnectorType, Quat, Vec3 } from "../../src/index.js";
 import type { RuntimePartManifest } from "./asset-types.js";
 
 export interface AuthoringDocument {
@@ -10,7 +11,7 @@ export interface AuthoringDocument {
   colliders: ColliderDefinition[];
 }
 
-export type ConnectorPreset = "stud" | "anti_stud";
+export type ConnectorPreset = ConnectorType;
 
 export const createAuthoringDocument = (manifest: RuntimePartManifest): AuthoringDocument => ({
   version: 1,
@@ -26,11 +27,11 @@ export const addConnector = (document: AuthoringDocument, preset: ConnectorPrese
   const connector: ConnectorDefinition = {
     id: `manual-${preset}-${index}`,
     type: preset,
-    role: preset === "stud" ? "plug" : "socket",
+    role: connectorRoleForType(preset),
     position: source === undefined ? { x: 0, y: 0, z: 0 } : { ...source.position },
     rotation: source === undefined ? identity() : { ...source.rotation },
-    normal: source === undefined ? { x: 0, y: preset === "stud" ? 1 : -1, z: 0 } : { ...source.normal },
-    compatibilityGroup: "standard-stud",
+    normal: source === undefined ? defaultNormalForConnector(preset) : { ...source.normal },
+    compatibilityGroup: connectorCompatibilityGroupForType(preset),
     snapRadius: 0.3,
     occupiedRule: "single"
   };
@@ -86,5 +87,6 @@ export const parseAuthoringDocument = (value: unknown): AuthoringDocument | unde
 export const snapValue = (value: number, grid: number): number => Number((Math.round(value / grid) * grid).toFixed(6));
 
 const snapVec3 = (value: Vec3, grid: number): Vec3 => ({ x: snapValue(value.x, grid), y: snapValue(value.y, grid), z: snapValue(value.z, grid) });
+const defaultNormalForConnector = (type: ConnectorType): Vec3 => ({ x: 0, y: connectorRoleForType(type) === "plug" ? 1 : -1, z: 0 });
 const cloneConnectors = (connectors: ConnectorDefinition[]): ConnectorDefinition[] => connectors.map((connector) => ({ ...connector, position: { ...connector.position }, rotation: { ...connector.rotation }, normal: { ...connector.normal } }));
 const cloneColliders = (colliders: ColliderDefinition[]): ColliderDefinition[] => colliders.map((collider) => ({ ...collider, center: { ...collider.center }, size: { ...collider.size } }));

@@ -13,9 +13,17 @@ export interface LDrawLibrary {
   get(fileName: string): string | undefined;
 }
 
+export type LDrawMatrix = [number, number, number, number, number, number, number, number, number];
+
+export interface LDrawReference {
+  fileName: string;
+  position: LDrawPoint;
+  matrix: LDrawMatrix;
+}
+
 interface AffineTransform {
   translation: LDrawPoint;
-  matrix: [number, number, number, number, number, number, number, number, number];
+  matrix: LDrawMatrix;
 }
 
 type LDrawWinding = "ccw" | "cw";
@@ -89,6 +97,45 @@ export const parseLDrawPart = (fileName: string, library: LDrawLibrary, maxDepth
 
   visit(fileName, IDENTITY, 0, false);
   return { positions, indices };
+};
+
+/** Returns every resolved subpart reference with the transform used by the mesh parser. */
+export const parseLDrawReferences = (fileName: string, library: LDrawLibrary, maxDepth = 32): LDrawReference[] => {
+  const references: LDrawReference[] = [];
+  const stack = new Set<string>();
+
+  const visit = (name: string, parent: AffineTransform, depth: number): void => {
+    const key = name.toLocaleLowerCase();
+    if (depth > maxDepth || stack.has(key)) return;
+    const source = library.get(name);
+    if (source === undefined) return;
+    stack.add(key);
+    for (const rawLine of source.split(/\r?\n/u)) {
+      const tokens = rawLine.trim().split(/\s+/u);
+      const type = Number(tokens[0]);
+      if (type === 0 && tokens[1]?.toLocaleUpperCase() === "BFC") {
+        continue;
+      }
+      if (type !== 1) continue;
+      const childName = tokens[14];
+      if (childName === undefined) continue;
+      const local: AffineTransform = {
+        translation: { x: Number(tokens[2]), y: Number(tokens[3]), z: Number(tokens[4]) },
+        matrix: [
+          Number(tokens[5]), Number(tokens[6]), Number(tokens[7]),
+          Number(tokens[8]), Number(tokens[9]), Number(tokens[10]),
+          Number(tokens[11]), Number(tokens[12]), Number(tokens[13])
+        ]
+      };
+      const composed = compose(parent, local);
+      references.push({ fileName: childName, position: { ...composed.translation }, matrix: [...composed.matrix] });
+      visit(childName, composed, depth + 1);
+    }
+    stack.delete(key);
+  };
+
+  visit(fileName, IDENTITY, 0);
+  return references;
 };
 
 export const createMapLDrawLibrary = (files: Record<string, string>): LDrawLibrary => {

@@ -216,6 +216,9 @@ describe("camera and interaction state", () => {
     expect(engine.bricks.get("drag-me").transform.position).toEqual({ x: 0, y: 0, z: 0 });
     expect(renderer.dragProxy.mesh.visible).toBe(false);
 
+    engine.rotateBrick("drag-me", 1, "x");
+    renderer.syncFromEngine();
+    parent.updateMatrixWorld(true);
     interaction.pointerDown({ pointerId: 3, clientX: 400, clientY: 300, button: 0 });
     interaction.pointerMove({ pointerId: 3, clientX: 450, clientY: 300, button: 0 });
     const beforeReleaseX = dragResultXs.at(-1);
@@ -224,6 +227,7 @@ describe("camera and interaction state", () => {
     expect(finalDragX).toBeDefined();
     expect(finalDragX).not.toBe(beforeReleaseX);
     expect(engine.bricks.get("drag-me").transform.position.x).toBeCloseTo(finalDragX ?? 0);
+    expect(engine.bricks.get("drag-me").transform.position.y).toBeCloseTo(1.4);
 
     interaction.pointerDown({ pointerId: 4, clientX: 0, clientY: 0, button: 0 });
     expect(selected).toHaveBeenLastCalledWith(undefined);

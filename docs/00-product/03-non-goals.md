@@ -2,7 +2,7 @@
 
 Prototype/MVP 阶段明确不提前实现：
 
-- Technic Pin / Axle / Hinge / Ball Joint
+- 复杂 Technic 机构、Hinge、Ball Joint；基础 Pin / Axle / Bar / Clip 连接几何除外
 - Flexible Parts
 - 多人实时协作
 - 社区、点赞、评论、公开广场

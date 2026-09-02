@@ -86,6 +86,54 @@ export const defaultCompatibilityRules = (): ConnectorCompatibilityRule[] => [
     maxDistance: DEFAULT_CONNECTOR_MAX_DISTANCE,
     maxAngle: DEFAULT_CONNECTOR_MAX_ANGLE,
     rotationMode: "fixed"
+  },
+  {
+    source: "technic_pin",
+    target: "technic_hole",
+    allow: true,
+    maxDistance: DEFAULT_CONNECTOR_MAX_DISTANCE,
+    maxAngle: DEFAULT_CONNECTOR_MAX_ANGLE,
+    rotationMode: "fixed"
+  },
+  {
+    source: "technic_hole",
+    target: "technic_pin",
+    allow: true,
+    maxDistance: DEFAULT_CONNECTOR_MAX_DISTANCE,
+    maxAngle: DEFAULT_CONNECTOR_MAX_ANGLE,
+    rotationMode: "fixed"
+  },
+  {
+    source: "axle",
+    target: "axle_hole",
+    allow: true,
+    maxDistance: DEFAULT_CONNECTOR_MAX_DISTANCE,
+    maxAngle: DEFAULT_CONNECTOR_MAX_ANGLE,
+    rotationMode: "fixed"
+  },
+  {
+    source: "axle_hole",
+    target: "axle",
+    allow: true,
+    maxDistance: DEFAULT_CONNECTOR_MAX_DISTANCE,
+    maxAngle: DEFAULT_CONNECTOR_MAX_ANGLE,
+    rotationMode: "fixed"
+  },
+  {
+    source: "bar",
+    target: "clip",
+    allow: true,
+    maxDistance: DEFAULT_CONNECTOR_MAX_DISTANCE,
+    maxAngle: DEFAULT_CONNECTOR_MAX_ANGLE,
+    rotationMode: "fixed"
+  },
+  {
+    source: "clip",
+    target: "bar",
+    allow: true,
+    maxDistance: DEFAULT_CONNECTOR_MAX_DISTANCE,
+    maxAngle: DEFAULT_CONNECTOR_MAX_ANGLE,
+    rotationMode: "fixed"
   }
 ];
 

@@ -1,6 +1,6 @@
 import type { PartDefinition } from "../../src/index.js";
 import type { NormalizedGeometry, RectPartTemplate } from "./asset-types.js";
-import type { LDrawMesh } from "./ldraw-parser.js";
+import type { LDrawMesh, LDrawPoint } from "./ldraw-parser.js";
 
 export const createStandardGeometry = (part: PartDefinition, lod: 0 | 1): NormalizedGeometry => {
   const positions: number[] = [];
@@ -27,23 +27,43 @@ export interface LDrawGeometryOptions {
   groundBottom?: number;
 }
 
+export interface LDrawNormalization {
+  scale: number;
+  offset: LDrawPoint;
+}
+
 export const normalizeLDrawGeometry = (mesh: LDrawMesh, scale = 1 / 20, options: LDrawGeometryOptions = {}): NormalizedGeometry => {
   const positions = mesh.positions.map((value) => value * scale);
-  if (options.alignToGround === true && positions.length > 0) {
-    const bounds = calculateBounds(positions);
-    const offset = {
-      x: -(bounds.min[0] + bounds.max[0]) / 2,
-      y: (options.groundBottom ?? -0.6) - bounds.min[1],
-      z: -(bounds.min[2] + bounds.max[2]) / 2
-    };
-    for (let index = 0; index < positions.length; index += 3) {
-      positions[index] = (positions[index] ?? 0) + offset.x;
-      positions[index + 1] = (positions[index + 1] ?? 0) + offset.y;
-      positions[index + 2] = (positions[index + 2] ?? 0) + offset.z;
-    }
+  const normalization = getLDrawNormalization(mesh, scale, options);
+  for (let index = 0; index < positions.length; index += 3) {
+    positions[index] = (positions[index] ?? 0) + normalization.offset.x;
+    positions[index + 1] = (positions[index + 1] ?? 0) + normalization.offset.y;
+    positions[index + 2] = (positions[index + 2] ?? 0) + normalization.offset.z;
   }
   return cleanGeometry({ positions, indices: [...mesh.indices] });
 };
+
+export const getLDrawNormalization = (mesh: LDrawMesh, scale = 1 / 20, options: LDrawGeometryOptions = {}): LDrawNormalization => {
+  const scaledPositions = mesh.positions.map((value) => value * scale);
+  if (options.alignToGround !== true || scaledPositions.length === 0) {
+    return { scale, offset: { x: 0, y: 0, z: 0 } };
+  }
+  const bounds = calculateBounds(scaledPositions);
+  return {
+    scale,
+    offset: {
+      x: -(bounds.min[0] + bounds.max[0]) / 2,
+      y: (options.groundBottom ?? -0.6) - bounds.min[1],
+      z: -(bounds.min[2] + bounds.max[2]) / 2
+    }
+  };
+};
+
+export const normalizeLDrawPoint = (point: LDrawPoint, normalization: LDrawNormalization): LDrawPoint => ({
+  x: point.x * normalization.scale + normalization.offset.x,
+  y: point.y * normalization.scale + normalization.offset.y,
+  z: point.z * normalization.scale + normalization.offset.z
+});
 
 export const cleanGeometry = (input: { positions: number[]; indices: number[] }): NormalizedGeometry => {
   const vertexMap = new Map<string, number>();

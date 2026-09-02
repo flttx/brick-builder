@@ -4,7 +4,7 @@ import type { Transform } from "../math/transform.js";
 import { transformPoint } from "../math/transform.js";
 import type { ConnectorDefinition, WorldConnector } from "../connectors/connector.js";
 import type { ConnectorCompatibilityRule } from "../connectors/compatibility.js";
-import { isQuarterYRotation } from "../math/quantize.js";
+import { isQuarterAxisRotation } from "../math/quantize.js";
 import { subtract } from "../math/vec3.js";
 
 export interface SnapTransformInput {
@@ -18,7 +18,7 @@ export interface SnapTransformInput {
 export const solveSnapTransform = (input: SnapTransformInput): Transform | null => {
   const rotation = normalizeQuat(input.currentRotation);
   const epsilon = input.rotationEpsilon ?? 1e-5;
-  if (!isQuarterYRotation(rotation, epsilon)) {
+  if (!isQuarterAxisRotation(rotation, epsilon)) {
     return null;
   }
   const movingNormalWorld = rotateVector(rotation, input.movingConnector.normal);

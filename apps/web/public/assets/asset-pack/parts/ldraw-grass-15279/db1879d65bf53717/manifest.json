@@ -1,0 +1,120 @@
+{
+  "id": "ldraw-grass-15279",
+  "version": 1,
+  "name": "草茎（15279）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "15279.dat",
+    "sourceFile": "assets-source/ldraw/15279.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableFilters%5Bcategory%5D%5Bvalues%5D%5B0%5D=Plant"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-grass-15279/db1879d65bf53717/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-grass-15279/db1879d65bf53717/lod1.glb"
+  },
+  "dimensions": {
+    "width": 0.8,
+    "height": 3.2,
+    "depth": 1.71
+  },
+  "origin": [
+    0,
+    1,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "anti-stud-0",
+      "type": "anti_stud",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": 2.39965,
+        "z": 0.11654999999999993
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "compatibilityGroup": "standard-stud",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "visual-bounds",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0.999825,
+        "z": 0
+      },
+      "size": {
+        "x": 0.76,
+        "y": 3.15965,
+        "z": 1.666
+      }
+    }
+  ],
+  "metadataHash": "96f709ea5b9ab6ba",
+  "geometryHash": "a641ed3e32b92277",
+  "sourceHash": "2e832a5325668011",
+  "assetHash": "db1879d65bf53717",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-grass-15279/db1879d65bf53717/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "plant",
+    "grass",
+    "草",
+    "15279"
+  ],
+  "aliases": [
+    "ldraw-grass-15279",
+    "15279",
+    "草茎",
+    "草"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 367,
+    "lod1Vertices": 367,
+    "lod0Bounds": {
+      "min": [
+        -0.4,
+        -0.6000000000000001,
+        -0.853
+      ],
+      "max": [
+        0.4,
+        2.59965,
+        0.853
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -0.4,
+        -0.6000000000000001,
+        -0.853
+      ],
+      "max": [
+        0.4,
+        2.59965,
+        0.853
+      ]
+    }
+  }
+}

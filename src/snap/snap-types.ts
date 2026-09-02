@@ -55,7 +55,8 @@ export type ExplicitSnapInvalidReason =
   | "connector_occupied"
   | "connector_incompatible"
   | "collision"
-  | "invalid_rotation";
+  | "invalid_rotation"
+  | "below_ground";
 
 export type PrecisionSnapInvalidReason = ExplicitSnapInvalidReason | "duplicate_connector" | "distance_mismatch" | "below_ground";
 

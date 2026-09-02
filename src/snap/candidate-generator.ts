@@ -1,8 +1,9 @@
 import { angleBetweenVectors } from "../math/quat.js";
-import { cloneTransform, GROUND_LEVEL, transformPoint, transformDirection } from "../math/transform.js";
+import { cloneTransform, transformPoint, transformDirection } from "../math/transform.js";
+import { groundPositionYForColliders } from "../collision/collision-solver.js";
 import { distance } from "../math/vec3.js";
 import { connectorKey, type ConnectorPair, type WorldConnector } from "../connectors/connector.js";
-import { isQuarterYRotation, transformKey } from "../math/quantize.js";
+import { isQuarterAxisRotation, transformKey } from "../math/quantize.js";
 import type { BrickInstance } from "../parts/brick-instance.js";
 import type { ConnectorDefinition } from "../connectors/connector.js";
 import type { Transform } from "../math/transform.js";
@@ -108,7 +109,7 @@ export const generateExplicitSnap = (
       valid: false,
       matchedPairs: [],
       collision: collisionAtFreeTransform,
-      reason: isQuarterYRotation(request.freeTransform.rotation, config.angleEpsilon)
+      reason: isQuarterAxisRotation(request.freeTransform.rotation, config.angleEpsilon)
         ? "connector_incompatible"
         : "invalid_rotation"
     };
@@ -133,6 +134,14 @@ export const generateExplicitSnap = (
     matchedPairs
   );
   const collision = candidate.collision;
+  if (transform.position.y < groundPositionYForColliders(movingPart.colliders, transform.rotation) - config.positionEpsilon) {
+    return {
+      valid: false,
+      matchedPairs: [],
+      collision: collisionAtFreeTransform,
+      reason: "below_ground"
+    };
+  }
   return {
     valid: collision.valid,
     transform: cloneTransform(transform),
@@ -193,7 +202,7 @@ export const generatePrecisionSnap = (
   if (transform === null) {
     return { valid: false, matchedPairs: [], collision: collisionAtFreeTransform, reason: "invalid_rotation" };
   }
-  if (transform.position.y < GROUND_LEVEL - config.positionEpsilon) {
+  if (transform.position.y < groundPositionYForColliders(movingPart.colliders, transform.rotation) - config.positionEpsilon) {
     return { valid: false, matchedPairs: [], collision: collisionAtFreeTransform, reason: "below_ground" };
   }
   const transformedMoving = movingPart.connectors.map((connector) => toWorldConnector(movingBrick, connector, transform));
@@ -205,7 +214,17 @@ export const generatePrecisionSnap = (
     { movingConnectorId: request.movingConnectorA1Id, targetConnector: targetB1 }
   );
   const secondMoving = transformedMoving.find((connector) => connector.id === request.movingConnectorA2Id);
-  if (secondMoving === undefined || !context.connectors.compatibility.areCompatible(secondMoving, targetB2, config.positionEpsilon)) {
+  const secondRule = context.connectors.compatibility.getRule(secondMoving?.type ?? "stud", targetB2.type);
+  if (
+    secondMoving === undefined ||
+    secondRule === undefined ||
+    !context.connectors.compatibility.areCompatible(secondMoving, targetB2, distance(secondMoving.worldPosition, targetB2.worldPosition)) ||
+    angleBetweenVectors(secondMoving.worldNormal, {
+      x: -targetB2.worldNormal.x,
+      y: -targetB2.worldNormal.y,
+      z: -targetB2.worldNormal.z
+    }) > secondRule.maxAngle
+  ) {
     return { valid: false, matchedPairs: [], collision: collisionAtFreeTransform, reason: "connector_incompatible" };
   }
   if (!matchedPairs.some((pair) => pair.moving.id === secondMoving.id && pair.target.id === targetB2.id)) {

@@ -1,0 +1,408 @@
+{
+  "id": "ldraw-wheel-64711",
+  "version": 1,
+  "name": "带刺轮（64711）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "64711.dat",
+    "sourceFile": "assets-source/ldraw/64711.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=6471.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-wheel-64711/c1a3af9c0488a974/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-wheel-64711/c1a3af9c0488a974/lod1.glb"
+  },
+  "dimensions": {
+    "width": 7.65,
+    "height": 7.7,
+    "depth": 2.5
+  },
+  "origin": [
+    0,
+    3.25,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "technic-hole-0",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": 3.25,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-1",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": 2.25,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-2",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": 4.25,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-3",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 0.8660500000000001,
+        "y": 3.75,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-4",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": -0.8660500000000001,
+        "y": 2.75,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-5",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": -0.8660500000000001,
+        "y": 3.75,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-6",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 0.8660500000000001,
+        "y": 2.75,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-7",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": 1.25,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-8",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": 5.25,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-9",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 1.73205,
+        "y": 4.25,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-10",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": -1.73205,
+        "y": 2.25,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-11",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": -1.73205,
+        "y": 4.25,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-12",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 1.73205,
+        "y": 2.25,
+        "z": 0.25
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "visual-bounds",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 3.25,
+        "z": 0
+      },
+      "size": {
+        "x": 7.606930830000001,
+        "y": 7.659999999999999,
+        "z": 2.46
+      }
+    }
+  ],
+  "metadataHash": "53712a8995e9390d",
+  "geometryHash": "13abd76f8546553d",
+  "sourceHash": "a4007a08c70a6181",
+  "assetHash": "c1a3af9c0488a974",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-64711/c1a3af9c0488a974/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "wheel",
+    "车轮",
+    "带刺",
+    "64711"
+  ],
+  "aliases": [
+    "ldraw-wheel-64711",
+    "64711",
+    "带刺轮",
+    "车轮"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 5792,
+    "lod1Vertices": 5792,
+    "lod0Bounds": {
+      "min": [
+        -3.8234654150000007,
+        -0.6000000000000001,
+        -1.25
+      ],
+      "max": [
+        3.8234654150000007,
+        7.1,
+        1.25
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -3.8234654150000007,
+        -0.6000000000000001,
+        -1.25
+      ],
+      "max": [
+        3.8234654150000007,
+        7.1,
+        1.25
+      ]
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import { OrbitControls } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import type { Group, PerspectiveCamera, Plane } from "three";
+import type { Group, PerspectiveCamera, Plane, Scene } from "three";
 import type { ReactElement, Ref } from "react";
 import { useEffect, useRef, useState } from "react";
 import type { BrickEngine, DragResult, PlacementMode, Transform } from "../../../../../src/index.js";
@@ -17,6 +17,9 @@ import type { QualitySettings } from "../performance/quality-manager.js";
 import { WebGLRecoveryController, type WebGLRecoveryState } from "../recovery/webgl-recovery-controller.js";
 import type { ThreeBrickRendererOptions } from "../renderer/brick-renderer.js";
 import type { BucketPhysicsSession } from "../physics/bucket-physics.js";
+
+const INFINITE_GROUND_SIZE = 4096;
+const INFINITE_GROUND_FOLLOW_STEP = 1024;
 
 export interface FrameMetrics {
   fps: number;
@@ -62,7 +65,7 @@ export const EditorScene = (props: EditorSceneProps): ReactElement => (
     frameloop="demand"
     shadows={(props.quality?.shadows ?? true) && props.engine.bricks.size < 1000}
     dpr={props.quality?.dpr ?? [1, 1.5]}
-    camera={{ position: [0, 2.2, 10], fov: 42, near: 0.1, far: 100 }}
+    camera={{ position: [0, 2.2, 10], fov: 42, near: 0.1, far: 1000 }}
     gl={{ antialias: true, powerPreference: "high-performance" }}
   >
     <SceneRuntime {...props} />
@@ -89,7 +92,7 @@ const SceneRuntime = (props: EditorSceneProps): ReactElement => {
     const nextRenderer = new ThreeBrickRenderer(groupRef.current, props.engine, 256, props.engine.colors, props.rendererOptions);
     nextRenderer.syncFromEngine();
     frameCoordinator.current.requestFrame();
-    const nextDebug = new DebugVisuals(scene, props.engine);
+    const nextDebug = new DebugVisuals(scene as unknown as Scene, props.engine);
     setRenderer(nextRenderer);
     setDebug(nextDebug);
     props.onRendererReady(nextRenderer);
@@ -105,7 +108,7 @@ const SceneRuntime = (props: EditorSceneProps): ReactElement => {
   useEffect(() => { const unsubscribe = frameCoordinator.current.subscribe(invalidate); frameCoordinator.current.requestFrame(); return unsubscribe; }, [invalidate]);
   useEffect(() => {
     const request = (): void => frameCoordinator.current.requestFrame();
-    const events: Array<[EventTarget, string]> = [[gl.domElement, "pointerdown"], [gl.domElement, "pointermove"], [gl.domElement, "pointerup"], [gl.domElement, "pointercancel"], [gl.domElement, "wheel"], [document, "keydown"]];
+    const events: Array<[EventTarget, string]> = [[gl.domElement, "pointerdown"], [gl.domElement, "pointermove"], [gl.domElement, "pointerup"], [gl.domElement, "pointercancel"], [gl.domElement, "wheel"], [document, "keydown"], [document, "keyup"]];
     for (const [target, type] of events) target.addEventListener(type, request);
     return () => { for (const [target, type] of events) target.removeEventListener(type, request); };
   }, [gl.domElement]);
@@ -125,7 +128,7 @@ const SceneRuntime = (props: EditorSceneProps): ReactElement => {
 
   useEffect(() => {
     if (controlsRef.current !== null) {
-      props.cameraController.attach(camera as PerspectiveCamera, controlsRef.current);
+      props.cameraController.attach(camera as unknown as PerspectiveCamera, controlsRef.current);
     }
   }, [camera, props.cameraController]);
 
@@ -140,7 +143,7 @@ const SceneRuntime = (props: EditorSceneProps): ReactElement => {
     const interaction = new InteractionController({
       engine: props.engine,
       renderer,
-      camera: camera as PerspectiveCamera,
+      camera: camera as unknown as PerspectiveCamera,
       cameraController: props.cameraController,
       element: gl.domElement,
       onSelectionChange: (brickId) => {
@@ -182,7 +185,7 @@ const SceneRuntime = (props: EditorSceneProps): ReactElement => {
     const placement = props.placementSession === undefined ? undefined : new PlacementController({
       engine: props.engine,
       renderer,
-      camera: camera as PerspectiveCamera,
+      camera: camera as unknown as PerspectiveCamera,
       cameraController: props.cameraController,
       element: gl.domElement,
       session: props.placementSession,
@@ -252,6 +255,7 @@ const SceneRuntime = (props: EditorSceneProps): ReactElement => {
     if (!frameCoordinator.current.consumeFrameRequest()) return;
     props.physics?.update(delta);
     interactionRef.current?.update(delta);
+    if (interactionRef.current?.hasActiveCameraMovement() === true) frameCoordinator.current.requestFrame();
     renderer?.tickVisualFeedback(delta);
     if (props.benchmark === true || props.physics !== undefined || renderer?.hasActiveVisualFeedback === true) frameCoordinator.current.requestFrame();
     if (renderer === null) {
@@ -293,11 +297,7 @@ const SceneRuntime = (props: EditorSceneProps): ReactElement => {
         shadow-camera-top={12}
         shadow-camera-bottom={-12}
       />
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.64, 0]} receiveShadow name="ground-surface">
-        <planeGeometry args={[36, 36]} />
-        <meshStandardMaterial color="#7d8584" roughness={0.86} metalness={0.02} />
-      </mesh>
-      <gridHelper args={[30, 30, "#687271", "#737d7d"]} position={[0, -0.635, 0]} name="ground-grid" />
+      <InfiniteGround />
       <group ref={groupRef} name="brick-renderer" />
       {props.precision !== undefined && <PrecisionOverlay engine={props.engine} {...props.precision} />}
       <OrbitControls
@@ -305,10 +305,33 @@ const SceneRuntime = (props: EditorSceneProps): ReactElement => {
         enableDamping
         dampingFactor={0.08}
         minDistance={3}
-        maxDistance={30}
+        maxDistance={240}
         maxPolarAngle={Math.PI / 2.05}
         makeDefault
       />
     </>
+  );
+};
+
+const InfiniteGround = (): ReactElement => {
+  const { camera } = useThree();
+  const groundRef = useRef<Group>(null);
+
+  useFrame(() => {
+    const ground = groundRef.current;
+    if (ground === null) return;
+    const x = Math.round(camera.position.x / INFINITE_GROUND_FOLLOW_STEP) * INFINITE_GROUND_FOLLOW_STEP;
+    const z = Math.round(camera.position.z / INFINITE_GROUND_FOLLOW_STEP) * INFINITE_GROUND_FOLLOW_STEP;
+    if (ground.position.x !== x || ground.position.z !== z) ground.position.set(x, -0.64, z);
+  });
+
+  return (
+    <group ref={groundRef} position={[0, -0.64, 0]} name="infinite-ground">
+      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow name="ground-surface">
+        <planeGeometry args={[INFINITE_GROUND_SIZE, INFINITE_GROUND_SIZE]} />
+        <meshStandardMaterial color="#7d8584" roughness={0.86} metalness={0.02} />
+      </mesh>
+        <gridHelper args={[INFINITE_GROUND_SIZE, 256, "#687271", "#737d7d"]} position={[0, 0.005, 0]} name="ground-grid" />
+    </group>
   );
 };

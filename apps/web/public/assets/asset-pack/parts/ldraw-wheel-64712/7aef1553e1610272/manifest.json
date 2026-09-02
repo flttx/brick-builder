@@ -1,0 +1,306 @@
+{
+  "id": "ldraw-wheel-64712",
+  "version": 1,
+  "name": "锥形带刺轮（64712）",
+  "category": "special",
+  "source": {
+    "sourceType": "ldraw",
+    "sourcePartId": "64712.dat",
+    "sourceFile": "assets-source/ldraw/64712.dat",
+    "sourceRoot": "assets-source/ldraw",
+    "sourceVersion": "LDraw-2026-08",
+    "author": "LDraw.org contributors",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://library.ldraw.org/parts/list?tableSearch=6471.dat"
+  },
+  "geometry": {
+    "lod0": "/assets/asset-pack/parts/ldraw-wheel-64712/7aef1553e1610272/lod0.glb",
+    "lod1": "/assets/asset-pack/parts/ldraw-wheel-64712/7aef1553e1610272/lod1.glb"
+  },
+  "dimensions": {
+    "width": 7.79,
+    "height": 7.72,
+    "depth": 3.95
+  },
+  "origin": [
+    0,
+    3.26,
+    0
+  ],
+  "connectors": [
+    {
+      "id": "technic-hole-0",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": 3.265,
+        "z": -0.02499999999999991
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-1",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": 2.265,
+        "z": -0.02499999999999991
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-2",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 0,
+        "y": 4.265000000000001,
+        "z": -0.02499999999999991
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-3",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 0.8660500000000001,
+        "y": 3.765,
+        "z": -0.02499999999999991
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-4",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": -0.8660500000000001,
+        "y": 2.765,
+        "z": -0.02499999999999991
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-5",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": -0.8660500000000001,
+        "y": 3.765,
+        "z": -0.02499999999999991
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    },
+    {
+      "id": "technic-hole-6",
+      "type": "technic_hole",
+      "role": "socket",
+      "position": {
+        "x": 0.8660500000000001,
+        "y": 2.765,
+        "z": -0.02499999999999991
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "normal": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "compatibilityGroup": "technic-pin",
+      "snapRadius": 0.3,
+      "occupiedRule": "single"
+    }
+  ],
+  "colliders": [
+    {
+      "id": "wheel-top",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 6.1940030929888,
+        "z": 0
+      },
+      "size": {
+        "x": 7.746213839999999,
+        "y": 1.8420008435423998,
+        "z": 3.91
+      }
+    },
+    {
+      "id": "wheel-bottom",
+      "type": "box",
+      "center": {
+        "x": 0,
+        "y": 0.3210004217711998,
+        "z": 0
+      },
+      "size": {
+        "x": 7.746213839999999,
+        "y": 1.8420008435423998,
+        "z": 3.91
+      }
+    },
+    {
+      "id": "wheel-left",
+      "type": "box",
+      "center": {
+        "x": -2.9721064982287997,
+        "y": 3.25750175738,
+        "z": 0
+      },
+      "size": {
+        "x": 1.8420008435423998,
+        "y": 3.9910018276751997,
+        "z": 3.91
+      }
+    },
+    {
+      "id": "wheel-right",
+      "type": "box",
+      "center": {
+        "x": 2.9721064982287997,
+        "y": 3.25750175738,
+        "z": 0
+      },
+      "size": {
+        "x": 1.8420008435423998,
+        "y": 3.9910018276751997,
+        "z": 3.91
+      }
+    }
+  ],
+  "metadataHash": "6ec3478cd5485c49",
+  "geometryHash": "e0942922bec49244",
+  "sourceHash": "a97f545e19483c7a",
+  "assetHash": "7aef1553e1610272",
+  "pipelineVersion": 1,
+  "thumbnail": "/assets/asset-pack/parts/ldraw-wheel-64712/7aef1553e1610272/thumb-256.webp",
+  "tags": [
+    "special",
+    "ldraw",
+    "wheel",
+    "车轮",
+    "锥形",
+    "64712"
+  ],
+  "aliases": [
+    "ldraw-wheel-64712",
+    "64712",
+    "锥形带刺轮",
+    "车轮"
+  ],
+  "geometryStats": {
+    "lod0Vertices": 8023,
+    "lod1Vertices": 8023,
+    "lod0Bounds": {
+      "min": [
+        -3.8931069199999997,
+        -0.6000000000000001,
+        -1.975
+      ],
+      "max": [
+        3.8931069199999997,
+        7.11500351476,
+        1.975
+      ]
+    },
+    "lod1Bounds": {
+      "min": [
+        -3.8931069199999997,
+        -0.6000000000000001,
+        -1.975
+      ],
+      "max": [
+        3.8931069199999997,
+        7.11500351476,
+        1.975
+      ]
+    }
+  }
+}

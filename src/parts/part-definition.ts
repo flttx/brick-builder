@@ -3,7 +3,7 @@ import type { Vec3 } from "../math/vec3.js";
 import type { ConnectorDefinition } from "../connectors/connector.js";
 
 export type PartCategory = "brick" | "plate" | "tile" | "slope" | "technic" | "special";
-export type ProceduralPartVisual = "wheel" | "flagpole" | "leaf";
+export type ProceduralPartVisual = "wheel" | "flagpole" | "leaf" | "technic_axle";
 
 export interface PartDefinition {
   id: string;

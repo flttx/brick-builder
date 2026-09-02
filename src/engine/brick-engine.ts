@@ -7,7 +7,7 @@ import { ConnectionGraph } from "../connections/connection-graph.js";
 import { ConnectionManager } from "../connections/connection-manager.js";
 import type { ConnectionGroup } from "../connections/connection-types.js";
 import { DEFAULT_COLLISION_CONFIG, type CollisionConfig } from "../collision/box-collision.js";
-import { CollisionSolver, toWorldCollider } from "../collision/collision-solver.js";
+import { CollisionSolver, groundPositionYForColliders, toWorldCollider } from "../collision/collision-solver.js";
 import { AddBrickCommand } from "../commands/add-brick-command.js";
 import { AddPlacedBrickCommand } from "../commands/add-placed-brick-command.js";
 import type { Command, EngineCommandContext } from "../commands/command.js";
@@ -21,7 +21,7 @@ import type { DetachSnapshot, DragSession } from "../drag/drag-session.js";
 import { PlacementValidator } from "../drag/placement-validator.js";
 import type { PlacementMode } from "../drag/placement-mode.js";
 import { axisRotationQuarter, identity, multiply, normalize, type RotationAxis } from "../math/quat.js";
-import { cloneTransform, GROUND_LEVEL } from "../math/transform.js";
+import { cloneTransform } from "../math/transform.js";
 import type { Transform } from "../math/transform.js";
 import { distance } from "../math/vec3.js";
 import type { BrickInstance } from "../parts/brick-instance.js";
@@ -258,10 +258,11 @@ export class BrickEngine {
     }
     const cannotSnapUntilDetach = this.dragStartConnections.length > 0 && this.detachSnapshot === undefined;
     const requestedTransform = cloneTransform(transform);
-    const groundTransform = { ...requestedTransform, position: { ...requestedTransform.position, y: GROUND_LEVEL } };
+    const groundY = groundPositionYForColliders(this.parts.get(brick.partId).colliders, requestedTransform.rotation);
+    const groundTransform = { ...requestedTransform, position: { ...requestedTransform.position, y: groundY } };
     const freeTransform = session.placementMode === "free" ? groundTransform : requestedTransform;
     let result = cannotSnapUntilDetach
-      ? this.freeDragResult(brick, freeTransform)
+      ? this.freeDragResult(brick, groundTransform)
       : this.snap.update({
           movingBrickId: session.brickId,
           freeTransform,
@@ -309,7 +310,8 @@ export class BrickEngine {
     }
     const beforeTransform = cloneTransform(session.startTransform);
     const afterTransform = cloneTransform(session.currentTransform);
-    if (session.mode === "free" && Math.abs(afterTransform.position.y - GROUND_LEVEL) > 1e-4) {
+    const groundY = groundPositionYForColliders(this.parts.get(brick.partId).colliders, afterTransform.rotation);
+    if (session.mode === "free" && Math.abs(afterTransform.position.y - groundY) > 1e-4) {
       this.restoreDragState();
       throw new Error("Free placement must be committed on the ground");
     }
@@ -466,11 +468,20 @@ export class BrickEngine {
     }
     const brick = this.bricks.get(brickId);
     const before = cloneTransform(brick.transform);
+    const connections = this.connections.getForBrick(brickId);
     const after: Transform = {
       position: { ...before.position },
       rotation: normalize(multiply(axisRotationQuarter(axis, quarterTurns), before.rotation))
     };
-    this.executeCommand(new RotateBrickCommand(this.commandContext, brickId, before, after, this.connections.getForBrick(brickId)));
+    if (connections.length === 0) {
+      const part = this.parts.get(brick.partId);
+      const beforeGroundY = groundPositionYForColliders(part.colliders, before.rotation);
+      const afterGroundY = groundPositionYForColliders(part.colliders, after.rotation);
+      after.position.y = Math.abs(before.position.y - beforeGroundY) <= 1e-4
+        ? afterGroundY
+        : Math.max(before.position.y, afterGroundY);
+    }
+    this.executeCommand(new RotateBrickCommand(this.commandContext, brickId, before, after, connections));
   }
 
   public undo(): boolean {

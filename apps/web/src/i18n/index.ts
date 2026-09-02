@@ -2,7 +2,7 @@ import type { UiPlacementMode } from "./types.js";
 import { zhCN } from "./zh-CN.js";
 
 export { zhCN } from "./zh-CN.js";
-export type { UiMessages, UiPartCategory, UiPlacementMode } from "./types.js";
+export type { UiMessages, UiPartCategory, UiPlacementMode, UiSpecialPartGroup } from "./types.js";
 
 export const messages = zhCN;
 

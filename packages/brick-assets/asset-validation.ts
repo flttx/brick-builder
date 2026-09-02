@@ -27,7 +27,13 @@ export const validateRuntimePartManifest = (manifest: RuntimePartManifest): Asse
   for (const connector of manifest.connectors) {
     if (connectorIds.has(connector.id)) issue("connector_id", `Duplicate connector id ${connector.id}`);
     connectorIds.add(connector.id);
-    if (!finiteTuple([connector.position.x, connector.position.y, connector.position.z])) issue("connector_position", `Connector ${connector.id} has invalid position`);
+    if (!finiteTuple([connector.position.x, connector.position.y, connector.position.z])) {
+      issue("connector_position", `Connector ${connector.id} has invalid position`);
+    } else if (!pointWithinBounds(connector.position, manifest.geometryStats.lod0Bounds, 0.2)) {
+      issue("connector_bounds", `Connector ${connector.id} lies outside the visual bounds`);
+    }
+    const normalLength = Math.hypot(connector.normal.x, connector.normal.y, connector.normal.z);
+    if (!Number.isFinite(normalLength) || normalLength < 0.9) issue("connector_normal", `Connector ${connector.id} has an invalid normal`);
     if (connector.compatibilityGroup.length === 0) issue("connector_group", `Connector ${connector.id} has no compatibility group`);
   }
   const colliderIds = new Set<string>();
@@ -43,8 +49,6 @@ export const validateRuntimePartManifest = (manifest: RuntimePartManifest): Asse
     if (manifest.category === "tile" && studs !== 0) issue("semantics", "Tile must have zero top studs");
     if (manifest.category !== "tile" && studs !== expected) issue("semantics", `Expected ${expected} studs, found ${studs}`);
     if (antiStuds !== expected) issue("semantics", `Expected ${expected} anti-studs, found ${antiStuds}`);
-  } else if (studs + antiStuds === 0) {
-    issue("semantics", "Special parts must expose at least one connector");
   }
   if (!boundsMatchDimensions(manifest.geometryStats.lod0Bounds, manifest.dimensions)) issue("bounds", "LOD0 visual bounds do not match metadata dimensions");
   if (!boundsMatchDimensions(manifest.geometryStats.lod1Bounds, manifest.dimensions)) issue("bounds", "LOD1 visual bounds do not match metadata dimensions");
@@ -63,6 +67,10 @@ export const validateRuntimePartManifests = (manifests: RuntimePartManifest[]): 
 };
 
 const finiteTuple = (values: number[]): boolean => values.every((value) => Number.isFinite(value));
+const pointWithinBounds = (point: { x: number; y: number; z: number }, bounds: { min: [number, number, number]; max: [number, number, number] }, tolerance: number): boolean =>
+  point.x >= bounds.min[0] - tolerance && point.x <= bounds.max[0] + tolerance &&
+  point.y >= bounds.min[1] - tolerance && point.y <= bounds.max[1] + tolerance &&
+  point.z >= bounds.min[2] - tolerance && point.z <= bounds.max[2] + tolerance;
 const boundsMatchDimensions = (bounds: { min: [number, number, number]; max: [number, number, number] }, dimensions: { width: number; height: number; depth: number }): boolean => {
   const actual = [bounds.max[0] - bounds.min[0], bounds.max[1] - bounds.min[1], bounds.max[2] - bounds.min[2]];
   const expected = [dimensions.width, dimensions.height, dimensions.depth];

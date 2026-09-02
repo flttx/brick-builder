@@ -1,5 +1,5 @@
 import { isQuarterAxisRotation } from "../math/quantize.js";
-import { GROUND_LEVEL } from "../math/transform.js";
+import { angleBetweenVectors } from "../math/quat.js";
 import type { Transform } from "../math/transform.js";
 import { distance } from "../math/vec3.js";
 import type { ConnectorOccupancyIndex } from "../connectors/occupancy-index.js";
@@ -8,7 +8,7 @@ import type { ConnectorPair } from "../connectors/connector.js";
 import type { BrickStore } from "../parts/brick-store.js";
 import type { PartRegistry } from "../parts/part-registry.js";
 import type { CollisionResult } from "../collision/box-collision.js";
-import type { CollisionSolver } from "../collision/collision-solver.js";
+import { groundPositionYForColliders, type CollisionSolver } from "../collision/collision-solver.js";
 
 export type PlacementInvalidReason =
   | "collision"
@@ -48,10 +48,11 @@ export class PlacementValidator {
   public validate(request: PlacementValidationRequest): PlacementValidationResult {
     const reasons: PlacementInvalidReason[] = [];
     const brick = this.context.bricks.get(request.brickId);
+    const part = this.context.parts.get(brick.partId);
     if (!isQuarterAxisRotation(request.transform.rotation)) {
       reasons.push("invalid_rotation");
     }
-    if (request.transform.position.y < GROUND_LEVEL - 1e-4) {
+    if (request.transform.position.y < groundPositionYForColliders(part.colliders, request.transform.rotation) - 1e-4) {
       reasons.push("below_ground");
     }
     const collision = this.context.collision.checkBrick(brick, request.transform);
@@ -62,7 +63,13 @@ export class PlacementValidator {
       reasons.push("out_of_bounds");
     }
     for (const pair of request.matchedPairs ?? []) {
-      if (!this.context.connectors.compatibility.areCompatible(pair.moving, pair.target, distance(pair.moving.worldPosition, pair.target.worldPosition))) {
+      const rule = this.context.connectors.compatibility.getRule(pair.moving.type, pair.target.type);
+      const normalsCompatible = rule !== undefined && angleBetweenVectors(pair.moving.worldNormal, {
+        x: -pair.target.worldNormal.x,
+        y: -pair.target.worldNormal.y,
+        z: -pair.target.worldNormal.z
+      }) <= rule.maxAngle;
+      if (!this.context.connectors.compatibility.areCompatible(pair.moving, pair.target, distance(pair.moving.worldPosition, pair.target.worldPosition)) || !normalsCompatible) {
         reasons.push("connector_incompatible");
       }
       if (!this.context.occupancy.canOccupy(pair.target, "pending") || !this.context.occupancy.canOccupy(pair.moving, "pending")) {

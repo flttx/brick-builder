@@ -1,8 +1,10 @@
 import * as THREE from "three";
 import { describe, expect, it, vi } from "vitest";
-import { BrickEngine, GROUND_LEVEL, identity, type ExplicitSnapRequest, type PlacementMode, type PrecisionSnapRequest } from "../src/index.js";
+import { BrickEngine, GROUND_LEVEL, identity, type ExplicitSnapRequest, type PartDefinition, type PlacementMode, type PrecisionSnapRequest } from "../src/index.js";
 import { InteractionController } from "../apps/web/src/editor/interaction/interaction-controller.js";
 import { ThreeBrickRenderer } from "../apps/web/src/editor/renderer/brick-renderer.js";
+import { findSnapAssist } from "../apps/web/src/editor/interaction/snap-assist.js";
+import { createTechnicAxleDefinition } from "../src/parts/special-part-generator.js";
 
 const transform = (x = 0, y = 0, z = 0) => ({ position: { x, y, z }, rotation: identity() });
 
@@ -25,6 +27,35 @@ const precisionRequest = (engine: BrickEngine, movingBrickId: string, targetBric
 });
 
 describe("T41.5 placement modes", () => {
+  it("offers a real axle target for a wheel axle hole", () => {
+    const engine = new BrickEngine();
+    engine.parts.upsert(createTechnicAxleDefinition({ id: "technic-axle-test", length: 4.8 }));
+    const wheel = engine.parts.get("ldraw-wheel-3482");
+    wheel.connectors = [
+      { id: "axle-hole-0", type: "axle_hole", role: "socket", position: { x: 0, y: 0.95, z: 0.5 }, rotation: identity(), normal: { x: 0, y: 0, z: -1 }, compatibilityGroup: "technic-axle", snapRadius: 0.3, occupiedRule: "single" }
+    ];
+    wheel.colliders = [
+      { id: "wheel-top", type: "box", center: { x: 0, y: 2, z: 0 }, size: { x: 3, y: 0.6, z: 0.8 } },
+      { id: "wheel-bottom", type: "box", center: { x: 0, y: -0.1, z: 0 }, size: { x: 3, y: 0.6, z: 0.8 } },
+      { id: "wheel-left", type: "box", center: { x: -1.2, y: 0.95, z: 0 }, size: { x: 0.6, y: 1.5, z: 0.8 } },
+      { id: "wheel-right", type: "box", center: { x: 1.2, y: 0.95, z: 0 }, size: { x: 0.6, y: 1.5, z: 0.8 } }
+    ];
+    engine.parts.upsert(wheel);
+    const axleId = engine.createBrick({ id: "axle", partId: "technic-axle-test", transform: transform() });
+    const wheelId = engine.createBrick({ id: "wheel", partId: "ldraw-wheel-3482", transform: transform(0, 3, 4) });
+
+    const result = engine.solveExplicitSnap({
+      movingBrickId: wheelId,
+      movingConnectorId: "axle-hole-0",
+      targetBrickId: axleId,
+      targetConnectorId: "axle-end-right",
+      freeTransform: engine.bricks.get(wheelId).transform
+    });
+
+    expect(result.valid).toBe(true);
+    expect(result.candidate?.anchorPair.target.id).toBe("axle-end-right");
+  });
+
   it("keeps Auto mode selecting the existing snap candidate", () => {
     const engine = new BrickEngine();
     engine.createBrick({ id: "base", partId: "brick-2x4", transform: transform() });
@@ -45,6 +76,37 @@ describe("T41.5 placement modes", () => {
 
     expect(result.mode).toBe("snap");
     expect(result.candidate?.distance).toBeLessThanOrEqual(0.45);
+  });
+
+  it("uses the actual connector position when assisting a special part onto a brick", () => {
+    const engine = new BrickEngine();
+    engine.createBrick({ id: "base", partId: "brick-2x4", transform: transform() });
+    const specialPart = engine.parts.get("ldraw-grass-15279");
+    specialPart.connectors = [{
+      id: "anti-stud-0",
+      type: "anti_stud",
+      role: "socket",
+      position: { x: 0, y: -0.6, z: 0.12 },
+      rotation: identity(),
+      normal: { x: 0, y: -1, z: 0 },
+      compatibilityGroup: "standard-stud",
+      snapRadius: 0.3,
+      occupiedRule: "single"
+    }];
+    engine.parts.upsert(specialPart);
+    const moving = engine.createBrick({ id: "special", partId: "ldraw-grass-15279", transform: transform(3, 4) });
+
+    const assist = findSnapAssist(engine, moving, "base", { x: 0.53, y: 0.6, z: 1.53 }, transform(0.53, 0, 1.41));
+
+    expect(assist).toBeDefined();
+    if (assist === undefined) {
+      return;
+    }
+    expect(assist.transform.position).toEqual({ x: 0.5, y: 1.2, z: 1.38 });
+    expect(assist.pointerWorld).toEqual({ x: 0.5, y: 0.6, z: 1.5 });
+    const result = engine.snap.update({ movingBrickId: moving, freeTransform: assist.transform, pointerWorld: assist.pointerWorld, mode: "auto" });
+    expect(result.mode).toBe("snap");
+    expect(result.candidate?.anchorPair.target.id).toBe("stud-1-3");
   });
 
   it("disables Auto Snap in Free mode and commits only at ground height", () => {
@@ -227,6 +289,43 @@ describe("T41.5 placement modes", () => {
     expect(result.reason).toBe("connector_incompatible");
   });
 
+  it("rejects a precision pair whose second connector normal is not opposite", () => {
+    const engine = new BrickEngine();
+    const connectors = (prefix: string, secondNormal: { x: number; y: number; z: number }): PartDefinition["connectors"] => [
+      { id: `anti-${prefix}-a1`, type: "anti_stud", role: "socket", position: { x: 0, y: 0, z: 0 }, rotation: identity(), normal: { x: 0, y: -1, z: 0 }, compatibilityGroup: "standard-stud", snapRadius: 0.3, occupiedRule: "single" },
+      { id: `stud-${prefix}-a2`, type: "stud", role: "plug", position: { x: 1, y: 0, z: 0 }, rotation: identity(), normal: secondNormal, compatibilityGroup: "standard-stud", snapRadius: 0.3, occupiedRule: "single" }
+    ];
+    const makePart = (id: string, partConnectors: PartDefinition["connectors"]): PartDefinition => ({
+      id,
+      name: id,
+      category: "special",
+      dimensions: { width: 1, height: 1, depth: 1 },
+      origin: { x: 0, y: 0, z: 0 },
+      connectors: partConnectors,
+      colliders: [{ id: "main", type: "box", center: { x: 0, y: 0, z: 0 }, size: { x: 0.1, y: 0.1, z: 0.1 } }]
+    });
+    engine.parts.register(makePart("precision-source", connectors("source", { x: 0, y: 1, z: 0 })));
+    engine.parts.register(makePart("precision-target", [
+      { id: "stud-target-b1", type: "stud", role: "plug", position: { x: 0, y: 0, z: 0 }, rotation: identity(), normal: { x: 0, y: 1, z: 0 }, compatibilityGroup: "standard-stud", snapRadius: 0.3, occupiedRule: "single" },
+      { id: "anti-target-b2", type: "anti_stud", role: "socket", position: { x: 1, y: 0, z: 0 }, rotation: identity(), normal: { x: 0, y: 1, z: 0 }, compatibilityGroup: "standard-stud", snapRadius: 0.3, occupiedRule: "single" }
+    ]));
+    const target = engine.createBrick({ id: "precision-target", partId: "precision-target", transform: transform(0, 3) });
+    const moving = engine.createBrick({ id: "precision-source", partId: "precision-source", transform: transform(4, 4) });
+
+    const result = engine.solvePrecisionSnap({
+      movingBrickId: moving,
+      movingConnectorA1Id: "anti-source-a1",
+      movingConnectorA2Id: "stud-source-a2",
+      targetBrickId: target,
+      targetConnectorB1Id: "stud-target-b1",
+      targetConnectorB2Id: "anti-target-b2",
+      freeTransform: engine.bricks.get(moving).transform
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.reason).toBe("connector_incompatible");
+  });
+
   it("rejects duplicate connector selections and mismatched connector spacing", () => {
     const engine = new BrickEngine();
     engine.createBrick({ id: "base", partId: "brick-2x4", transform: transform() });
@@ -291,9 +390,12 @@ describe("T41.5 temporary Alt mode", () => {
     const preventDefault = vi.fn();
     keyboardListeners.get("keydown")?.({ key: "w", repeat: false, preventDefault } as unknown as KeyboardEvent);
     keyboardListeners.get("keydown")?.({ key: "d", repeat: true, preventDefault } as unknown as KeyboardEvent);
-    expect(cameraController.move).toHaveBeenNthCalledWith(1, 0.45, 0);
-    expect(cameraController.move).toHaveBeenNthCalledWith(2, 0, 0.45);
+    expect(cameraController.move).not.toHaveBeenCalled();
+    interaction.update(0.1);
+    expect(cameraController.move).toHaveBeenCalledWith(expect.closeTo(1.2786, 4), expect.closeTo(1.2786, 4));
     expect(preventDefault).toHaveBeenCalled();
+    keyboardListeners.get("keyup")?.({ key: "w" } as unknown as KeyboardEvent);
+    keyboardListeners.get("keyup")?.({ key: "d" } as unknown as KeyboardEvent);
 
     interaction.pointerDown({ pointerId: 1, clientX: 400, clientY: 300, button: 0 });
     interaction.pointerMove({ pointerId: 1, clientX: 420, clientY: 300, button: 0 });

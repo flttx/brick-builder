@@ -9,9 +9,10 @@ import {
   createSpecialPartDefinitions,
   createStandardPartDefinitions,
   LDRAW_PART_CATALOG,
+  TECHNIC_PART_CATALOG,
   identity
 } from "../src/index.js";
-import { createPartIndex, searchParts } from "../apps/web/src/editor/parts/part-index.js";
+import { createPartIndex, createRuntimePartIndex, searchParts } from "../apps/web/src/editor/parts/part-index.js";
 import { recordRecentPart, readRecentParts } from "../apps/web/src/editor/parts/recent-parts.js";
 import { PartAssetRegistry } from "../apps/web/src/editor/assets/part-asset-registry.js";
 import { createPlacementSession } from "../apps/web/src/editor/placement/placement-session.js";
@@ -38,23 +39,26 @@ describe("MVP registries and part discovery", () => {
     expect(tile.category).toBe("tile");
     expect(tile.connectors.some((connector) => connector.type === "stud")).toBe(false);
     expect(tile.connectors.filter((connector) => connector.type === "anti_stud")).toHaveLength(8);
-    expect(createStandardPartDefinitions()).toHaveLength(40);
+    expect(createStandardPartDefinitions()).toHaveLength(40 + TECHNIC_PART_CATALOG.length);
   });
 
   it("registers legacy procedural parts and all downloaded LDraw parts", () => {
     const parts = createSpecialPartDefinitions();
     expect(parts.slice(0, 3).map((part) => part.id)).toEqual(["wheel-1x1", "flagpole-1x1", "leaf-1x1"]);
-    expect(parts).toHaveLength(3 + LDRAW_PART_CATALOG.length);
+    expect(parts).toHaveLength(3 + TECHNIC_PART_CATALOG.length + LDRAW_PART_CATALOG.length);
     for (const part of parts.slice(0, 3)) {
       expect(part.category).toBe("special");
       expect(part.visual?.kind).toBe(part.id.split("-")[0]);
-      expect(part.connectors.map((connector) => connector.type)).toEqual(["anti_stud", "stud"]);
+      expect(part.connectors).toHaveLength(0);
       expect(part.colliders).toHaveLength(1);
     }
-    for (const part of parts.slice(3)) {
+    const technicParts = parts.slice(3, 3 + TECHNIC_PART_CATALOG.length);
+    expect(technicParts.map((part) => part.id)).toEqual(["technic-axle-4"]);
+    expect(technicParts[0]?.connectors.filter((connector) => connector.type === "axle")).toHaveLength(2);
+    for (const part of parts.slice(3 + TECHNIC_PART_CATALOG.length)) {
       expect(part.category).toBe("special");
       expect(part.metadata?.ldrawPartId).toBeTypeOf("string");
-      expect(part.connectors.map((connector) => connector.type)).toEqual(["anti_stud", "stud"]);
+      expect(Array.isArray(part.connectors)).toBe(true);
       expect(part.colliders).toHaveLength(1);
       const collider = part.colliders[0];
       if (collider?.type !== "box") throw new Error(`Expected a box collider for ${part.id}`);
@@ -70,6 +74,15 @@ describe("MVP registries and part discovery", () => {
     expect(searchParts("砖", index).every((item) => item.category === "brick")).toBe(true);
     expect(searchParts("plate", index).every((item) => item.category === "plate")).toBe(true);
     expect(searchParts("车轮", index)[0]?.id).toBe("ldraw-wheel-3482");
+  });
+
+  it("separates runtime special parts into independent groups", () => {
+    const index = createRuntimePartIndex([
+      { id: "wheel", name: "车轮", category: "special", tags: ["special", "wheel"], aliases: [], dimensions: { width: 3, height: 3, depth: 1 }, thumbnail: "/wheel.svg", manifestUrl: "/wheel.json" },
+      { id: "leaf", name: "树叶", category: "special", tags: ["special", "plant", "leaf"], aliases: [], dimensions: { width: 2, height: 1, depth: 2 }, thumbnail: "/leaf.svg", manifestUrl: "/leaf.json" }
+    ]);
+    expect(index.find((item) => item.id === "wheel")?.specialGroup).toBe("wheel");
+    expect(index.find((item) => item.id === "leaf")?.specialGroup).toBe("plant");
   });
 
   it("keeps recent parts deduplicated at the front", () => {

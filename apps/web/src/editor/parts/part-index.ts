@@ -1,5 +1,8 @@
 import type { PartDefinition } from "../../../../../src/index.js";
 import type { RuntimePartsIndexItem } from "../../../../../packages/brick-assets/asset-types.js";
+import type { UiSpecialPartGroup } from "../../i18n/types.js";
+
+export type SpecialPartGroup = Exclude<UiSpecialPartGroup, "all">;
 
 export interface PartIndexItem {
   id: string;
@@ -8,6 +11,7 @@ export interface PartIndexItem {
   tags: string[];
   aliases: string[];
   dimensions: { width: number; height: number; depth: number };
+  specialGroup?: SpecialPartGroup;
   thumbnail?: string;
   manifestUrl?: string;
 }
@@ -16,13 +20,15 @@ export const createPartIndex = (parts: PartDefinition[]): PartIndexItem[] => par
   const size = `${part.dimensions.width}x${part.dimensions.depth}`;
   const categoryName = part.category === "brick" || part.category === "plate" || part.category === "tile" ? part.category : "special";
   const categoryAlias = categoryName === "brick" ? "砖" : categoryName === "plate" ? "板" : categoryName === "tile" ? "平板" : "特殊件";
+  const specialGroup = part.category === "special" ? specialPartGroup([part.id, part.name, String(part.metadata?.specialKind ?? "")]) : undefined;
   return {
     id: part.id,
     name: part.name,
     category: part.category,
     tags: [categoryName, size, `${part.dimensions.width}×${part.dimensions.depth}`],
     aliases: [part.id, size, `${part.dimensions.width}×${part.dimensions.depth}`, categoryName, categoryAlias],
-    dimensions: { ...part.dimensions }
+    dimensions: { ...part.dimensions },
+    ...(specialGroup === undefined ? {} : { specialGroup })
   };
 });
 
@@ -38,6 +44,7 @@ export const createRuntimePartIndex = (items: RuntimePartsIndexItem[]): PartInde
   tags: [...item.tags],
   aliases: [...item.aliases],
   dimensions: { ...item.dimensions },
+  ...(item.category === "special" ? { specialGroup: specialPartGroup([item.id, item.name, ...item.tags, ...item.aliases]) } : {}),
   thumbnail: item.thumbnail,
   manifestUrl: item.manifestUrl
 }));
@@ -84,4 +91,14 @@ const scorePart = (query: string, item: PartIndexItem): number => {
     return 100;
   }
   return 0;
+};
+
+const specialPartGroup = (values: string[]): SpecialPartGroup => {
+  const text = values.map(normalizeSearchText).join(" ");
+  if (/(wheel|车轮|轮毂|火车轮)/u.test(text)) return "wheel";
+  if (/(plant|leaf|grass|flower|vine|树叶|叶片|草|花|藤蔓)/u.test(text)) return "plant";
+  if (/(flag|flagpole|pole|旗|旗杆|旗面)/u.test(text)) return "flag";
+  if (/(antenna|天线)/u.test(text)) return "antenna";
+  if (/(technic|claw|steering|fishing|rod|机械爪|方向盘|钓鱼竿)/u.test(text)) return "technic";
+  return "other";
 };

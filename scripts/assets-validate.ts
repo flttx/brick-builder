@@ -49,14 +49,14 @@ function localPath(url: string): string {
 
 function runSnapSmoke(items: RuntimePartManifest[]): AssetValidationIssue[] {
   const smokeIssues: AssetValidationIssue[] = [];
-  for (const manifest of items.filter((item) => item.category !== "tile")) {
+  for (const manifest of items.filter((item) => item.category !== "tile" && item.category !== "special")) {
     const parts = new PartRegistry();
     parts.register(partDefinitionFromRuntimeManifest(manifest));
     const engine = new BrickEngine({ parts });
     engine.createBrick({ id: "base", partId: manifest.id, transform: { position: { x: 0, y: 0, z: 0 }, rotation: identity() } });
     const movingId = engine.createBrick({ id: "moving", partId: manifest.id, transform: { position: { x: 3, y: 4, z: 0 }, rotation: identity() } });
     const result = engine.solveExplicitSnap({ movingBrickId: movingId, movingConnectorId: "anti-stud-0-0", targetBrickId: "base", targetConnectorId: "stud-0-0", freeTransform: engine.bricks.get(movingId).transform });
-    const expectedPairs = manifest.category === "special" ? 1 : manifest.dimensions.width * manifest.dimensions.depth;
+    const expectedPairs = manifest.dimensions.width * manifest.dimensions.depth;
     if (!result.valid || result.matchedPairs.length !== expectedPairs) {
       smokeIssues.push({ partId: manifest.id, code: "snap_smoke", message: "Standard connector snap smoke test failed" });
     }
