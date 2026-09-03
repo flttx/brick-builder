@@ -69,7 +69,7 @@ export interface EditorSceneProps {
 export const EditorScene = (props: EditorSceneProps): ReactElement => (
   <Canvas
     frameloop="demand"
-    shadows={(props.quality?.shadows ?? true) && props.engine.bricks.size < 1000}
+    shadows={(props.quality?.shadows ?? true) && props.engine.bricks.size < 1000 ? "percentage" : false}
     dpr={props.quality?.dpr ?? [1, 1.5]}
     camera={{ position: [0, 2.2, 10], fov: 42, near: 0.1, far: 20_000 }}
     gl={{ antialias: true, powerPreference: "high-performance" }}
