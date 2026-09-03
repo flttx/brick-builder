@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { describe, expect, it, vi } from "vitest";
+import { GLTFLoader, type GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import {
   BASIC_BRICK_BUCKET,
   BrickBucket,
@@ -16,11 +17,13 @@ import {
 } from "../src/index.js";
 import { createPartIndex, createRuntimePartIndex, searchParts } from "../apps/web/src/editor/parts/part-index.js";
 import { recordRecentPart, readRecentParts } from "../apps/web/src/editor/parts/recent-parts.js";
-import { PartAssetRegistry } from "../apps/web/src/editor/assets/part-asset-registry.js";
+import { normalizeRuntimeGeometryForMobile, PartAssetRegistry } from "../apps/web/src/editor/assets/part-asset-registry.js";
 import { createPlacementSession } from "../apps/web/src/editor/placement/placement-session.js";
 import { InteractionController } from "../apps/web/src/editor/interaction/interaction-controller.js";
 import { createBrickMaterial } from "../apps/web/src/editor/renderer/brick-material.js";
+import { createBrickGeometry } from "../apps/web/src/editor/renderer/brick-geometry.js";
 import { ThreeBrickRenderer } from "../apps/web/src/editor/renderer/brick-renderer.js";
+import type { RuntimePartManifest, RuntimePartsIndexItem } from "../packages/brick-assets/asset-types.js";
 
 const transform = (x = 0, y = 0, z = 0) => ({ position: { x, y, z }, rotation: identity() });
 
@@ -102,6 +105,62 @@ describe("MVP registries and part discovery", () => {
   });
 });
 
+const uniqueVertexCount = (geometry: THREE.BufferGeometry): number => {
+  const position = geometry.getAttribute("position");
+  const vertices = new Set<string>();
+  for (let index = 0; index < position.count; index += 1) {
+    vertices.add(`${position.getX(index).toFixed(5)},${position.getY(index).toFixed(5)},${position.getZ(index).toFixed(5)}`);
+  }
+  return vertices.size;
+};
+
+const runtimeIndexItem = (id: string, manifestUrl: string): RuntimePartsIndexItem => ({
+  id,
+  name: id,
+  category: "special",
+  tags: [],
+  aliases: [],
+  dimensions: { width: 1, height: 1, depth: 1 },
+  thumbnail: "/thumbnail.webp",
+  manifestUrl
+});
+
+const runtimeManifest = (engine: BrickEngine, id: string): RuntimePartManifest => {
+  const part = engine.parts.get(id);
+  return {
+    id,
+    version: 1,
+    name: part.name,
+    category: part.category,
+    source: { sourceType: "ldraw", sourcePartId: id, sourceFile: `${id}.dat` },
+    geometry: { lod0: "/leaf.glb", lod1: "/leaf-lod1.glb" },
+    dimensions: { ...part.dimensions },
+    origin: [part.origin.x, part.origin.y, part.origin.z],
+    connectors: part.connectors,
+    colliders: part.colliders,
+    metadataHash: "metadata",
+    geometryHash: "geometry",
+    sourceHash: "source",
+    assetHash: "asset",
+    pipelineVersion: 1,
+    thumbnail: "/thumbnail.webp",
+    tags: [],
+    aliases: [],
+    geometryStats: {
+      lod0Vertices: 3,
+      lod1Vertices: 3,
+      lod0Bounds: { min: [0, 0, 0], max: [1, 1, 1] },
+      lod1Bounds: { min: [0, 0, 0], max: [1, 1, 1] }
+    }
+  };
+};
+
+const responseFor = (body: unknown, status = 200): Response => ({
+  ok: status >= 200 && status < 300,
+  status,
+  json: async () => body
+} as Response);
+
 const technicCatalogLength = (): number => TECHNIC_PART_CATALOG.length + TECHNIC_BEAM_CATALOG.length + TECHNIC_CONNECTOR_CATALOG.length;
 
 describe("MVP bucket and commands", () => {
@@ -122,7 +181,84 @@ describe("MVP bucket and commands", () => {
       expect(asset.source).toBe("procedural-fallback");
       expect(asset.geometry.attributes.position?.count).toBeGreaterThan(0);
     }
+    const wheel = assets.getPart("ldraw-wheel-3482").geometry;
+    const leaf = assets.getPart("ldraw-leaf-7096").geometry;
+    wheel.computeBoundingBox();
+    leaf.computeBoundingBox();
+    const wheelSize = wheel.boundingBox?.getSize(new THREE.Vector3());
+    const leafSize = leaf.boundingBox?.getSize(new THREE.Vector3());
+    expect(wheelSize?.x).toBeCloseTo(3.1, 2);
+    expect(wheelSize?.y).toBeCloseTo(3.1, 2);
+    expect(wheelSize?.z).toBeCloseTo(1, 2);
+    expect(leafSize?.x).toBeCloseTo(3.91, 2);
+    expect(leafSize?.y).toBeCloseTo(1.67, 2);
+    expect(leafSize?.z).toBeCloseTo(5.98, 2);
+    expect(uniqueVertexCount(wheel)).toBeGreaterThan(8);
+    expect(uniqueVertexCount(leaf)).toBeGreaterThan(8);
     assets.dispose();
+  });
+
+  it("keeps LDraw special parts recognizable when runtime assets fail to load", async () => {
+    const engine = new BrickEngine();
+    let shouldFail = true;
+    const assets = new PartAssetRegistry(engine.parts, { shouldFailNextLoad: () => {
+      const result = shouldFail;
+      shouldFail = false;
+      return result;
+    } });
+    for (const partId of ["ldraw-wheel-3482", "ldraw-leaf-7096", "ldraw-claw-15362"]) {
+      const part = engine.parts.get(partId);
+      expect(createBrickGeometry(part).attributes.position?.count).toBeGreaterThan(24);
+      const asset = await assets.loadPart(partId);
+      expect(asset.source).toBe("procedural-fallback");
+      expect(asset.geometry.attributes.position?.count).toBeGreaterThan(24);
+    }
+    assets.dispose();
+  });
+
+  it("downcasts runtime geometry indices when mobile-compatible", () => {
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute([0, 0, 0, 1, 0, 0, 0, 1, 0], 3));
+    geometry.setIndex(new THREE.Uint32BufferAttribute([0, 1, 2], 1));
+    normalizeRuntimeGeometryForMobile(geometry);
+    expect(geometry.getIndex()?.array).toBeInstanceOf(Uint16Array);
+    geometry.dispose();
+  });
+
+  it("isolates manifest failures and rejects invalid runtime asset identities", async () => {
+    const engine = new BrickEngine();
+    const wheelId = "ldraw-wheel-3482";
+    const leafId = "ldraw-leaf-7096";
+    const index: Array<RuntimePartsIndexItem | { id: string; manifestUrl: number }> = [
+      runtimeIndexItem(wheelId, "/wheel-manifest.json"),
+      runtimeIndexItem(leafId, "/leaf-manifest.json"),
+      { id: leafId, manifestUrl: 42 }
+    ];
+    const leafManifest = runtimeManifest(engine, leafId);
+    const wrongManifest = runtimeManifest(engine, "ldraw-claw-15362");
+    const runtimeScene = new THREE.Group();
+    runtimeScene.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1)));
+    const loadAsync = vi.spyOn(GLTFLoader.prototype, "loadAsync").mockResolvedValue({ scene: runtimeScene } as unknown as GLTF);
+    const fetchMock = vi.fn<typeof fetch>(async (input) => {
+      const url = String(input);
+      if (url === "/runtime-index.json") return responseFor(index);
+      if (url === "/wheel-manifest.json") return responseFor(wrongManifest);
+      if (url === "/leaf-manifest.json") return responseFor(leafManifest);
+      return responseFor({}, 404);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const assets = new PartAssetRegistry(engine.parts, { indexUrl: "/runtime-index.json" });
+    try {
+      expect((await assets.loadPart(wheelId)).source).toBe("procedural-fallback");
+      const leaf = await assets.loadPart(leafId);
+      expect(leaf.source).toBe("runtime");
+      expect(leaf.part.id).toBe(leafId);
+      expect(loadAsync).toHaveBeenCalledWith("/leaf.glb");
+    } finally {
+      assets.dispose();
+      vi.unstubAllGlobals();
+      vi.restoreAllMocks();
+    }
   });
 
   it("uses double-sided materials for imported geometry", () => {

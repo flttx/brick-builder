@@ -1,11 +1,12 @@
 import * as THREE from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
-import type { PartDefinition } from "../../../../../src/index.js";
+import type { PartDefinition, ProceduralPartVisual } from "../../../../../src/index.js";
 
 export const createBrickGeometry = (part: PartDefinition): THREE.BufferGeometry => {
-  const pieces = part.visual === undefined
+  const fallbackKind = part.visual?.kind ?? inferSpecialFallbackKind(part);
+  const pieces = fallbackKind === undefined
     ? [new THREE.BoxGeometry(part.dimensions.width, part.dimensions.height, part.dimensions.depth)]
-    : createSpecialGeometry(part);
+    : createSpecialGeometry(part, fallbackKind);
   for (const connector of part.connectors) {
     if (connector.type !== "stud") {
       continue;
@@ -21,16 +22,15 @@ export const createBrickGeometry = (part: PartDefinition): THREE.BufferGeometry 
   if (geometry === null) {
     throw new Error(`Unable to build geometry for part ${part.id}`);
   }
+  if (part.visual === undefined && fallbackKind !== undefined) {
+    scaleFallbackGeometry(geometry, part.dimensions);
+  }
   geometry.computeVertexNormals();
   geometry.computeBoundingSphere();
   return geometry;
 };
 
-const createSpecialGeometry = (part: PartDefinition): THREE.BufferGeometry[] => {
-  const kind = part.visual?.kind;
-  if (kind === undefined) {
-    return [];
-  }
+const createSpecialGeometry = (part: PartDefinition, kind: ProceduralPartVisual): THREE.BufferGeometry[] => {
   if (kind === "wheel") {
     const tire = new THREE.TorusGeometry(0.43, 0.14, 12, 24);
     const hub = new THREE.CylinderGeometry(0.19, 0.19, 0.42, 16);
@@ -87,6 +87,17 @@ const createSpecialGeometry = (part: PartDefinition): THREE.BufferGeometry[] => 
     body.translate(0, 0, 0.28);
     return [jaw, body];
   }
+  if (kind === "generic_special") {
+    const shaft = new THREE.CylinderGeometry(0.18, 0.28, 1.3, 12);
+    shaft.rotateX(Math.PI / 2);
+    const collar = new THREE.TorusGeometry(0.3, 0.08, 8, 16);
+    collar.rotateY(Math.PI / 2);
+    collar.translate(0, 0, -0.3);
+    const tip = new THREE.ConeGeometry(0.32, 0.9, 12);
+    tip.rotateX(-Math.PI / 2);
+    tip.translate(0, 0, 0.95);
+    return [shaft, collar, tip];
+  }
   const stem = new THREE.CylinderGeometry(0.065, 0.065, 0.55, 12);
   stem.translate(0, -0.325, 0);
   const leaf = new THREE.SphereGeometry(0.65, 16, 8);
@@ -94,4 +105,23 @@ const createSpecialGeometry = (part: PartDefinition): THREE.BufferGeometry[] => 
   leaf.rotateZ(-0.35);
   leaf.translate(0.1, 0.26, 0);
   return [stem, leaf];
+};
+
+const inferSpecialFallbackKind = (part: PartDefinition): ProceduralPartVisual | undefined => {
+  if (part.category !== "special") return undefined;
+  const ldrawPartId = typeof part.metadata?.ldrawPartId === "string" ? part.metadata.ldrawPartId : "";
+  const partKey = `${part.id} ${ldrawPartId}`.toLowerCase();
+  if (!partKey.includes("ldraw") && ldrawPartId.length === 0) return undefined;
+  if (/(wheel|train-wheel|steering-wheel)/u.test(partKey)) return "wheel";
+  if (/(leaf|grass|flower|vine)/u.test(partKey)) return "leaf";
+  if (partKey.includes("flag")) return "flagpole";
+  return "generic_special";
+};
+
+const scaleFallbackGeometry = (geometry: THREE.BufferGeometry, dimensions: PartDefinition["dimensions"]): void => {
+  geometry.computeBoundingBox();
+  const size = new THREE.Vector3();
+  geometry.boundingBox?.getSize(size);
+  if (size.x <= 0 || size.y <= 0 || size.z <= 0) return;
+  geometry.scale(dimensions.width / size.x, dimensions.height / size.y, dimensions.depth / size.z);
 };

@@ -137,16 +137,27 @@ export const EditorApp = ({ projectId = "local-project", projectName = "Local Dr
       const value = await response.json() as unknown;
       if (!isRuntimePartIndex(value)) throw new Error("Runtime part index is invalid");
       if (active) setRuntimePartIndex(createRuntimePartIndex(value));
-      await mapWithConcurrency(value, 6, async (item) => {
-        const manifestResponse = await fetch(item.manifestUrl);
-        if (!manifestResponse.ok) return;
-        const manifest = await manifestResponse.json() as unknown;
-        if (active && isRuntimePartManifest(manifest)) engine.parts.upsert(partDefinitionFromRuntimeManifest(manifest));
+      await mapWithConcurrency(value, 4, async (item) => {
+        try {
+          const manifestResponse = await fetch(item.manifestUrl);
+          if (!manifestResponse.ok) {
+            if (active) telemetry.record("asset_failure", { partId: item.id, reason: "manifest_load_failed" });
+            return;
+          }
+          const manifest = await manifestResponse.json() as unknown;
+          if (!isRuntimePartManifest(manifest) || manifest.id !== item.id) {
+            if (active) telemetry.record("asset_failure", { partId: item.id, reason: "manifest_invalid" });
+            return;
+          }
+          if (active) engine.parts.upsert(partDefinitionFromRuntimeManifest(manifest));
+        } catch {
+          if (active) telemetry.record("asset_failure", { partId: item.id, reason: "manifest_load_failed" });
+        }
       });
       if (active) engine.refreshPartDefinitions();
     }).catch(() => undefined);
     return () => { active = false; };
-  }, [engine]);
+  }, [engine, telemetry]);
   const saveManager = useMemo(() => persistence === undefined ? undefined : new SaveManager({ userId: persistence.userId, projectId: persistence.projectId, baseServerRevision: persistence.baseServerRevision, repository: persistence.repository, draftStore: new IndexedDbLocalDraftStore(), cachedStore: new IndexedDbCachedProjectStore(), ...(persistence.indexStore === undefined ? {} : { indexStore: persistence.indexStore }), projectName, shouldFailNextCloudSave: () => faults.consume("failNextCloudSave"), shouldForceConflict: () => faults.consume("force409"), onCloudSaved: async () => { const canvas = canvasRef.current; if (canvas === null) return; const blob = await createWebpThumbnail(canvas); const dataUrl = await blobToDataUrl(blob); await persistence.repository.uploadThumbnail(persistence.projectId, dataUrl); } }), [faults, persistence, projectName]);
 
   useEffect(() => faults.subscribe(setFaultState), [faults]);

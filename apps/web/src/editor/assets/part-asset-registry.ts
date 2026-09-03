@@ -29,6 +29,7 @@ export class PartAssetRegistry {
   private readonly assets = new Map<string, LoadedPartAsset>();
   private readonly pending = new Map<string, Promise<LoadedPartAsset>>();
   private readonly manifests = new Map<string, RuntimePartManifest>();
+  private readonly indexItems = new Map<string, RuntimePartsIndexItem>();
   private readonly listeners = new Set<PartAssetLoadedListener>();
   private readonly references = new Map<string, number>();
   private readonly idleTimers = new Map<string, ReturnType<typeof setTimeout>>();
@@ -117,7 +118,11 @@ export class PartAssetRegistry {
   private async loadRuntimePart(partId: string): Promise<LoadedPartAsset> {
     if (this.options.shouldFailNextLoad?.() === true) throw new Error("Injected asset load failure");
     await this.loadIndex();
-    const manifest = this.manifests.get(partId);
+    let manifest = this.manifests.get(partId);
+    if (manifest === undefined) {
+      const indexItem = this.indexItems.get(partId);
+      if (indexItem !== undefined) manifest = await this.loadManifest(indexItem);
+    }
     if (manifest === undefined) {
       this.options.onFailure?.(partId, "manifest_missing");
       return this.getPart(partId);
@@ -128,6 +133,7 @@ export class PartAssetRegistry {
       if (geometry === undefined && object instanceof THREE.Mesh && object.geometry instanceof THREE.BufferGeometry) geometry = object.geometry;
     });
     if (geometry === undefined) throw new Error(`Runtime geometry missing for ${partId}`);
+    normalizeRuntimeGeometryForMobile(geometry);
     const current = this.assets.get(partId);
     if (current !== undefined && current.source === "procedural-fallback") current.geometry.dispose();
     const asset: LoadedPartAsset = { part: partDefinitionFromRuntimeManifest(manifest), geometry, source: "runtime", manifest };
@@ -144,26 +150,46 @@ export class PartAssetRegistry {
       if (!response.ok) throw new Error(`Asset index request failed: ${response.status}`);
       const value = await response.json() as unknown;
       if (!Array.isArray(value)) throw new Error("Invalid runtime asset index");
-      await mapWithConcurrency(value as RuntimePartsIndexItem[], 6, async (item) => {
-        const manifestResponse = await fetch(item.manifestUrl, { cache: "force-cache" });
-        if (!manifestResponse.ok) return;
-        const manifest = await manifestResponse.json() as unknown;
-        if (isRuntimePartManifest(manifest)) this.manifests.set(manifest.id, manifest);
-      });
+      this.indexItems.clear();
+      for (const item of value) {
+        if (isRuntimePartIndexItem(item)) this.indexItems.set(item.id, item);
+      }
+    }).catch((error: unknown) => {
+      this.indexPromise = undefined;
+      throw error;
     });
     return this.indexPromise;
   }
+
+  private async loadManifest(item: RuntimePartsIndexItem): Promise<RuntimePartManifest | undefined> {
+    // 先复用缓存以支持离线资源；缓存异常时强制刷新，避免旧清单阻断按需加载。
+    for (const cache of ["force-cache", "reload"] as const) {
+      try {
+        const response = await fetch(item.manifestUrl, { cache });
+        if (!response.ok) continue;
+        const value = await response.json() as unknown;
+        if (!isRuntimePartManifest(value) || value.id !== item.id) continue;
+        this.manifests.set(value.id, value);
+        return value;
+      } catch {
+        continue;
+      }
+    }
+    return undefined;
+  }
 }
 
-const mapWithConcurrency = async <T>(items: T[], limit: number, callback: (item: T) => Promise<void>): Promise<void> => {
-  let cursor = 0;
-  const worker = async (): Promise<void> => {
-    while (cursor < items.length) {
-      const index = cursor;
-      cursor += 1;
-      const item = items[index];
-      if (item !== undefined) await callback(item);
-    }
-  };
-  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, () => worker()));
+/** 将可安全缩窄的 32 位索引转换为 16 位，兼容移动端 WebGL。 */
+export const normalizeRuntimeGeometryForMobile = (geometry: THREE.BufferGeometry): void => {
+  const index = geometry.getIndex();
+  if (index === null || !(index.array instanceof Uint32Array)) return;
+  let maximumIndex = 0;
+  for (const value of index.array) maximumIndex = Math.max(maximumIndex, value);
+  if (maximumIndex <= 0xffff) geometry.setIndex(new THREE.Uint16BufferAttribute(index.array, index.itemSize));
+};
+
+const isRuntimePartIndexItem = (value: unknown): value is RuntimePartsIndexItem => {
+  if (typeof value !== "object" || value === null) return false;
+  const item = value as Partial<RuntimePartsIndexItem>;
+  return typeof item.id === "string" && typeof item.manifestUrl === "string";
 };

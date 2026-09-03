@@ -162,6 +162,8 @@ describe("asset industrialization", () => {
     expect(first.equals(second)).toBe(true);
     const json = readGlbJson(first);
     expect(json.asset).toBeDefined();
+    const accessors = json.accessors as Array<{ componentType?: number }>;
+    expect(accessors[2]?.componentType).toBe(5123);
     expect(lod1.positions.length).toBeLessThan(lod0.positions.length);
   });
 

@@ -6,7 +6,10 @@ const GLB_VERSION = 2;
 export const createGlb = (geometry: NormalizedGeometry): Buffer => {
   const positions = Buffer.from(new Float32Array(geometry.positions).buffer);
   const normals = Buffer.from(new Float32Array(geometry.normals).buffer);
-  const indices = Buffer.from(new Uint32Array(geometry.indices).buffer);
+  const useUnsignedShortIndices = geometry.positions.length / 3 <= 0xffff;
+  const indices = useUnsignedShortIndices
+    ? Buffer.from(new Uint16Array(geometry.indices).buffer)
+    : Buffer.from(new Uint32Array(geometry.indices).buffer);
   const positionOffset = 0;
   const normalOffset = align4(positions.byteLength);
   const indexOffset = normalOffset + align4(normals.byteLength);
@@ -30,7 +33,7 @@ export const createGlb = (geometry: NormalizedGeometry): Buffer => {
     accessors: [
       { bufferView: 0, componentType: 5126, count: geometry.positions.length / 3, type: "VEC3", min: geometry.bounds.min, max: geometry.bounds.max },
       { bufferView: 1, componentType: 5126, count: geometry.normals.length / 3, type: "VEC3" },
-      { bufferView: 2, componentType: 5125, count: geometry.indices.length, type: "SCALAR", min: [0], max: [Math.max(0, geometry.positions.length / 3 - 1)] }
+      { bufferView: 2, componentType: useUnsignedShortIndices ? 5123 : 5125, count: geometry.indices.length, type: "SCALAR", min: [0], max: [Math.max(0, geometry.positions.length / 3 - 1)] }
     ]
   });
   const jsonChunk = Buffer.from(json.padEnd(align4(Buffer.byteLength(json)), " "));
