@@ -93,6 +93,7 @@ export const zhCN: UiMessages = {
     toolbar: {
       backToBuilds: "我的作品",
       modeLabel: "移动模式",
+      scene: "场景",
       parts: "零件",
       bucket: "零件桶",
       move: "移动",
@@ -210,6 +211,10 @@ export const zhCN: UiMessages = {
       bucketDescription: "摇一摇，随机拿一块积木开始搭建。",
       colorTitle: "颜色",
       colorDescription: "选择新积木的默认颜色，也可以修改当前选中的积木。",
+      sceneTitle: "场景零件",
+      sceneCount: (count) => `${count} 个零件`,
+      sceneEmpty: "场景中还没有零件。",
+      sceneItemAria: (partName, index) => `选择场景中的第 ${index} 个${partName}`,
       settingsTitle: "工作台设置",
       snapDescription: "开启后，靠近兼容连接点会自动吸附。关闭后仍可自由移动并保持碰撞保护。",
       openDebug: "打开开发者工具"

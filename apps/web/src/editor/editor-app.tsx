@@ -18,6 +18,7 @@ import { createPlacementSession, type NewBrickPlacementSession, type PlacementSo
 import type { PrecisionPreviewState } from "./precision/precision-overlay.js";
 import type { ThreeBrickRenderer } from "./renderer/brick-renderer.js";
 import { type FrameMetrics, EditorScene } from "./scene/editor-scene.js";
+import { ScenePartsPanel, type ScenePartListItem } from "./scene/scene-parts-panel.js";
 import type { Plane } from "three";
 import { localizeColorName, localizePartName, messageForErrorCode, messages } from "../i18n/index.js";
 import { QualityManager, guessInitialQuality, qualitySettings, type QualityLevel, type QualitySettings } from "./performance/quality-manager.js";
@@ -207,6 +208,13 @@ export const EditorApp = ({ projectId = "local-project", projectName = "Local Dr
   useEffect(() => { if (saveState?.error === "PROJECT_CONFLICT") telemetry.record("conflict", { count: 1 }); if (saveState?.error === "SYNC_ERROR") telemetry.record("cloud_save_failure", { status: saveState.error }); }, [saveState?.error, telemetry]);
   useEffect(() => { if (authEpoch !== undefined && authEpoch !== authEpochRef.current) { authEpochRef.current = authEpoch; void saveManager?.flushCloud(); } }, [authEpoch, saveManager]);
   const handleSelectionChange = useCallback((selectedBrickId: string | undefined) => { setUi((current) => ({ ...current, selectedBrickId })); }, []);
+  const handleScenePartSelect = useCallback((brickId: string) => {
+    if (!engine.bricks.has(brickId)) {
+      return;
+    }
+    rendererRef.current?.setSelected(brickId);
+    handleSelectionChange(brickId);
+  }, [engine, handleSelectionChange]);
   const handleHoverChange = useCallback((hoveredBrickId: string | undefined) => { setUi((current) => ({ ...current, hoveredBrickId })); }, []);
   const handleStateChange = useCallback((interactionState: InteractionState) => { setUi((current) => ({ ...current, interactionState })); }, []);
   const handleDragResult = useCallback((_freeTransform: Transform, result: DragResult) => { candidateRef.current = result.candidate; }, []);
@@ -378,6 +386,17 @@ export const EditorApp = ({ projectId = "local-project", projectName = "Local Dr
   }, [handlePrecisionCancel, handlePrecisionConfirm, precision?.state]);
 
   const selectedBrick = ui.selectedBrickId === undefined ? undefined : engine.bricks.tryGet(ui.selectedBrickId);
+  const scenePartItems = useMemo<ScenePartListItem[]>(() => engine.bricks.values().map((brick, index) => {
+    const part = engine.parts.tryGet(brick.partId);
+    const color = engine.colors.tryGet(brick.colorId);
+    return {
+      id: brick.id,
+      index: index + 1,
+      partName: localizePartName(brick.partId, part?.name ?? brick.partId),
+      colorName: localizeColorName(brick.colorId, color?.name ?? brick.colorId),
+      colorHex: color?.baseColor ?? "#74837f"
+    };
+  }), [engine, runtimePartIndex, ui.revision]);
   const selectedConnections = ui.selectedBrickId === undefined ? [] : engine.connections.getForBrick(ui.selectedBrickId);
   const candidate = candidateRef.current;
   const history = engine.history;
@@ -419,6 +438,7 @@ export const EditorApp = ({ projectId = "local-project", projectName = "Local Dr
       </header>
       <nav className="tool-rail" aria-label={messages.editor.toolbar.tools}>
         <ToolRailButton icon={<MoveIcon />} label={messages.editor.toolbar.move} active={ui.activeTool === "move"} onClick={() => requestActiveTool("move")} />
+        <ToolRailButton icon={<SceneIcon />} label={messages.editor.toolbar.scene} active={ui.activePanel === "scene"} onClick={() => togglePanel("scene")} />
         <ToolRailButton icon={<PartsIcon />} label={messages.editor.toolbar.parts} active={ui.activePanel === "parts"} onClick={() => togglePanel("parts")} />
         <ToolRailButton icon={<BucketIcon />} label={messages.editor.toolbar.bucket} active={ui.activePanel === "bucket"} onClick={() => togglePanel("bucket")} />
         <ToolRailButton icon={<ColorIcon />} label={messages.editor.toolbar.color} active={ui.activePanel === "color"} onClick={() => togglePanel("color")} />
@@ -435,13 +455,14 @@ export const EditorApp = ({ projectId = "local-project", projectName = "Local Dr
       {notice !== undefined && <div className="toast-notice" role="alert">{notice}<button type="button" onClick={() => setNotice(undefined)} aria-label={messages.editor.dismissNotice}>×</button></div>}
       {saveState?.error === "AUTH_REQUIRED" && <div className="auth-expiry-banner" role="alert">{messages.editor.authExpired}<button type="button" onClick={onAuthRequired}>{messages.editor.loginAgain}</button></div>}
       {recoveryState !== "healthy" && <div className="auth-expiry-banner" role="alert"><span>{recoveryState === "context_lost" ? messages.editor.recovery.contextLost : recoveryState === "recovering" ? messages.editor.recovery.recovering : messages.editor.recovery.failed}</span>{recoveryState === "failed" && <button type="button" onClick={() => void recoveryRetryRef.current?.()}>{messages.editor.recovery.retry}</button>}</div>}
+      <ScenePartsPanel open={ui.activePanel === "scene"} items={scenePartItems} selectedBrickId={ui.selectedBrickId} onSelect={handleScenePartSelect} onClose={closePanels} />
       <PartBrowser open={ui.activePanel === "parts"} items={partIndex} recentPartIds={recentPartIds} colors={engine.colors.values()} currentColorId={currentColorId} onClose={closePanels} onColorSelect={choosePlacementColor} onSelect={(partId) => startPlacement(partId, recentPartIds.includes(partId) ? "recent" : "browser")} />
       {ui.activePanel === "bucket" && <BucketPanel pulse={bucketPulse} onDraw={handleBucketDraw} onClose={closePanels} />}
       {ui.activePanel === "color" && <ColorPanel colors={engine.colors.values()} currentColorId={selectedBrick?.colorId ?? currentColorId} onChoose={chooseColor} onClose={closePanels} />}
       {ui.activePanel === "settings" && <SettingsPanel snapEnabled={ui.snapEnabled} onSnapChange={(enabled) => setUi((current) => ({ ...current, snapEnabled: enabled }))} onOpenDebug={() => togglePanel("debug")} onClose={closePanels} debugAvailable={import.meta.env.DEV} />}
       <DevToolsShell open={ui.debugOpen} tab={devToolsTab} onTabChange={setDevToolsTab} onClose={closePanels} onValidate={handleValidate} onExportDiagnostics={handleExportDiagnostics} consistency={engine.validateEngineConsistency().valid ? messages.editor.debug.consistent : messages.editor.debug.checkRequired} performance={`FPS ${formatNumber(ui.frame.fps, 1)} · FRAME MS ${formatNumber(ui.frame.frameMs, 1)} · DPR ${quality.dpr.toFixed(2)} · ${quality.level}`} faults={faultState} onToggleFault={handleFaultToggle} enabled={import.meta.env.DEV} metrics={{ frame: ui.frame, interaction: ui.interaction, brickCount: engine.bricks.size, connectionCount: engine.graph.size, selected: selectedBrick?.id, candidatePairs: candidate?.matchedPairs.length, matchedPairs: precision?.preview?.result.matchedPairs.length }} debugFlags={debugFlags} onToggleDebug={handleDebugToggle} />
       {selectedBrick !== undefined && <div className="context-toolbar" aria-live="polite"><button className="selection-color-button" type="button" onClick={() => togglePanel("color")} aria-expanded={ui.activePanel === "color"} aria-label={messages.editor.toolbar.color}><span className="selection-swatch" style={{ backgroundColor: engine.colors.get(selectedBrick.colorId).baseColor }} /></button><div className="selection-copy"><span>{messages.editor.selection.activeObject}</span><strong>{localizePartName(selectedBrick.partId, selectedBrick.partId)}</strong></div><span className="selection-meta">{messages.editor.selection.summary(localizePartName(selectedBrick.partId, selectedBrick.partId), selectedConnections.length)}</span><div className="selection-actions"><button type="button" onClick={() => rotateSelected("y")} aria-label={messages.editor.toolbar.rotateSelected}><RotateIcon /></button><button type="button" onClick={() => rotateSelected("x")} aria-label={messages.editor.toolbar.rotateSelectedVertical}><VerticalRotateIcon /></button><button type="button" onClick={duplicateSelected} aria-label={`${messages.common.duplicate}${localizePartName(selectedBrick.partId, selectedBrick.partId)}`}><DuplicateIcon /></button><button type="button" onClick={() => requestActiveTool("precision_connect")} aria-label={messages.editor.toolbar.precisionConnect}><PrecisionIcon /></button><button type="button" onClick={deleteSelected} aria-label={`${messages.common.delete}${localizePartName(selectedBrick.partId, selectedBrick.partId)}`}><DeleteIcon /></button><button type="button" onClick={clearSelection} aria-label={messages.editor.toolbar.clearSelection}><ClearSelectionIcon /></button></div></div>}
-      <div className="mobile-tool-bar" aria-label={messages.editor.toolbar.tools}><ToolRailButton icon={<MoveIcon />} label={messages.editor.toolbar.move} active={ui.activeTool === "move"} onClick={() => requestActiveTool("move")} /><ToolRailButton icon={<PartsIcon />} label={messages.editor.toolbar.parts} active={ui.activePanel === "parts"} onClick={() => togglePanel("parts")} /><ToolRailButton icon={<BucketIcon />} label={messages.editor.toolbar.bucket} active={ui.activePanel === "bucket"} onClick={() => togglePanel("bucket")} /><ToolRailButton icon={<ColorIcon />} label={messages.editor.toolbar.color} active={ui.activePanel === "color"} onClick={() => togglePanel("color")} /><ToolRailButton icon={<PrecisionIcon />} label={messages.editor.toolbar.precisionConnect} active={ui.activeTool === "precision_connect"} disabled={selectedBrick === undefined} onClick={() => requestActiveTool(ui.activeTool === "precision_connect" ? "move" : "precision_connect")} /><ToolRailButton icon={<MoreIcon />} label={messages.editor.toolbar.settings} active={ui.activePanel === "settings"} onClick={() => togglePanel("settings")} /></div>
+      <div className="mobile-tool-bar" aria-label={messages.editor.toolbar.tools}><ToolRailButton icon={<MoveIcon />} label={messages.editor.toolbar.move} active={ui.activeTool === "move"} onClick={() => requestActiveTool("move")} /><ToolRailButton icon={<SceneIcon />} label={messages.editor.toolbar.scene} active={ui.activePanel === "scene"} onClick={() => togglePanel("scene")} /><ToolRailButton icon={<PartsIcon />} label={messages.editor.toolbar.parts} active={ui.activePanel === "parts"} onClick={() => togglePanel("parts")} /><ToolRailButton icon={<BucketIcon />} label={messages.editor.toolbar.bucket} active={ui.activePanel === "bucket"} onClick={() => togglePanel("bucket")} /><ToolRailButton icon={<ColorIcon />} label={messages.editor.toolbar.color} active={ui.activePanel === "color"} onClick={() => togglePanel("color")} /><ToolRailButton icon={<PrecisionIcon />} label={messages.editor.toolbar.precisionConnect} active={ui.activeTool === "precision_connect"} disabled={selectedBrick === undefined} onClick={() => requestActiveTool(ui.activeTool === "precision_connect" ? "move" : "precision_connect")} /><ToolRailButton icon={<MoreIcon />} label={messages.editor.toolbar.settings} active={ui.activePanel === "settings"} onClick={() => togglePanel("settings")} /></div>
       <footer className="bottom-hints" aria-label={messages.editor.debug.shortcuts}><span><kbd>DRAG</kbd> {messages.editor.debug.dragHint}</span><span><kbd>R</kbd> {messages.editor.debug.rotateHint}</span><span><kbd>SHIFT+R</kbd> {messages.editor.toolbar.rotateSelectedVertical}</span><span><kbd>WASD</kbd> {messages.editor.debug.cameraMoveHint}</span><span><kbd>ALT</kbd> {messages.editor.toolbar.altHint}</span><span><kbd>ESC</kbd> {messages.editor.debug.cancelHint}</span></footer>
     </main>
   );
@@ -488,6 +509,7 @@ const VerticalRotateIcon = (): ReactElement => <svg viewBox="0 0 24 24" aria-hid
 const UndoIcon = (): ReactElement => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8 4 12l5 4M4 12h10a6 6 0 0 1 6 6" /></svg>;
 const RedoIcon = (): ReactElement => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 8 5 4-5 4M20 12H10a6 6 0 0 0-6 6" /></svg>;
 const PartsIcon = (): ReactElement => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h6v6H4zM14 5h6v6h-6zM4 15h6v4H4zM14 15h6v4h-6z" /></svg>;
+const SceneIcon = (): ReactElement => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v14H5zM8 8h3v3H8zM13 8h3v3h-3zM8 13h3v3H8zM13 13h3v3h-3z" /></svg>;
 const MoveIcon = (): ReactElement => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18M12 3l-3 3m3-3 3 3M12 21l-3-3m3 3 3-3M3 12l3-3m-3 3 3 3M21 12l-3-3m3 3-3 3" /></svg>;
 const BucketIcon = (): ReactElement => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 11H6L5 8Zm3-3h8l1 3H7l1-3Zm-1 7h10" /></svg>;
 const ColorIcon = (): ReactElement => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4a8 8 0 1 0 0 16h1.5a2 2 0 0 0 0-4H12a2 2 0 0 1 0-4h3a5 5 0 0 0 0-10h-3Z" /><path d="M7.5 9.5h.01M9.5 6.5h.01M15.5 6.5h.01" /></svg>;

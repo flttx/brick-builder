@@ -95,6 +95,7 @@ export interface UiMessages {
     toolbar: {
       backToBuilds: string;
       modeLabel: string;
+      scene: string;
       parts: string;
       bucket: string;
       move: string;
@@ -212,6 +213,10 @@ export interface UiMessages {
       bucketDescription: string;
       colorTitle: string;
       colorDescription: string;
+      sceneTitle: string;
+      sceneCount: (count: number) => string;
+      sceneEmpty: string;
+      sceneItemAria: (partName: string, index: number) => string;
       settingsTitle: string;
       snapDescription: string;
       openDebug: string;

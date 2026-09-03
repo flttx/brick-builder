@@ -1,4 +1,4 @@
-export type EditorPanel = "parts" | "bucket" | "color" | "settings" | "debug";
+export type EditorPanel = "scene" | "parts" | "bucket" | "color" | "settings" | "debug";
 export type ActiveTool = "move" | "precision_connect";
 
 export interface EditorPanelState {
