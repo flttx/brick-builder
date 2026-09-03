@@ -459,6 +459,11 @@ kbd {
   --accent: #f6c453;
   --danger: #ee8578;
   --success: #91d09c;
+  --scrollbar-track: rgba(11, 16, 17, 0.34);
+  --scrollbar-thumb: #52615f;
+  --scrollbar-thumb-hover: #74837f;
+  --scrollbar-thumb-active: var(--accent);
+  --scrollbar-size: 10px;
   --z-canvas: 0;
   --z-world-overlay: 10;
   --z-toolbar: 20;
@@ -466,6 +471,59 @@ kbd {
   --z-drawer: 40;
   --z-modal: 50;
   --z-toast: 60;
+}
+
+* {
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+
+*::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar-thumb {
+  min-height: 36px;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+  background-color: var(--scrollbar-thumb);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background-color: var(--scrollbar-thumb-active);
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+}
+
+.editor-drawer,
+.parts-browser,
+.debug-panel,
+.devtools-panel,
+.asset-workbench-shell,
+.asset-part-list,
+.authoring-list,
+.metadata-diff pre,
+.builds-shell,
+.auth-shell {
+  scrollbar-gutter: stable;
 }
 
 html, body, #root { background: #111719; }

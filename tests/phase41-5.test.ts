@@ -56,6 +56,35 @@ describe("T41.5 placement modes", () => {
     expect(result.candidate?.anchorPair.target.id).toBe("axle-end-right");
   });
 
+  it("snaps a Technic pin into a beam hole and a bar into a clip", () => {
+    const engine = new BrickEngine();
+    const beamId = engine.createBrick({ id: "beam", partId: "technic-beam-5", transform: transform(0, 0.4) });
+    const pinId = engine.createBrick({ id: "pin", partId: "technic-pin", transform: transform(4, 3, 4) });
+    const pinResult = engine.solveExplicitSnap({
+      movingBrickId: pinId,
+      movingConnectorId: "technic-pin-left",
+      targetBrickId: beamId,
+      targetConnectorId: "technic-hole-2-right",
+      freeTransform: engine.bricks.get(pinId).transform
+    });
+
+    expect(pinResult.valid).toBe(true);
+    expect(pinResult.candidate?.anchorPair.target.id).toBe("technic-hole-2-right");
+
+    const clipId = engine.createBrick({ id: "clip", partId: "technic-clip", transform: transform(8, 0.25) });
+    const barId = engine.createBrick({ id: "bar", partId: "technic-bar-2", transform: transform(8, 3, 4) });
+    const barResult = engine.solveExplicitSnap({
+      movingBrickId: barId,
+      movingConnectorId: "bar-end-right",
+      targetBrickId: clipId,
+      targetConnectorId: "clip-jaw",
+      freeTransform: engine.bricks.get(barId).transform
+    });
+
+    expect(barResult.valid).toBe(true);
+    expect(barResult.candidate?.anchorPair.target.id).toBe("clip-jaw");
+  });
+
   it("keeps Auto mode selecting the existing snap candidate", () => {
     const engine = new BrickEngine();
     engine.createBrick({ id: "base", partId: "brick-2x4", transform: transform() });
@@ -392,7 +421,7 @@ describe("T41.5 temporary Alt mode", () => {
     keyboardListeners.get("keydown")?.({ key: "d", repeat: true, preventDefault } as unknown as KeyboardEvent);
     expect(cameraController.move).not.toHaveBeenCalled();
     interaction.update(0.1);
-    expect(cameraController.move).toHaveBeenCalledWith(expect.closeTo(1.2786, 4), expect.closeTo(1.2786, 4));
+    expect(cameraController.move).toHaveBeenCalledWith(expect.closeTo(2.0316, 4), expect.closeTo(2.0316, 4));
     expect(preventDefault).toHaveBeenCalled();
     keyboardListeners.get("keyup")?.({ key: "w" } as unknown as KeyboardEvent);
     keyboardListeners.get("keyup")?.({ key: "d" } as unknown as KeyboardEvent);

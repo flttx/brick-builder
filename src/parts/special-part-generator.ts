@@ -25,6 +25,28 @@ export interface TechnicAxleOptions {
   length?: number;
 }
 
+export interface TechnicBeamOptions {
+  id: string;
+  name?: string;
+  holes: number;
+}
+
+export interface TechnicPinOptions {
+  id: string;
+  name?: string;
+}
+
+export interface TechnicBarOptions {
+  id: string;
+  name?: string;
+  length?: number;
+}
+
+export interface TechnicClipOptions {
+  id: string;
+  name?: string;
+}
+
 interface SpecialPartSpec {
   name: string;
   width: number;
@@ -126,6 +148,110 @@ export const createTechnicAxleDefinition = (options: TechnicAxleOptions): PartDe
     metadata: { generated: true, specialKind: "technic_axle", technic: true }
   };
 };
+
+export const createTechnicBeamDefinition = (options: TechnicBeamOptions): PartDefinition => {
+  if (!Number.isInteger(options.holes) || options.holes < 1) {
+    throw new Error("Technic beam holes must be a positive integer");
+  }
+  const width = 1;
+  const height = 0.8;
+  const length = options.holes;
+  const halfLength = length / 2;
+  const holeClearance = 0.36;
+  const holeCenters = Array.from({ length: options.holes }, (_, index) => index - (options.holes - 1) / 2);
+  const colliders: PartDefinition["colliders"] = [];
+  for (let index = 0; index <= holeCenters.length; index += 1) {
+    const start = index === 0 ? -halfLength : (holeCenters[index - 1] ?? -halfLength) + holeClearance / 2;
+    const end = index === holeCenters.length ? halfLength : (holeCenters[index] ?? halfLength) - holeClearance / 2;
+    const segmentLength = end - start;
+    if (segmentLength <= 0.01) continue;
+    colliders.push({
+      id: `beam-body-${index}`,
+      type: "box",
+      center: { x: 0, y: 0, z: (start + end) / 2 },
+      size: { x: width - 0.06, y: height - 0.06, z: segmentLength }
+    });
+  }
+  const connectors = holeCenters.flatMap((z, index) => [
+    createTechnicConnector(`technic-hole-${index}-left`, "technic_hole", { x: -width / 2, y: 0, z }, { x: -1, y: 0, z: 0 }),
+    createTechnicConnector(`technic-hole-${index}-right`, "technic_hole", { x: width / 2, y: 0, z }, { x: 1, y: 0, z: 0 })
+  ]);
+  return {
+    id: options.id,
+    name: options.name ?? `Technic 梁 ${options.holes}L`,
+    category: "special",
+    dimensions: { width, height, depth: length },
+    origin: { x: 0, y: 0, z: 0 },
+    visual: { kind: "technic_beam" },
+    connectors,
+    colliders,
+    metadata: { generated: true, specialKind: "technic_beam", technic: true, holes: options.holes }
+  };
+};
+
+export const createTechnicPinDefinition = (options: TechnicPinOptions): PartDefinition => ({
+  id: options.id,
+  name: options.name ?? "Technic Pin",
+  category: "special",
+  dimensions: { width: 1.6, height: 0.36, depth: 0.36 },
+  origin: { x: 0, y: 0, z: 0 },
+  visual: { kind: "technic_pin" },
+  connectors: [
+    createTechnicConnector("technic-pin-left", "technic_pin", { x: -0.8, y: 0, z: 0 }, { x: -1, y: 0, z: 0 }),
+    createTechnicConnector("technic-pin-right", "technic_pin", { x: 0.8, y: 0, z: 0 }, { x: 1, y: 0, z: 0 })
+  ],
+  colliders: [{ id: "pin-body", type: "box", center: { x: 0, y: 0, z: 0 }, size: { x: 1.5, y: 0.3, z: 0.3 } }],
+  metadata: { generated: true, specialKind: "technic_pin", technic: true }
+});
+
+export const createTechnicBarDefinition = (options: TechnicBarOptions): PartDefinition => {
+  const length = options.length ?? 2.4;
+  const halfLength = length / 2;
+  return {
+    id: options.id,
+    name: options.name ?? "Technic Bar 2L",
+    category: "special",
+    dimensions: { width: 0.28, height: 0.28, depth: length },
+    origin: { x: 0, y: 0, z: 0 },
+    visual: { kind: "technic_bar" },
+    connectors: [
+      createTechnicConnector("bar-end-left", "bar", { x: 0, y: 0, z: -halfLength }, { x: 0, y: 0, z: -1 }, "bar-clip"),
+      createTechnicConnector("bar-end-right", "bar", { x: 0, y: 0, z: halfLength }, { x: 0, y: 0, z: 1 }, "bar-clip")
+    ],
+    colliders: [{ id: "bar-body", type: "box", center: { x: 0, y: 0, z: 0 }, size: { x: 0.24, y: 0.24, z: length } }],
+    metadata: { generated: true, specialKind: "technic_bar", technic: true, length }
+  };
+};
+
+export const createTechnicClipDefinition = (options: TechnicClipOptions): PartDefinition => ({
+  id: options.id,
+  name: options.name ?? "Technic Clip",
+  category: "special",
+  dimensions: { width: 0.8, height: 0.6, depth: 0.8 },
+  origin: { x: 0, y: 0, z: 0 },
+  visual: { kind: "technic_clip" },
+  connectors: [createTechnicConnector("clip-jaw", "clip", { x: 0, y: 0, z: 0 }, { x: 0, y: 0, z: -1 }, "bar-clip")],
+  colliders: [{ id: "clip-body", type: "box", center: { x: 0, y: 0, z: 0.28 }, size: { x: 0.7, y: 0.5, z: 0.22 } }],
+  metadata: { generated: true, specialKind: "technic_clip", technic: true }
+});
+
+const createTechnicConnector = (
+  id: string,
+  type: ConnectorDefinition["type"],
+  position: ConnectorDefinition["position"],
+  normal: ConnectorDefinition["normal"],
+  compatibilityGroup = "technic-pin"
+): ConnectorDefinition => ({
+  id,
+  type,
+  role: type === "clip" ? "socket" : type === "bar" || type === "technic_pin" ? "plug" : "socket",
+  position,
+  rotation: identity(),
+  normal,
+  compatibilityGroup,
+  snapRadius: 0.3,
+  occupiedRule: "single"
+});
 
 const cloneConnector = (connector: ConnectorDefinition): ConnectorDefinition => ({
   ...connector,

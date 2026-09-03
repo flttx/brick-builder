@@ -53,6 +53,40 @@ const createSpecialGeometry = (part: PartDefinition): THREE.BufferGeometry[] => 
       return geometry;
     });
   }
+  if (kind === "technic_beam") {
+    const body = new THREE.BoxGeometry(part.dimensions.width, part.dimensions.height, part.dimensions.depth);
+    const holeRings = part.connectors
+      .filter((connector) => connector.type === "technic_hole")
+      .map((connector) => {
+        const ring = new THREE.TorusGeometry(0.22, 0.06, 8, 16);
+        ring.rotateY(Math.PI / 2);
+        ring.translate(connector.position.x * 1.01, connector.position.y, connector.position.z);
+        return ring;
+      });
+    return [body, ...holeRings];
+  }
+  if (kind === "technic_pin") {
+    const pin = new THREE.CylinderGeometry(0.16, 0.16, 1.55, 16);
+    pin.rotateZ(Math.PI / 2);
+    const ridgeLeft = new THREE.CylinderGeometry(0.2, 0.2, 0.08, 16);
+    ridgeLeft.rotateZ(Math.PI / 2);
+    ridgeLeft.translate(-0.42, 0, 0);
+    const ridgeRight = new THREE.CylinderGeometry(0.2, 0.2, 0.08, 16);
+    ridgeRight.rotateZ(Math.PI / 2);
+    ridgeRight.translate(0.42, 0, 0);
+    return [pin, ridgeLeft, ridgeRight];
+  }
+  if (kind === "technic_bar") {
+    const bar = new THREE.CylinderGeometry(0.12, 0.12, part.dimensions.depth, 16);
+    bar.rotateX(Math.PI / 2);
+    return [bar];
+  }
+  if (kind === "technic_clip") {
+    const jaw = new THREE.TorusGeometry(0.23, 0.08, 8, 16);
+    const body = new THREE.BoxGeometry(0.6, 0.5, 0.22);
+    body.translate(0, 0, 0.28);
+    return [jaw, body];
+  }
   const stem = new THREE.CylinderGeometry(0.065, 0.065, 0.55, 12);
   stem.translate(0, -0.325, 0);
   const leaf = new THREE.SphereGeometry(0.65, 16, 8);

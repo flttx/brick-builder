@@ -8,6 +8,8 @@ import {
   createRectPart,
   createSpecialPartDefinitions,
   createStandardPartDefinitions,
+  TECHNIC_BEAM_CATALOG,
+  TECHNIC_CONNECTOR_CATALOG,
   LDRAW_PART_CATALOG,
   TECHNIC_PART_CATALOG,
   identity
@@ -39,23 +41,27 @@ describe("MVP registries and part discovery", () => {
     expect(tile.category).toBe("tile");
     expect(tile.connectors.some((connector) => connector.type === "stud")).toBe(false);
     expect(tile.connectors.filter((connector) => connector.type === "anti_stud")).toHaveLength(8);
-    expect(createStandardPartDefinitions()).toHaveLength(40 + TECHNIC_PART_CATALOG.length);
+    expect(createStandardPartDefinitions()).toHaveLength(40 + technicCatalogLength());
   });
 
   it("registers legacy procedural parts and all downloaded LDraw parts", () => {
     const parts = createSpecialPartDefinitions();
     expect(parts.slice(0, 3).map((part) => part.id)).toEqual(["wheel-1x1", "flagpole-1x1", "leaf-1x1"]);
-    expect(parts).toHaveLength(3 + TECHNIC_PART_CATALOG.length + LDRAW_PART_CATALOG.length);
+    expect(parts).toHaveLength(3 + technicCatalogLength() + LDRAW_PART_CATALOG.length);
     for (const part of parts.slice(0, 3)) {
       expect(part.category).toBe("special");
       expect(part.visual?.kind).toBe(part.id.split("-")[0]);
       expect(part.connectors).toHaveLength(0);
       expect(part.colliders).toHaveLength(1);
     }
-    const technicParts = parts.slice(3, 3 + TECHNIC_PART_CATALOG.length);
-    expect(technicParts.map((part) => part.id)).toEqual(["technic-axle-4"]);
+    const technicParts = parts.slice(3, 3 + technicCatalogLength());
+    expect(technicParts.map((part) => part.id)).toEqual(["technic-axle-4", "technic-beam-5", "technic-beam-7", "technic-pin", "technic-bar-2", "technic-clip"]);
     expect(technicParts[0]?.connectors.filter((connector) => connector.type === "axle")).toHaveLength(2);
-    for (const part of parts.slice(3 + TECHNIC_PART_CATALOG.length)) {
+    expect(technicParts.find((part) => part.id === "technic-beam-5")?.connectors.filter((connector) => connector.type === "technic_hole")).toHaveLength(10);
+    expect(technicParts.find((part) => part.id === "technic-pin")?.connectors.filter((connector) => connector.type === "technic_pin")).toHaveLength(2);
+    expect(technicParts.find((part) => part.id === "technic-bar-2")?.connectors.filter((connector) => connector.type === "bar")).toHaveLength(2);
+    expect(technicParts.find((part) => part.id === "technic-clip")?.connectors.filter((connector) => connector.type === "clip")).toHaveLength(1);
+    for (const part of parts.slice(3 + technicCatalogLength())) {
       expect(part.category).toBe("special");
       expect(part.metadata?.ldrawPartId).toBeTypeOf("string");
       expect(Array.isArray(part.connectors)).toBe(true);
@@ -74,6 +80,7 @@ describe("MVP registries and part discovery", () => {
     expect(searchParts("砖", index).every((item) => item.category === "brick")).toBe(true);
     expect(searchParts("plate", index).every((item) => item.category === "plate")).toBe(true);
     expect(searchParts("车轮", index)[0]?.id).toBe("ldraw-wheel-3482");
+    expect(index.filter((item) => item.specialGroup === "technic").map((item) => item.id)).toEqual(expect.arrayContaining(["technic-axle-4", "technic-beam-5", "technic-beam-7", "technic-pin", "technic-bar-2", "technic-clip"]));
   });
 
   it("separates runtime special parts into independent groups", () => {
@@ -95,6 +102,8 @@ describe("MVP registries and part discovery", () => {
   });
 });
 
+const technicCatalogLength = (): number => TECHNIC_PART_CATALOG.length + TECHNIC_BEAM_CATALOG.length + TECHNIC_CONNECTOR_CATALOG.length;
+
 describe("MVP bucket and commands", () => {
   it("caches procedural assets for repeated part loads", async () => {
     const engine = new BrickEngine();
@@ -108,7 +117,7 @@ describe("MVP bucket and commands", () => {
   it("renders each special part through the procedural fallback", () => {
     const engine = new BrickEngine();
     const assets = new PartAssetRegistry(engine.parts);
-    for (const partId of ["wheel-1x1", "flagpole-1x1", "leaf-1x1"]) {
+    for (const partId of ["wheel-1x1", "flagpole-1x1", "leaf-1x1", "technic-axle-4", "technic-beam-5", "technic-beam-7", "technic-pin", "technic-bar-2", "technic-clip"]) {
       const asset = assets.getPart(partId);
       expect(asset.source).toBe("procedural-fallback");
       expect(asset.geometry.attributes.position?.count).toBeGreaterThan(0);

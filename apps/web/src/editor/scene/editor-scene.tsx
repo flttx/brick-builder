@@ -1,6 +1,7 @@
 import { OrbitControls } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import type { Group, PerspectiveCamera, Plane, Scene } from "three";
+import { MathUtils } from "three";
+import type { Camera, GridHelper, Group, LineBasicMaterial, PerspectiveCamera, Plane, Scene } from "three";
 import type { ReactElement, Ref } from "react";
 import { useEffect, useRef, useState } from "react";
 import type { BrickEngine, DragResult, PlacementMode, Transform } from "../../../../../src/index.js";
@@ -18,14 +19,19 @@ import { WebGLRecoveryController, type WebGLRecoveryState } from "../recovery/we
 import type { ThreeBrickRendererOptions } from "../renderer/brick-renderer.js";
 import type { BucketPhysicsSession } from "../physics/bucket-physics.js";
 
-const INFINITE_GROUND_SIZE = 4096;
-const INFINITE_GROUND_FOLLOW_STEP = 1024;
+const INFINITE_GROUND_SIZE = 32_768;
+const INFINITE_GROUND_FOLLOW_STEP = 4_096;
+const NEAR_GRID_SIZE = 256;
+const NEAR_GRID_DIVISIONS = 256;
+const FAR_GRID_SIZE = 8_192;
+const FAR_GRID_DIVISIONS = 128;
 
 export interface FrameMetrics {
   fps: number;
   frameMs: number;
   drawCalls: number;
   instanceCount: number;
+  visibleInstanceCount: number;
   triangles: number;
 }
 
@@ -65,7 +71,7 @@ export const EditorScene = (props: EditorSceneProps): ReactElement => (
     frameloop="demand"
     shadows={(props.quality?.shadows ?? true) && props.engine.bricks.size < 1000}
     dpr={props.quality?.dpr ?? [1, 1.5]}
-    camera={{ position: [0, 2.2, 10], fov: 42, near: 0.1, far: 1000 }}
+    camera={{ position: [0, 2.2, 10], fov: 42, near: 0.1, far: 20_000 }}
     gl={{ antialias: true, powerPreference: "high-performance" }}
   >
     <SceneRuntime {...props} />
@@ -261,6 +267,7 @@ const SceneRuntime = (props: EditorSceneProps): ReactElement => {
     if (renderer === null) {
       return;
     }
+    renderer.refreshVisibility(camera as unknown as Camera, props.placementSession === undefined && props.precision === undefined);
     frameAccumulator.current.elapsed += delta;
     frameAccumulator.current.frames += 1;
     if (frameAccumulator.current.elapsed >= 0.25) {
@@ -271,6 +278,7 @@ const SceneRuntime = (props: EditorSceneProps): ReactElement => {
         frameMs: (elapsed / frames) * 1000,
         drawCalls: gl.info.render.calls,
         instanceCount: renderer.getInstanceCount(),
+        visibleInstanceCount: renderer.getVisibleInstanceCount(),
         triangles: gl.info.render.triangles
       });
       frameAccumulator.current = { elapsed: 0, frames: 0 };
@@ -305,7 +313,6 @@ const SceneRuntime = (props: EditorSceneProps): ReactElement => {
         enableDamping
         dampingFactor={0.08}
         minDistance={3}
-        maxDistance={240}
         maxPolarAngle={Math.PI / 2.05}
         makeDefault
       />
@@ -316,6 +323,8 @@ const SceneRuntime = (props: EditorSceneProps): ReactElement => {
 const InfiniteGround = (): ReactElement => {
   const { camera } = useThree();
   const groundRef = useRef<Group>(null);
+  const nearGridRef = useRef<GridHelper>(null);
+  const farGridRef = useRef<GridHelper>(null);
 
   useFrame(() => {
     const ground = groundRef.current;
@@ -323,6 +332,12 @@ const InfiniteGround = (): ReactElement => {
     const x = Math.round(camera.position.x / INFINITE_GROUND_FOLLOW_STEP) * INFINITE_GROUND_FOLLOW_STEP;
     const z = Math.round(camera.position.z / INFINITE_GROUND_FOLLOW_STEP) * INFINITE_GROUND_FOLLOW_STEP;
     if (ground.position.x !== x || ground.position.z !== z) ground.position.set(x, -0.64, z);
+    const cameraDistance = camera.position.distanceTo(ground.position);
+    const fade = MathUtils.clamp((cameraDistance - 12) / 160, 0, 1);
+    const nearMaterial = nearGridRef.current?.material as LineBasicMaterial | undefined;
+    const farMaterial = farGridRef.current?.material as LineBasicMaterial | undefined;
+    if (nearMaterial !== undefined) nearMaterial.opacity = MathUtils.lerp(0.5, 0.18, fade);
+    if (farMaterial !== undefined) farMaterial.opacity = MathUtils.lerp(0.2, 0.04, fade);
   });
 
   return (
@@ -331,7 +346,8 @@ const InfiniteGround = (): ReactElement => {
         <planeGeometry args={[INFINITE_GROUND_SIZE, INFINITE_GROUND_SIZE]} />
         <meshStandardMaterial color="#7d8584" roughness={0.86} metalness={0.02} />
       </mesh>
-        <gridHelper args={[INFINITE_GROUND_SIZE, 256, "#687271", "#737d7d"]} position={[0, 0.005, 0]} name="ground-grid" />
+      <gridHelper ref={farGridRef} args={[FAR_GRID_SIZE, FAR_GRID_DIVISIONS, "#566261", "#667171"]} position={[0, 0.004, 0]} name="ground-grid-far" material-transparent material-opacity={0.2} material-depthWrite={false} />
+      <gridHelper ref={nearGridRef} args={[NEAR_GRID_SIZE, NEAR_GRID_DIVISIONS, "#687271", "#87918f"]} position={[0, 0.006, 0]} name="ground-grid-near" material-transparent material-opacity={0.5} material-depthWrite={false} />
     </group>
   );
 };

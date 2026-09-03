@@ -62,6 +62,7 @@ export * from "./parts/brick-instance.js";
 export * from "./parts/brick-store.js";
 export * from "./parts/part-definition.js";
 export * from "./parts/part-registry.js";
+export * from "./parts/part-validation.js";
 export * from "./parts/standard-part-generator.js";
 export * from "./parts/standard-part-catalog.js";
 export * from "./parts/special-part-generator.js";

@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { BrickEngine, identity, PartRegistry } from "../src/index.js";
+import { BrickEngine, createStandardPartDefinitions, identity, PartRegistry, validatePartDefinition } from "../src/index.js";
+import { createBrickGeometry } from "../apps/web/src/editor/renderer/brick-geometry.js";
 import { isRuntimePartManifest, partDefinitionFromRuntimeManifest, type RuntimePartManifest } from "../packages/brick-assets/asset-types.js";
 import { readGlbJson } from "../packages/brick-assets/glb.js";
 import { validateRuntimePartManifests, type AssetValidationIssue } from "../packages/brick-assets/asset-validation.js";
@@ -35,6 +36,7 @@ for (const item of pack.parts) {
   }
 }
 issues.push(...validateRuntimePartManifests(manifests).issues);
+issues.push(...validateGeneratedParts());
 issues.push(...runSnapSmoke(manifests));
 if (issues.length > 0) {
   process.stderr.write(`${JSON.stringify({ event: "asset_validation_failed", checkedParts: manifests.length, issues }, null, 2)}\n`);
@@ -62,4 +64,26 @@ function runSnapSmoke(items: RuntimePartManifest[]): AssetValidationIssue[] {
     }
   }
   return smokeIssues;
+}
+
+function validateGeneratedParts(): AssetValidationIssue[] {
+  const generatedIssues: AssetValidationIssue[] = [];
+  for (const part of createStandardPartDefinitions()) {
+    for (const validationIssue of validatePartDefinition(part)) {
+      generatedIssues.push({ partId: validationIssue.partId, code: `definition_${validationIssue.code}`, message: validationIssue.message });
+    }
+    if (part.visual === undefined) continue;
+    const geometry = createBrickGeometry(part);
+    geometry.computeBoundingBox();
+    const bounds = geometry.boundingBox;
+    if (bounds !== null) {
+      const actual = [bounds.max.x - bounds.min.x, bounds.max.y - bounds.min.y, bounds.max.z - bounds.min.z];
+      const expected = [part.dimensions.width, part.dimensions.height, part.dimensions.depth];
+      if (actual.some((value, index) => value > (expected[index] ?? 0) + 0.25)) {
+        generatedIssues.push({ partId: part.id, code: "definition_geometry_bounds", message: "Procedural geometry exceeds part dimensions" });
+      }
+    }
+    geometry.dispose();
+  }
+  return generatedIssues;
 }

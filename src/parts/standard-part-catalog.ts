@@ -1,6 +1,6 @@
 import type { PartDefinition } from "./part-definition.js";
 import { createRectPart, type StandardRectOptions } from "./standard-part-generator.js";
-import { createLDrawPartDefinition, createSpecialPartDefinition, createTechnicAxleDefinition, type LDrawPartDefinitionOptions, type SpecialPartOptions, type TechnicAxleOptions } from "./special-part-generator.js";
+import { createLDrawPartDefinition, createSpecialPartDefinition, createTechnicAxleDefinition, createTechnicBarDefinition, createTechnicBeamDefinition, createTechnicClipDefinition, createTechnicPinDefinition, type LDrawPartDefinitionOptions, type SpecialPartOptions, type TechnicAxleOptions, type TechnicBarOptions, type TechnicBeamOptions, type TechnicClipOptions, type TechnicPinOptions } from "./special-part-generator.js";
 
 export const STANDARD_PART_CATALOG: readonly StandardRectOptions[] = [
   { id: "brick-1x1", width: 1, depth: 1, height: "brick" },
@@ -31,6 +31,17 @@ export const TECHNIC_PART_CATALOG: readonly TechnicAxleOptions[] = [
   { id: "technic-axle-4", name: "Technic 车轴 4L", length: 4.8 }
 ];
 
+export const TECHNIC_BEAM_CATALOG: readonly TechnicBeamOptions[] = [
+  { id: "technic-beam-5", name: "Technic 梁 5L", holes: 5 },
+  { id: "technic-beam-7", name: "Technic 梁 7L", holes: 7 }
+];
+
+export const TECHNIC_CONNECTOR_CATALOG: readonly (TechnicPinOptions | TechnicBarOptions | TechnicClipOptions)[] = [
+  { id: "technic-pin", name: "Technic Pin" },
+  { id: "technic-bar-2", name: "Technic Bar 2L", length: 2.4 },
+  { id: "technic-clip", name: "Technic Clip" }
+];
+
 export const LDRAW_PART_CATALOG: readonly LDrawPartDefinitionOptions[] = [
   { id: "ldraw-wheel-3482", name: "小车轮 8×17.5（3482）", ldrawPartId: "3482c01.dat", dimensions: { width: 3.1, height: 3.1, depth: 1 }, status: "official" },
   { id: "ldraw-wheel-56145", name: "中型车轮 20×30（56145）", ldrawPartId: "56145c01.dat", dimensions: { width: 5.4, height: 5.4, depth: 3.3 }, status: "official" },
@@ -58,6 +69,12 @@ export const LDRAW_PART_CATALOG: readonly LDrawPartDefinitionOptions[] = [
 export const createSpecialPartDefinitions = (): PartDefinition[] => [
   ...SPECIAL_PART_CATALOG.map((options) => createSpecialPartDefinition(options)),
   ...TECHNIC_PART_CATALOG.map((options) => createTechnicAxleDefinition(options)),
+  ...TECHNIC_BEAM_CATALOG.map((options) => createTechnicBeamDefinition(options)),
+  ...TECHNIC_CONNECTOR_CATALOG.map((options) => options.id === "technic-pin"
+    ? createTechnicPinDefinition(options)
+    : options.id === "technic-bar-2"
+      ? createTechnicBarDefinition(options)
+      : createTechnicClipDefinition(options)),
   ...LDRAW_PART_CATALOG.map((options) => createLDrawPartDefinition(options))
 ];
 

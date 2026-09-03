@@ -22,6 +22,9 @@ export interface BrickRenderer {
   beginPrecisionPreview(brickId: string): void;
   updatePrecisionPreview(transform: Transform, valid: boolean): void;
   endPrecisionPreview(): void;
+  /** 根据相机视锥刷新实例；放置或精准连接期间传入 false 以暂停裁剪。 */
+  refreshVisibility(camera: THREE.Camera, enabled?: boolean): void;
+  getVisibleInstanceCount(): number;
 }
 
 export interface ThreeBrickRendererOptions {
@@ -47,6 +50,11 @@ export class ThreeBrickRenderer implements BrickRenderer {
   private draggingBrickId: string | undefined;
   private feedbackBrickId: string | undefined;
   private feedbackElapsed = 0;
+  private visibilityDirty = true;
+  private cullingEnabled = false;
+  private visibleInstanceCount = 0;
+  private readonly lastCameraWorld = new THREE.Matrix4();
+  private readonly lastCameraProjection = new THREE.Matrix4();
 
   public constructor(public readonly parent: THREE.Object3D, private readonly engine: BrickEngine, capacity = 128, private readonly colors: BrickColorRegistry = engine.colors, options: ThreeBrickRendererOptions = {}) {
     this.assets = new PartAssetRegistry(engine.parts, { ...(options.shouldFailNextAssetLoad === undefined ? {} : { shouldFailNextLoad: options.shouldFailNextAssetLoad }), ...(options.onAssetFailure === undefined ? {} : { onFailure: options.onAssetFailure }) });
@@ -76,6 +84,7 @@ export class ThreeBrickRenderer implements BrickRenderer {
     }
     this.refreshProxy(this.selectedBrickId, this.selectionProxy);
     this.refreshProxy(this.hoveredBrickId, this.hoverProxy);
+    this.visibilityDirty = true;
   }
 
   public addBrick(brick: BrickInstance): void {
@@ -87,6 +96,7 @@ export class ThreeBrickRenderer implements BrickRenderer {
     }
     this.brickPart.set(brick.id, brick.partId);
     this.brickColor.set(brick.id, brick.colorId);
+    this.visibilityDirty = true;
   }
 
   public removeBrick(brickId: string): void {
@@ -96,6 +106,7 @@ export class ThreeBrickRenderer implements BrickRenderer {
     this.brickBatch.delete(brickId);
     this.brickPart.delete(brickId);
     this.brickColor.delete(brickId);
+    this.visibilityDirty = true;
     if (partId !== undefined && batch?.brickToInstance.size === 0) {
       batch.dispose(false);
       this.batches.delete(partId);
@@ -112,6 +123,7 @@ export class ThreeBrickRenderer implements BrickRenderer {
 
   public updateTransform(brickId: string, transform: Transform): void {
     this.brickBatch.get(brickId)?.updateMatrix(brickId, transform);
+    this.visibilityDirty = true;
   }
 
   public updateColor(brickId: string, colorId: string): void {
@@ -121,6 +133,7 @@ export class ThreeBrickRenderer implements BrickRenderer {
 
   public setSelected(brickId: string | undefined): void {
     this.selectedBrickId = brickId;
+    this.visibilityDirty = true;
     this.refreshProxy(brickId, this.selectionProxy);
     if (brickId !== undefined && brickId === this.hoveredBrickId) {
       this.hoverProxy.setVisible(false);
@@ -131,6 +144,7 @@ export class ThreeBrickRenderer implements BrickRenderer {
 
   public setHovered(brickId: string | undefined): void {
     this.hoveredBrickId = brickId;
+    this.visibilityDirty = true;
     if (brickId !== undefined && brickId === this.selectedBrickId) {
       this.hoverProxy.setVisible(false);
     } else {
@@ -149,6 +163,7 @@ export class ThreeBrickRenderer implements BrickRenderer {
     this.dragProxy.setTransform(brick.transform);
     this.dragProxy.setVisible(true);
     this.selectionProxy.setVisible(false);
+    this.visibilityDirty = true;
   }
 
   public updateDrag(freeTransform: Transform, result: DragResult): void {
@@ -186,6 +201,7 @@ export class ThreeBrickRenderer implements BrickRenderer {
     }
     this.dragProxy.setVisible(false);
     this.draggingBrickId = undefined;
+    this.visibilityDirty = true;
     this.syncFromEngine();
     if (committed && finishedBrickId !== undefined && this.engine.bricks.has(finishedBrickId)) {
       const brick = this.engine.bricks.get(finishedBrickId);
@@ -210,6 +226,7 @@ export class ThreeBrickRenderer implements BrickRenderer {
     if (progress >= 1 || !this.engine.bricks.has(this.feedbackBrickId)) {
       this.dragProxy.setVisible(false);
       this.feedbackBrickId = undefined;
+      this.visibilityDirty = true;
       return;
     }
     const brick = this.engine.bricks.get(this.feedbackBrickId);
@@ -257,6 +274,7 @@ export class ThreeBrickRenderer implements BrickRenderer {
     this.dragProxy.setTransform(brick.transform);
     this.dragProxy.setVisible(true);
     this.selectionProxy.setVisible(false);
+    this.visibilityDirty = true;
   }
 
   public updatePrecisionPreview(transform: Transform, valid: boolean): void {
@@ -273,7 +291,36 @@ export class ThreeBrickRenderer implements BrickRenderer {
     }
     this.dragProxy.setVisible(false);
     this.draggingBrickId = undefined;
+    this.visibilityDirty = true;
     this.syncFromEngine();
+  }
+
+  public refreshVisibility(camera: THREE.Camera, enabled = true): void {
+    camera.updateMatrixWorld(true);
+    const cameraChanged = !this.lastCameraWorld.equals(camera.matrixWorld) || !this.lastCameraProjection.equals(camera.projectionMatrix);
+    if (!enabled) {
+      if (this.cullingEnabled || this.visibilityDirty) {
+        this.visibleInstanceCount = [...this.batches.values()].reduce((count, batch) => count + batch.showAll(), 0);
+      }
+      this.cullingEnabled = false;
+      this.visibilityDirty = false;
+      this.lastCameraWorld.copy(camera.matrixWorld);
+      this.lastCameraProjection.copy(camera.projectionMatrix);
+      return;
+    }
+    if (!cameraChanged && this.cullingEnabled && !this.visibilityDirty) {
+      return;
+    }
+    const frustum = new THREE.Frustum().setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
+    const protectedBrickIds = new Set<string>();
+    for (const brickId of [this.selectedBrickId, this.hoveredBrickId, this.draggingBrickId, this.feedbackBrickId]) {
+      if (brickId !== undefined) protectedBrickIds.add(brickId);
+    }
+    this.visibleInstanceCount = [...this.batches.values()].reduce((count, batch) => count + batch.refreshVisibility(frustum, protectedBrickIds), 0);
+    this.cullingEnabled = true;
+    this.visibilityDirty = false;
+    this.lastCameraWorld.copy(camera.matrixWorld);
+    this.lastCameraProjection.copy(camera.projectionMatrix);
   }
 
   public getPickableObjects(): THREE.Object3D[] {
@@ -293,6 +340,10 @@ export class ThreeBrickRenderer implements BrickRenderer {
 
   public getInstanceCount(): number {
     return [...this.batches.values()].reduce((count, batch) => count + batch.brickToInstance.size, 0);
+  }
+
+  public getVisibleInstanceCount(): number {
+    return this.visibleInstanceCount;
   }
 
   public getChunkCount(): number {
@@ -344,6 +395,7 @@ export class ThreeBrickRenderer implements BrickRenderer {
     const previous = this.geometries.get(partId);
     this.geometries.set(partId, geometry);
     this.batches.get(partId)?.replaceGeometry(geometry);
+    this.visibilityDirty = true;
     for (const proxy of this.placementProxies.values()) {
       if (proxy.partId === partId) proxy.setGeometry(geometry);
     }

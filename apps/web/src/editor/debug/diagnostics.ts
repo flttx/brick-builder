@@ -5,7 +5,7 @@ export interface DiagnosticsInput {
   brickCount: number;
   connectionCount: number;
   history: { undo: number; redo: number; limit: number };
-  render: { instances: number; batches: number; chunks: number; drawCalls: number };
+  render: { instances: number; visibleInstances?: number; batches: number; chunks: number; drawCalls: number };
   quality: { level: string; dpr: number };
   recovery: string;
   offline: boolean;
@@ -19,4 +19,3 @@ export interface DiagnosticsReport extends DiagnosticsInput {
 
 export const createDiagnosticsReport = (input: DiagnosticsInput, now = new Date()): DiagnosticsReport => ({ ...input, generatedAt: now.toISOString(), schemaVersion: 1 });
 export const diagnosticsJson = (input: DiagnosticsInput, now = new Date()): string => JSON.stringify(createDiagnosticsReport(input, now), null, 2);
-

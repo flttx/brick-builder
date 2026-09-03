@@ -56,7 +56,7 @@ interface PrecisionEditorSession {
   preview?: PrecisionPreviewState;
 }
 
-const initialFrame: FrameMetrics = { fps: 0, frameMs: 0, drawCalls: 0, instanceCount: 0, triangles: 0 };
+const initialFrame: FrameMetrics = { fps: 0, frameMs: 0, drawCalls: 0, instanceCount: 0, visibleInstanceCount: 0, triangles: 0 };
 const initialInteraction: InteractionMetrics = { snapTime: 0, collisionTime: 0 };
 
 export interface EditorPersistenceOptions {
@@ -216,7 +216,7 @@ export const EditorApp = ({ projectId = "local-project", projectName = "Local Dr
   const handleValidate = useCallback(() => { const result = engine.validateEngineConsistency(); setNotice(result.valid ? messages.editor.debug.consistent : messages.editor.debug.checkRequired); }, [engine]);
   const handleExportDiagnostics = useCallback(() => {
     const consistency = engine.validateEngineConsistency();
-    const report = createDiagnosticsReport({ appVersion: "0.1.0", assetPackVersion: "v1", projectId, brickCount: engine.bricks.size, connectionCount: engine.graph.size, history: { undo: engine.history.size, redo: engine.history.redoSize, limit: engine.history.maxSize }, render: { instances: ui.frame.instanceCount, batches: rendererRef.current?.batches.size ?? 0, chunks: rendererRef.current?.getChunkCount() ?? 0, drawCalls: ui.frame.drawCalls }, quality: { level: quality.level, dpr: quality.dpr }, recovery: recoveryState, offline: saveState?.offline ?? false, consistency: { valid: consistency.valid, issueCount: consistency.errors.length } });
+    const report = createDiagnosticsReport({ appVersion: "0.1.0", assetPackVersion: "v1", projectId, brickCount: engine.bricks.size, connectionCount: engine.graph.size, history: { undo: engine.history.size, redo: engine.history.redoSize, limit: engine.history.maxSize }, render: { instances: ui.frame.instanceCount, visibleInstances: ui.frame.visibleInstanceCount, batches: rendererRef.current?.batches.size ?? 0, chunks: rendererRef.current?.getChunkCount() ?? 0, drawCalls: ui.frame.drawCalls }, quality: { level: quality.level, dpr: quality.dpr }, recovery: recoveryState, offline: saveState?.offline ?? false, consistency: { valid: consistency.valid, issueCount: consistency.errors.length } });
     const url = URL.createObjectURL(new Blob([diagnosticsJson(report)], { type: "application/json" }));
     const link = document.createElement("a"); link.href = url; link.download = `${projectId}-diagnostics.json`; link.click(); window.setTimeout(() => URL.revokeObjectURL(url), 0);
   }, [engine, projectId, quality, recoveryState, saveState?.offline, ui.frame]);
@@ -388,7 +388,7 @@ export const EditorApp = ({ projectId = "local-project", projectName = "Local Dr
   };
 
   return (
-    <main className="editor-shell" {...(benchmark ? { "data-benchmark-ready": "true", "data-benchmark-size": String(benchmarkSize ?? 0), "data-benchmark-fps": ui.frame.fps.toFixed(3), "data-benchmark-frame-ms": ui.frame.frameMs.toFixed(3), "data-benchmark-draw-calls": String(ui.frame.drawCalls), "data-benchmark-instances": String(ui.frame.instanceCount), "data-benchmark-triangles": String(ui.frame.triangles), "data-benchmark-batches": String(rendererRef.current?.batches.size ?? 0), "data-benchmark-chunks": String(rendererRef.current?.getChunkCount() ?? 0), "data-benchmark-quality": quality.level, "data-benchmark-dpr": quality.dpr.toFixed(2) } : {})}>
+    <main className="editor-shell" {...(benchmark ? { "data-benchmark-ready": "true", "data-benchmark-size": String(benchmarkSize ?? 0), "data-benchmark-fps": ui.frame.fps.toFixed(3), "data-benchmark-frame-ms": ui.frame.frameMs.toFixed(3), "data-benchmark-draw-calls": String(ui.frame.drawCalls), "data-benchmark-instances": String(ui.frame.instanceCount), "data-benchmark-visible-instances": String(ui.frame.visibleInstanceCount), "data-benchmark-triangles": String(ui.frame.triangles), "data-benchmark-batches": String(rendererRef.current?.batches.size ?? 0), "data-benchmark-chunks": String(rendererRef.current?.getChunkCount() ?? 0), "data-benchmark-quality": quality.level, "data-benchmark-dpr": quality.dpr.toFixed(2) } : {})}>
       <header className="top-rail">
         <div className="editor-breadcrumb">
           {onBackToProjects !== undefined && <button className="back-link" type="button" onClick={onBackToProjects} aria-label={messages.editor.toolbar.backToBuilds}><BackIcon /><span>{messages.editor.toolbar.backToBuilds}</span></button>}

@@ -12,9 +12,9 @@ import type { PlacementMode } from "../../../../../src/drag/placement-mode.js";
 export type PrecisionInteractionState = "precision_pick_source_a1" | "precision_pick_target_b1" | "precision_preview";
 export type InteractionState = "idle" | "pressed" | "dragging_brick" | "orbiting_camera" | PrecisionInteractionState;
 
-const CAMERA_MOVE_SPEED = 24;
+const CAMERA_MOVE_SPEED = 36;
 const MAX_CAMERA_MOVE_DELTA = 0.1;
-const CAMERA_MOVE_SMOOTHING = 14;
+const CAMERA_MOVE_SMOOTHING = 16;
 
 type CameraMoveKey = "w" | "a" | "s" | "d";
 
