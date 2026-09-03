@@ -41,6 +41,7 @@ export interface UiMessages {
     continueLocally: string;
     loginError: string;
     registerError: string;
+    emailTaken: string;
     sessionExpired: string;
     reauthDescription: string;
     reauthError: string;

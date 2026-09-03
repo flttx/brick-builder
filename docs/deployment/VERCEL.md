@@ -6,14 +6,16 @@ V1.1 保持现有 Brick Engine、Renderer、Editor、Persistence、Auth、PWA �
 
 ```text
 Vite/React SPA              → Vercel Static CDN
-/api/[...path].ts           → Vercel Node.js Function
+/api/index.ts               → 多级 API 的单入口 Vercel Node.js Function
+/api/[...path].ts           → 单层 API 的兼容 Vercel Node.js Function
+server/http/vercel-adapter.ts → 路径恢复、共享 Function 缓存与启动错误响应
 server/http/api-handler.ts  → 共享请求处理器
 server/http/node-adapter.ts → 本地 Node HTTP 适配器
 Neon/兼容 PostgreSQL        → pg Pool
 R2/AWS S3/MinIO             → 私有缩略图存储
 ```
 
-本地 `npm run api` 与 Vercel Function 使用同一个 `handleApiRequest`，Function 内不调用 `listen()`。根目录是 Vercel Project Root；不要把 `apps/web` 单独设为 Root Directory，因为 API 与 shared packages 位于仓库根目录。
+本地 `npm run api` 与 Vercel Function 使用同一个 API 请求处理器，Function 内不调用 `listen()`。Vercel 通过 `/api/:path*` rewrite 将多级 API 请求转发到 `/api/index`，并使用内部查询参数恢复原始路径。根目录是 Vercel Project Root；不要把 `apps/web` 单独设为 Root Directory，因为 API 与 shared packages 位于仓库根目录。
 
 ## Prerequisites
 
@@ -62,13 +64,13 @@ Output Directory:    dist-web
 Node.js Runtime:     22.x
 ```
 
-仓库中的 `vercel.json` 已声明 `dist-web`、`/media` 到 API 的 rewrite、SPA 路由 rewrite，以及 API/静态资产缓存策略；`package.json` 的 `engines` 固定 Node.js 22。`/api/*` 不会走 SPA fallback；`/assets/*` 继续从 `apps/web/public/assets` 随 Web Build 发布。
+仓库中的 `vercel.json` 已声明 `dist-web`、`/api/:path*` 与 `/media` 到单入口 API 的 rewrite、SPA 路由 rewrite，以及 API/静态资产缓存策略；`package.json` 的 `engines` 固定 Node.js 22。`/api/*` 不会走 SPA fallback；`/assets/*` 继续从 `apps/web/public/assets` 随 Web Build 发布。
 
 ## 手动部署前检查清单
 
 在 Vercel 控制台点击 Deploy 前，确认：
 
-- [ ] Git 仓库已包含 `vercel.json`、`api/[...path].ts` 和 `.env.example`。
+- [ ] Git 仓库已包含 `vercel.json`、`api/index.ts`、`api/[...path].ts` 和 `.env.example`。
 - [ ] Root Directory 为仓库根目录 `.`，没有单独设置为 `apps/web`。
 - [ ] Install Command 为 `npm ci`，Build Command 为 `npm run build`，Output Directory 为 `dist-web`。
 - [ ] Node.js 版本为 22.x。
@@ -135,7 +137,7 @@ BASE_URL="https://<preview-url>" npm run smoke:production
 /authoring
 ```
 
-然后完成 register、login、session、new project、save project、thumbnail、reload 和 logout 流程。
+然后完成 register、login、session、new project、save project、thumbnail、reload 和 logout 流程。登录失败时确认 `401 AUTH_INVALID` 代表真实凭据不匹配，`API_UNAVAILABLE` 则优先检查 Function 配置和数据库连接。
 
 ## Production deploy
 

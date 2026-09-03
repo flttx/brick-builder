@@ -39,6 +39,7 @@ export const zhCN: UiMessages = {
     continueLocally: "暂时在本机使用",
     loginError: "邮箱或密码错误。",
     registerError: "注册失败，请检查邮箱或密码。",
+    emailTaken: "该邮箱已经注册，请直接登录。",
     sessionExpired: "登录状态已过期",
     reauthDescription: "你的修改已保存在本机。重新登录后可以继续同步。",
     reauthError: "重新登录失败，请检查密码。",

@@ -13,6 +13,12 @@ export class AuthRequiredError extends Error {
   public constructor(public readonly apiError: ApiError) { super(apiError.message); }
 }
 
+/** 保留服务端错误码，供界面区分认证失败和服务不可用。 */
+export class ApiRequestError extends Error {
+  public override readonly name = "ApiRequestError";
+  public constructor(public readonly apiError: ApiError) { super(apiError.message); }
+}
+
 export class HttpProjectRepository implements ProjectRepository {
   public constructor(private readonly baseUrl = "/api") {}
 
@@ -49,7 +55,7 @@ export class HttpProjectRepository implements ProjectRepository {
         const apiError = isApiError(payload) ? payload : { code: "REQUEST_FAILED", message: "请求未完成。" };
         if (apiError.code === "PROJECT_CONFLICT") throw new ProjectConflictError(apiError);
         if (apiError.code === "AUTH_REQUIRED") throw new AuthRequiredError(apiError);
-        throw new Error(apiError.message);
+        throw new ApiRequestError(apiError);
       }
       return payload as T;
     } finally {

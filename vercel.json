@@ -4,8 +4,16 @@
   "outputDirectory": "dist-web",
   "rewrites": [
     {
+      "source": "/api",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "/api/index?__brick_builder_path=:path*"
+    },
+    {
       "source": "/media/:path*",
-      "destination": "/api/media/:path*"
+      "destination": "/api/index?__brick_builder_path=media/:path*"
     },
     {
       "source": "/my-builds",

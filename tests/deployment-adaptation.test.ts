@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import type { IncomingMessage } from "node:http";
 import type { ServerResponse } from "node:http";
 import type { Pool } from "pg";
 import { afterEach, describe, expect, it } from "vitest";
@@ -10,6 +11,7 @@ import { createApiRequestHandler } from "../server/http/api-handler.js";
 import { createNodeApiServer } from "../server/http/node-adapter.js";
 import { getAllowedOrigins, isAllowedOrigin } from "../server/security/allowed-origins.js";
 import { S3CompatibleThumbnailStorage } from "../server/thumbnail-storage.js";
+import { classifyVercelInitializationError, restoreVercelApiRequestPath, VERCEL_API_PATH_QUERY } from "../server/http/vercel-adapter.js";
 
 afterEach(async () => { await closeDbPool(); });
 
@@ -101,7 +103,8 @@ describe("Vercel deployment adaptation", () => {
     const packageJson = JSON.parse(await readFile(resolve(process.cwd(), "package.json"), "utf8")) as { engines?: { node?: string } };
     expect(config.outputDirectory).toBe("dist-web");
     expect(packageJson.engines?.node).toBe("22.x");
-    expect(config.rewrites).toContainEqual({ source: "/media/:path*", destination: "/api/media/:path*" });
+    expect(config.rewrites).toContainEqual({ source: "/media/:path*", destination: `/api/index?${VERCEL_API_PATH_QUERY}=media/:path*` });
+    expect(config.rewrites).toContainEqual({ source: "/api/:path*", destination: `/api/index?${VERCEL_API_PATH_QUERY}=:path*` });
     expect(config.rewrites).toContainEqual({ source: "/projects/:path*", destination: "/index.html" });
     expect(config.rewrites).not.toContainEqual({ source: "/api/:path*", destination: "/index.html" });
 
@@ -109,6 +112,18 @@ describe("Vercel deployment adaptation", () => {
     const main = await readFile(resolve(process.cwd(), "apps/web/src/main.tsx"), "utf8");
     expect(index).toContain('href="/manifest.webmanifest"');
     expect(main).toContain('register("/sw.js")');
+  });
+
+  it("restores nested API paths after the Vercel single-entry rewrite", () => {
+    const request = { url: `/api/index?${VERCEL_API_PATH_QUERY}=auth%2Flogin&keep=1`, headers: { host: "brick.example.com" } } as IncomingMessage;
+    restoreVercelApiRequestPath(request);
+    expect(request.url).toBe("/api/auth/login?keep=1");
+  });
+
+  it("classifies missing startup configuration without exposing its value", async () => {
+    expect(classifyVercelInitializationError(new Error("DATABASE_URL is required"))).toBe("database_config");
+    expect(classifyVercelInitializationError(new Error("SESSION_SECRET must be at least 32 characters"))).toBe("session_config");
+    expect(classifyVercelInitializationError(new Error("S3_SECRET_ACCESS_KEY is required"))).toBe("storage_config");
   });
 });
 
