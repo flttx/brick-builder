@@ -20,6 +20,13 @@ export class LocalFilesystemThumbnailStorage implements ThumbnailStorage {
   public async read(projectId: string): Promise<Buffer> { return readFile(join(this.directory, `${safeId(projectId)}.webp`)); }
 }
 
+export class ThumbnailStorageError extends Error {
+  public constructor(public readonly operation: "read" | "write", public readonly statusCode: number) {
+    super(`Thumbnail storage ${operation} failed with status ${statusCode}`);
+    this.name = "ThumbnailStorageError";
+  }
+}
+
 export interface S3CompatibleStorageOptions {
   endpoint: string;
   bucket: string;
@@ -42,7 +49,7 @@ export class S3CompatibleThumbnailStorage implements S3ThumbnailStorage {
   public async put(projectId: string, content: Uint8Array, contentType: "image/webp"): Promise<string> {
     const key = objectKey(projectId);
     const response = await this.request("PUT", key, content, contentType);
-    if (!response.ok) throw new Error("Object storage upload failed");
+    if (!response.ok) throw new ThumbnailStorageError("write", response.status);
     return `/media/thumbnails/${safeId(projectId)}.webp`;
   }
 
@@ -50,7 +57,7 @@ export class S3CompatibleThumbnailStorage implements S3ThumbnailStorage {
 
   public async read(projectId: string): Promise<Buffer> {
     const response = await this.request("GET", objectKey(projectId));
-    if (!response.ok) throw new Error("Object storage read failed");
+    if (!response.ok) throw new ThumbnailStorageError("read", response.status);
     return Buffer.from(await response.arrayBuffer());
   }
 
@@ -69,12 +76,13 @@ export class S3CompatibleThumbnailStorage implements S3ThumbnailStorage {
     const scope = `${shortDate}/${this.options.region}/s3/aws4_request`;
     const stringToSign = ["AWS4-HMAC-SHA256", amzDate, scope, createHash("sha256").update(canonicalRequest).digest("hex")].join("\n");
     const signingKey = hmac(hmac(hmac(hmac(`AWS4${this.options.secretAccessKey}`, shortDate), this.options.region), "s3"), "aws4_request");
-    headers.authorization = `AWS4-HMAC-SHA256 Credential=${this.options.accessKeyId}/${scope}, SignedHeaders=${signedHeaders}, Signature=${hmac(signingKey, stringToSign)}`;
+    headers.authorization = `AWS4-HMAC-SHA256 Credential=${this.options.accessKeyId}/${scope}, SignedHeaders=${signedHeaders}, Signature=${hmacHex(signingKey, stringToSign)}`;
     return this.fetchImpl(url, { method, headers, ...(body === undefined ? {} : { body: Buffer.from(body) }) });
   }
 }
 
 const hmac = (key: string | Buffer, value: string): Buffer => createHmac("sha256", key).update(value).digest();
+const hmacHex = (key: string | Buffer, value: string): string => createHmac("sha256", key).update(value).digest("hex");
 const objectKey = (projectId: string): string => `thumbnails/${safeId(projectId)}.webp`;
 
 const objectUrl = (endpoint: string, bucket: string, key: string, forcePathStyle: boolean): URL => {

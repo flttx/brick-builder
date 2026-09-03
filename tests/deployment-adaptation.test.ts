@@ -66,10 +66,10 @@ describe("Vercel deployment adaptation", () => {
   });
 
   it("uses an S3-compatible private path and supports replacement reads", async () => {
-    const calls: Array<{ method: string; url: string }> = [];
+    const calls: Array<{ method: string; url: string; authorization: string | null }> = [];
     const fetchImpl: typeof fetch = async (input, init) => {
       const url = typeof input === "string" ? input : input instanceof URL ? input.toString() : input.url;
-      calls.push({ method: init?.method ?? "GET", url });
+      calls.push({ method: init?.method ?? "GET", url, authorization: new Headers(init?.headers).get("authorization") });
       return calls.length === 3 ? new Response(Uint8Array.from([3, 4])) : new Response(null, { status: 200 });
     };
     const storage = new S3CompatibleThumbnailStorage({ endpoint: "https://objects.example.com", bucket: "brick-builder", region: "auto", accessKeyId: "access", secretAccessKey: "secret", forcePathStyle: false, fetchImpl });
@@ -79,6 +79,7 @@ describe("Vercel deployment adaptation", () => {
     expect(await storage.read("project/one")).toEqual(Buffer.from([3, 4]));
     expect(calls.map((call) => call.method)).toEqual(["PUT", "PUT", "GET"]);
     expect(calls[0]?.url).toBe("https://brick-builder.objects.example.com/thumbnails/project_one.webp");
+    expect(calls[0]?.authorization).toMatch(/Signature=[a-f0-9]{64}$/u);
   });
 
   it("routes health through the shared handler without ending the pool per request", async () => {

@@ -7,6 +7,7 @@ import { SessionService } from "../auth/session-service.js";
 import { ScryptPasswordHasher, type PasswordHasher } from "../auth/password-hasher.js";
 import { ConflictError, DuplicateEmailError, NotFoundError, PostgresStore } from "../db/postgres-store.js";
 import { isAllowedOrigin } from "../security/allowed-origins.js";
+import { ThumbnailStorageError } from "../thumbnail-storage.js";
 import { attachRequestLogging, createRequestContext } from "./request-context.js";
 
 const BODY_LIMIT = 6 * 1024 * 1024;
@@ -45,7 +46,8 @@ export const createApiRequestHandler = (options: ApiServerOptions): ApiRequestHa
           const userId = await sessions.userId(request);
           if (userId === null) { response.writeHead(404); response.end(); return; }
           await store.getProject(userId, thumbnailMatch[1]);
-          const content = await options.thumbnailStorage.read(thumbnailMatch[1]);
+          let content: Buffer;
+          try { content = await options.thumbnailStorage.read(thumbnailMatch[1]); } catch (error: unknown) { console.error(JSON.stringify({ event: "thumbnail_read_error", requestId: context.requestId, ...(error instanceof ThumbnailStorageError ? { operation: error.operation, status: error.statusCode } : { error: error instanceof Error ? error.name : "unknown" }) })); response.writeHead(404); response.end(); return; }
           response.statusCode = 200;
           response.setHeader("content-type", "image/webp");
           response.setHeader("cache-control", "private, max-age=300, must-revalidate");
@@ -112,7 +114,7 @@ export const createApiRequestHandler = (options: ApiServerOptions): ApiRequestHa
         return;
       }
       sendJson(response, 405, { code: "METHOD_NOT_ALLOWED", message: "Method not allowed." });
-    } catch (error) { handleError(error, response, context.requestId); }
+  } catch (error) { handleError(error, response, context.requestId); }
   };
 };
 
@@ -146,5 +148,5 @@ const normalizedEmail = (email: string): string => email.trim().toLowerCase();
 const safeProjectName = (name: string | undefined): string => { const value = (name ?? "Untitled Build").trim(); if (value.length === 0 || value.length > 80) throw new ApiRequestError("INVALID_PROJECT_NAME", "作品名称需要为 1 到 80 个字符。"); return value; };
 const decodeWebpDataUrl = (dataUrl: string): Buffer => { const match = /^data:image\/webp;base64,([A-Za-z0-9+/=]+)$/.exec(dataUrl); if (match === null || match[1] === undefined) throw new ApiRequestError("INVALID_THUMBNAIL", "缩略图格式不正确。"); const content = Buffer.from(match[1], "base64"); if (content.byteLength === 0 || content.byteLength > 2 * 1024 * 1024) throw new ApiRequestError("INVALID_THUMBNAIL", "缩略图尺寸或大小不正确。"); return content; };
 const sendJson = (response: ServerResponse, status: number, payload: unknown): void => { response.statusCode = status; response.setHeader("content-type", "application/json; charset=utf-8"); response.setHeader("cache-control", "no-store"); response.end(JSON.stringify(payload)); };
-const handleError = (error: unknown, response: ServerResponse, requestId: string): void => { if (response.headersSent) { response.destroy(); return; } const api = error instanceof ApiRequestError ? error : error instanceof NotFoundError ? new ApiRequestError("PROJECT_NOT_FOUND", "作品不存在。") : error instanceof ConflictError ? new ApiRequestError("PROJECT_CONFLICT", "作品已在其他设备更新，请选择如何处理。") : error instanceof DuplicateEmailError ? new ApiRequestError("EMAIL_TAKEN", "该邮箱已经注册。") : new ApiRequestError("INTERNAL_ERROR", "服务器暂时无法完成请求。"); const status = api.code === "AUTH_REQUIRED" ? 401 : api.code === "PROJECT_NOT_FOUND" ? 404 : api.code === "PROJECT_CONFLICT" ? 409 : api.code === "EMAIL_TAKEN" ? 409 : api.code === "AUTH_INVALID" ? 401 : api.code === "CSRF_REJECTED" ? 403 : api.code === "METHOD_NOT_ALLOWED" ? 405 : api.code === "PROJECT_TOO_LARGE" ? 413 : api.code === "INTERNAL_ERROR" ? 500 : 400; if (status >= 500) console.error(JSON.stringify({ event: "api_error", code: api.code, requestId })); sendJson(response, status, { code: api.code, message: api.message, requestId }); };
+const handleError = (error: unknown, response: ServerResponse, requestId: string): void => { if (response.headersSent) { response.destroy(); return; } const api = error instanceof ApiRequestError ? error : error instanceof NotFoundError ? new ApiRequestError("PROJECT_NOT_FOUND", "作品不存在。") : error instanceof ConflictError ? new ApiRequestError("PROJECT_CONFLICT", "作品已在其他设备更新，请选择如何处理。") : error instanceof DuplicateEmailError ? new ApiRequestError("EMAIL_TAKEN", "该邮箱已经注册。") : new ApiRequestError("INTERNAL_ERROR", "服务器暂时无法完成请求。"); const status = api.code === "AUTH_REQUIRED" ? 401 : api.code === "PROJECT_NOT_FOUND" ? 404 : api.code === "PROJECT_CONFLICT" ? 409 : api.code === "EMAIL_TAKEN" ? 409 : api.code === "AUTH_INVALID" ? 401 : api.code === "CSRF_REJECTED" ? 403 : api.code === "METHOD_NOT_ALLOWED" ? 405 : api.code === "PROJECT_TOO_LARGE" ? 413 : api.code === "INTERNAL_ERROR" ? 500 : 400; if (status >= 500) console.error(JSON.stringify({ event: "api_error", code: api.code, requestId, ...(error instanceof ThumbnailStorageError ? { subsystem: "thumbnail_storage", operation: error.operation, status: error.statusCode } : {}) })); sendJson(response, status, { code: api.code, message: api.message, requestId }); };
 export class ApiRequestError extends Error { public constructor(public readonly code: string, message: string) { super(message); } }

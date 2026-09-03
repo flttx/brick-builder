@@ -29,19 +29,25 @@ const cacheFirst = async (request, cacheName) => {
   const cached = await caches.match(request);
   if (cached !== undefined) return cached;
   const response = await fetch(request);
-  if (response.ok) void caches.open(cacheName).then((cache) => cache.put(request, response.clone()));
+  cacheResponse(request, response, cacheName);
   return response;
 };
 
 const networkFirst = async (request, cacheName) => {
   try {
     const response = await fetch(request);
-    if (response.ok) void caches.open(cacheName).then((cache) => cache.put(request, response.clone()));
+    cacheResponse(request, response, cacheName);
     return response;
   } catch {
     const cached = await caches.match(request);
     return cached ?? caches.match("./");
   }
+};
+
+const cacheResponse = (request, response, cacheName) => {
+  if (!response.ok) return;
+  const responseForCache = response.clone();
+  void caches.open(cacheName).then((cache) => cache.put(request, responseForCache)).catch(() => undefined);
 };
 
 const isShellAsset = (pathname) => pathname.endsWith(".js") || pathname.endsWith(".css") || pathname.endsWith(".webmanifest") || pathname.endsWith(".svg");
